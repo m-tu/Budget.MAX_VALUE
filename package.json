@@ -1,0 +1,25 @@
+{
+  "name": "Budget.MAX_VALUE",
+  "version": "0.0.1",
+  "description": "marteni ja Timmu raha trackimise app, mis saab päris kindlasti valmis",
+  "main": "server.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/m-tu/Budget.MAX_VALUE"
+  },
+  "author": "Mataba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/m-tu/Budget.MAX_VALUE/issues"
+  },
+  "homepage": "https://github.com/m-tu/Budget.MAX_VALUE",
+  "dependencies": {
+    "restify": "^2.8.4"
+  }
+}
