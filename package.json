@@ -7,7 +7,9 @@
     "doc": "doc"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node_modules/.bin/nodemon --ignore build/ -e js server & node_modules/.bin/webpack --watch",
+    "build": "node_modules/.bin/webpack"
   },
   "repository": {
     "type": "git",
@@ -20,9 +22,26 @@
   },
   "homepage": "https://github.com/m-tu/Budget.MAX_VALUE",
   "dependencies": {
+    "body-parser": "^1.10.1",
+    "csurf": "^1.6.5",
+    "debug": "^2.1.1",
+    "express": "^4.10.7",
+    "flux-router-component": "^0.5.3",
+    "fluxible-app": "^0.1.2",
+    "fluxible-plugin-fetchr": "^0.2.1",
+    "fluxible-plugin-routr": "^0.3.0",
     "mysql": "^2.5.4",
+    "node-jsx": "^0.12.4",
+    "react": "^0.12.2",
     "restify": "^2.8.4",
     "sequelize": "^2.0.0-rc6",
-    "sequelize-cli": "^1.0.2"
+    "sequelize-cli": "^1.0.2",
+    "serialize-javascript": "^1.0.0"
+  },
+  "devDependencies": {
+    "jsx-loader": "^0.12.0",
+    "nodemon": "^1.2.1",
+    "webpack": "^1.4.12",
+    "webpack-dev-server": "^1.6.5"
   }
 }
