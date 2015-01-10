@@ -12,4 +12,6 @@ app.plug(fetchrPlugin({
   xhrPath: '/api'
 }));
 
+app.registerStore(require('./stores/UserStore'));
+
 module.exports = app;

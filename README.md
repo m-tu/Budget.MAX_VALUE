@@ -11,4 +11,4 @@ RUN
 
 Develop
 -------
-* `npm run dev` (live reload does not work currently, use `rs`)
+* `npm run dev`

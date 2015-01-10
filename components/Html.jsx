@@ -21,6 +21,7 @@ var Component = React.createClass({
                     <p>Marten ja Timmu saavad miljonärideks!</p>
                 </footer>
             </body>
+            <script dangerouslySetInnerHTML={{__html: this.props.state}}></script>
             <script src="/public/js/client.js" defer></script>
             </html>
         );
