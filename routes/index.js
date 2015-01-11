@@ -24,6 +24,7 @@ module.exports = {
     path: '/register',
     method: 'get',
     page: 'register',
-    label: 'Register'
+    label: 'Register',
+    action: showUser
   }
 }
