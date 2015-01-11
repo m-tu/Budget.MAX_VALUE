@@ -1,7 +1,7 @@
 Budget.MAX_VALUE
 ================
 
-Marteni ja Timmu raha trackimise app, mis saab päris kindlasti valmis
+Marteni ja Timmu raha trackimise app, mis saab päris kindlasti valmis.
 
 RUN
 ---
