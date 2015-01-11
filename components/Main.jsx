@@ -1,11 +1,12 @@
 var React = require('react');
+var RouterMixin = require('flux-router-component').RouterMixin;
 var StoreMixin = require('fluxible-app').StoreMixin;
 var UserStore = require('../stores/UserStore');
 var ApplicationStore = require('../stores/ApplicationStore');
 var Header = require('./Header.jsx');
 
 var Main = React.createClass({
-  mixins: [StoreMixin],
+  mixins: [RouterMixin, StoreMixin],
   statics: {
     storeListeners: {
       _onChange: [UserStore, ApplicationStore]
@@ -15,9 +16,12 @@ var Main = React.createClass({
     return this.getState();
   },
   getState: function () {
+    var applicationState = this.getStore(ApplicationStore).getState();
+
     return {
       users: this.getStore(UserStore).getAll(),
-      application: this.getStore(ApplicationStore).getState()
+      application: this.getStore(ApplicationStore).getState(),
+      route: applicationState.route // needed for RouterMixin
     };
   },
   _onChange: function() {
