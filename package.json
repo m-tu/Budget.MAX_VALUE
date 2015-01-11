@@ -33,6 +33,7 @@
     "mysql": "^2.5.4",
     "node-jsx": "^0.12.4",
     "react": "^0.12.2",
+    "react-bootstrap": "^0.13.0",
     "restify": "^2.8.4",
     "sequelize": "^2.0.0-rc6",
     "sequelize-cli": "^1.0.2",

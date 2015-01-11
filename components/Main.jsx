@@ -1,12 +1,14 @@
 var React = require('react');
 var StoreMixin = require('fluxible-app').StoreMixin;
 var UserStore = require('../stores/UserStore');
+var ApplicationStore = require('../stores/ApplicationStore');
+var Header = require('./Header.jsx');
 
 var Main = React.createClass({
   mixins: [StoreMixin],
   statics: {
     storeListeners: {
-      _onChange: [UserStore]
+      _onChange: [UserStore, ApplicationStore]
     }
   },
   getInitialState: function () {
@@ -14,7 +16,8 @@ var Main = React.createClass({
   },
   getState: function () {
     return {
-      users: this.getStore(UserStore).getAll()
+      users: this.getStore(UserStore).getAll(),
+      application: this.getStore(ApplicationStore).getState()
     };
   },
   _onChange: function() {
@@ -26,10 +29,27 @@ var Main = React.createClass({
       return (<div key={user.id}>{user.username}</div>);
     });
 
+    var application = this.state.application;
+    var page = '';
+
+    switch (this.state.application.currentPageName) {
+      case 'home':
+        page = 'Tere!'
+        break;
+      case 'users':
+        page = userList;
+        break;
+      case 'register':
+        page = 'Soon!'
+        break;
+    }
+
     return (
       <div>
-        <h1>Hello</h1>
-        {userList}
+        <Header context={this.props.context} links={application.pages} selected={application.currentPageName} />
+        <div className="container">
+          {page}
+        </div>
       </div>
     );
   }

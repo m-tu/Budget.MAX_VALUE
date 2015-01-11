@@ -4,9 +4,9 @@ require('node-jsx').install({ extension: '.jsx' });
 var express = require('express');
 var serialize = require('serialize-javascript');
 var bodyParser = require('body-parser');
+var navigateAction = require('flux-router-component').navigateAction;
 var React = require('react');
 var app = require('./app');
-var showUsers = require('./actions/showUsers');
 var HtmlComponent = React.createFactory(require('./components/Html.jsx'));
 var models = require('./models');
 
@@ -31,7 +31,9 @@ server.use(function (req, res, next) {
     req: req // The fetchr plugin depends on this
   });
 
-  context.executeAction(showUsers, {}, function (err) {
+  context.getActionContext().executeAction(navigateAction, {
+    url: req.url
+  }, function (err) {
     if (err) {
       if (err.status && err.status === 404) {
         return next();

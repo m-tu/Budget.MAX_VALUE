@@ -1,20 +1,29 @@
 'use strict';
 
-var models  = require('../models');
+var showUser = require('../actions/showUsers');
 
-module.exports = function(app) {
-  app.get('/api/auth/:name', function(req, res, next) {
-    res.send({
-      hello: req.params.name
-    });
-
-    next();
-  });
-
-  app.get('/api/users', function(req, res, next) {
-    models.User.findAll().then(function(users) {
-      res.send(users);
-      next();
-    });
-  });
-};
+module.exports = {
+  home: {
+    path: '/',
+    method: 'get',
+    page: 'home',
+    label: 'Home',
+    action: function (context, payload, done) {
+      //context.dispatch('UPDATE_PAGE_TITLE', { pageTitle: 'Home | flux-examples | routing' });
+      done();
+    }
+  },
+  users: {
+    path: '/users',
+    method: 'get',
+    page: 'users',
+    label: 'Users',
+    action: showUser
+  },
+  register: {
+    path: '/register',
+    method: 'get',
+    page: 'register',
+    label: 'Register'
+  }
+}
