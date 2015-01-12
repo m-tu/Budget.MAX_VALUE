@@ -5,6 +5,7 @@ var UserStore = require('../stores/UserStore');
 var ApplicationStore = require('../stores/ApplicationStore');
 var Header = require('./Header.jsx');
 var Register = require('./Register.jsx');
+var Login = require('./Login.jsx');
 
 var Main = React.createClass({
   mixins: [RouterMixin, StoreMixin],
@@ -39,7 +40,7 @@ var Main = React.createClass({
 
     switch (this.state.application.currentPageName) {
       case 'home':
-        page = 'Tere!'
+        page = <Login context={this.props.context} />;
         break;
       case 'users':
         page = userList;

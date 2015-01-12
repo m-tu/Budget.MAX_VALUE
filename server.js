@@ -4,6 +4,7 @@ require('node-jsx').install({ extension: '.jsx' });
 var express = require('express');
 var serialize = require('serialize-javascript');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 var navigateAction = require('flux-router-component').navigateAction;
 var React = require('react');
 var app = require('./app');
@@ -14,6 +15,11 @@ var server = express();
 server.set('state namespace', 'App');
 server.use('/public', express.static(__dirname + '/build'));
 server.use(bodyParser.json());
+server.use(session({
+  secret: 'budget max valuez',
+  resave: false,
+  saveUninitialized: true
+}));
 
 
 // Get access to the fetchr plugin instance

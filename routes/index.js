@@ -27,4 +27,4 @@ module.exports = {
     label: 'Register',
     action: showUser
   }
-}
+};

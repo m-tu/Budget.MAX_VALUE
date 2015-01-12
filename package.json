@@ -26,6 +26,7 @@
     "csurf": "^1.6.5",
     "debug": "^2.1.1",
     "express": "^4.10.7",
+    "express-session": "^1.10.1",
     "flux-router-component": "^0.5.3",
     "fluxible-app": "^0.1.2",
     "fluxible-plugin-fetchr": "^0.2.1",
