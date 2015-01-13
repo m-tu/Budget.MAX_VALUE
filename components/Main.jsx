@@ -4,8 +4,9 @@ var StoreMixin = require('fluxible-app').StoreMixin;
 var UserStore = require('../stores/UserStore');
 var ApplicationStore = require('../stores/ApplicationStore');
 var Header = require('./Header.jsx');
-var Register = require('./Register.jsx');
-var Login = require('./Login.jsx');
+var Register = require('./pages/Register.jsx');
+var Login = require('./pages/Login.jsx');
+var Home = require('./pages/Home.jsx');
 
 var Main = React.createClass({
   mixins: [RouterMixin, StoreMixin],
@@ -40,10 +41,13 @@ var Main = React.createClass({
 
     switch (this.state.application.currentPageName) {
       case 'home':
-        page = <Login context={this.props.context} />;
+        page = <Home context={this.props.context} />;
         break;
       case 'users':
         page = userList;
+        break;
+      case 'login':
+        page = <Login context={this.props.context} />;
         break;
       case 'register':
         page = (

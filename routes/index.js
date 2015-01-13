@@ -26,5 +26,11 @@ module.exports = {
     page: 'register',
     label: 'Register',
     action: showUser
+  },
+  login: {
+    path: '/login',
+    method: 'get',
+    page: 'login',
+    label: 'Login'
   }
 };

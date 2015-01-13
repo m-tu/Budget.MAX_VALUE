@@ -4,16 +4,15 @@ var models  = require('../models');
 
 module.exports = {
   name: 'auth',
-  read: function (req, resource, params, config, callback) {
-    models.User.findOne({
+  create: function (req, resource, params, body, config, callback) {
+    models.User.find({
       where: {
         username: params.username,
         password: params.password
-      }
+      },
+      attributes: ['id', 'username']
     }).then(function(user) {
       callback(null, user);
-    }, function() {
-      callback('error');
     });
   }
 };

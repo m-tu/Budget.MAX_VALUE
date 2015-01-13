@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var createUser = require('../actions/createUser');
+var createUser = require('../../actions/createUser');
 
 var Register = React.createClass({
   getInitialState: function() {

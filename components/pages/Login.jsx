@@ -1,17 +1,19 @@
 var React = require('react/addons');
 var ReactBootstrap = require('react-bootstrap');
-var AuthStore = require('../stores/AuthStore');
+var AuthStore = require('../../stores/AuthStore');
 var StoreMixin = require('fluxible-app').StoreMixin;
 var Input = ReactBootstrap.Input;
 var Button = ReactBootstrap.Button;
 var Alert = ReactBootstrap.Alert;
-var login = require('../actions/login');
+var login = require('../../actions/login');
 
 var Login = React.createClass({
-  mixins: [React.addons.LinkedStateMixin],
-  //static: {
-  //  storeListeners: [AuthStore]
-  //},
+  mixins: [React.addons.LinkedStateMixin, StoreMixin],
+  statics: {
+    storeListeners: {
+      _onChange: [AuthStore]
+    }
+  },
   getInitialState: function() {
     return this.getState();
   },
@@ -25,9 +27,9 @@ var Login = React.createClass({
       loading: false//storeState.loading
     };
   },
-  //onChange: function() {
-  //  this.setState(this.getStore(AuthStore).getState());
-  //},
+  _onChange: function() {
+    this.setState(this.getStore(AuthStore).getState());
+  },
   render: function() {
     var loading = this.state.loading;
 
@@ -53,15 +55,10 @@ var Login = React.createClass({
       return;
     }
 
-    this.setState({
-      errorMessage: null,
-      loading: true
+    this.props.context.executeAction(login, {
+      username: username,
+      password: password
     });
-
-    //this.props.context.executeAction(login, {
-    //  username: username,
-    //  password: password
-    //});
   }
 });
 

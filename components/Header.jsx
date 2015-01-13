@@ -4,15 +4,33 @@ var Navbar = ReactBootstrap.Navbar;
 var Nav = ReactBootstrap.Nav;
 var NavItem = ReactBootstrap.NavItem;
 var NavLink = require('flux-router-component').NavLink;
+var AuthStore = require('../stores/AuthStore');
+var StoreMixin = require('fluxible-app').StoreMixin;
+var logout = require('../actions/logout');
 
 var Header = React.createClass({
+  mixins: [StoreMixin],
+  statics: {
+    storeListeners: {
+      _onChange: [AuthStore]
+    }
+  },
+  getInitialState: function() {
+    return {
+      isLoggedIn: this.getStore(AuthStore).isLoggedIn()
+    };
+  },
+  _onChange: function() {
+    this.setState(this.getInitialState());
+  },
   render: function() {
-    var selected = this.props.selected || this.state.selected,
-      links = this.props.links || this.state.links,
-      context = this.props.context,
-      linksHTML = Object.keys(links).map(function(name) {
-        var link = links[name],
-            className = selected === name ? 'active' : '';
+    var menus = this.state.isLoggedIn ? ['home', 'users'] : ['home', 'login', 'register'];
+    var selected = this.props.selected;
+    var links = this.props.links;
+    var context = this.props.context;
+    var linksHTML = menus.map(function(name) {
+      var link = links[name],
+          className = selected === name ? 'active' : '';
 
         return (
           <li key={link.path} className={className}>
@@ -21,6 +39,14 @@ var Header = React.createClass({
         );
       });
 
+    if (this.state.isLoggedIn) {
+      linksHTML.push(
+        <li key="/logout">
+          <a href="/logout" onClick={this._logOut}>Log out</a>
+        </li>
+      );
+    }
+
     return (
       <Navbar>
         <Nav>
@@ -28,6 +54,11 @@ var Header = React.createClass({
         </Nav>
       </Navbar>
     );
+  },
+  _logOut: function(event) {
+    event.preventDefault();
+
+    this.props.context.executeAction(logout);
   }
 });
 
