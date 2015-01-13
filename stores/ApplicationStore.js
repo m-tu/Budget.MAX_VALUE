@@ -13,7 +13,7 @@ var ApplicationStore = createStore({
     'UPDATE_PAGE_TITLE': 'updatePageTitle',
     LOG_IN_DONE: '_logInDone'
   },
-  initialize: function (dispatcher) {
+  initialize: function () {
     this.currentPageName = null;
     this.currentPage = null;
     this.currentRoute = null;
