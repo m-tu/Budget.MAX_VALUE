@@ -12,7 +12,14 @@ module.exports = {
       },
       attributes: ['id', 'username']
     }).then(function(user) {
+      if (user !== null) {
+        req.session.user = user;
+      }
       callback(null, user);
     });
+  },
+  delete: function(req, resource, params, config, callback) {
+    req.session.user = null;
+    callback(null);
   }
 };

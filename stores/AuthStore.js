@@ -6,8 +6,9 @@ module.exports = createStore({
   handlers: {
     LOG_IN_START: '_logInStart',
     LOG_IN_DONE: '_logInDone',
+    LOGGED_IN: '_logInDone',
     LOG_IN_FAIL: '_logInFail',
-    LOG_OUT: '_logOut'
+    LOG_OUT_DONE: '_logOut'
   },
   initialize: function () {
     this.loading = false;

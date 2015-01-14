@@ -23,6 +23,7 @@
   "homepage": "https://github.com/m-tu/Budget.MAX_VALUE",
   "dependencies": {
     "body-parser": "^1.10.1",
+    "connect-redis": "^2.1.0",
     "csurf": "^1.6.5",
     "debug": "^2.1.1",
     "express": "^4.10.7",

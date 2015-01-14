@@ -9,9 +9,10 @@ var routesConfig = require('../routes');
 var ApplicationStore = createStore({
   storeName: 'ApplicationStore',
   handlers: {
-    'CHANGE_ROUTE_SUCCESS': 'handleNavigate',
-    'UPDATE_PAGE_TITLE': 'updatePageTitle',
-    LOG_IN_DONE: '_logInDone'
+    CHANGE_ROUTE_SUCCESS: 'handleNavigate',
+    UPDATE_PAGE_TITLE: 'updatePageTitle',
+    LOG_IN_DONE: '_logInDone',
+    LOG_OUT_DONE: '_logInDone'
   },
   initialize: function () {
     this.currentPageName = null;

@@ -5,6 +5,7 @@ var express = require('express');
 var serialize = require('serialize-javascript');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
 var navigateAction = require('flux-router-component').navigateAction;
 var React = require('react');
 var app = require('./app');
@@ -16,6 +17,7 @@ server.set('state namespace', 'App');
 server.use('/public', express.static(__dirname + '/build'));
 server.use(bodyParser.json());
 server.use(session({
+  store: new RedisStore(),
   secret: 'budget max valuez',
   resave: false,
   saveUninitialized: true
@@ -38,7 +40,14 @@ server.use(function (req, res, next) {
     req: req // The fetchr plugin depends on this
   });
 
-  context.getActionContext().executeAction(navigateAction, {
+  var actionContext = context.getActionContext();
+
+  // Initialize store states: maybe come up with better solution?
+  if (req.session.user) {
+    actionContext.dispatch('LOGGED_IN', req.session.user);
+  }
+
+  actionContext.executeAction(navigateAction, {
     url: req.url
   }, function (err) {
     if (err) {
