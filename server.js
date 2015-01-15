@@ -15,6 +15,7 @@ var models = require('./models');
 var server = express();
 server.set('state namespace', 'App');
 server.use('/public', express.static(__dirname + '/build'));
+server.use('/public', express.static(__dirname + '/assets'));
 server.use(bodyParser.json());
 server.use(session({
   store: new RedisStore(),
