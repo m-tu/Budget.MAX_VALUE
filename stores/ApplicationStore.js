@@ -24,13 +24,13 @@ var ApplicationStore = createStore({
   handleNavigate: function(route) {
     var pageName = route.config.page;
 
-    this._openPage(pageName);
+    this._openPage(pageName, route);
   },
   updatePageTitle: function (title) {
     this.pageTitle = title.pageTitle;
     this.emitChange();
   },
-  _openPage: function(pageName) {
+  _openPage: function(pageName, route) {
     var page = this.pages[pageName];
 
     if (pageName === this.getCurrentPageName()) {
@@ -39,17 +39,20 @@ var ApplicationStore = createStore({
 
     this.currentPageName = pageName;
     this.currentPage = page;
-    //this.currentRoute = route;
+    this.currentRoute = route;
     this.emitChange();
   },
   _logInDone: function() {
-    this._openPage('home');
+    // TODO fix
+    this._openPage('home', {
+      url: 'home',
+      navigate: {
+        type: 'click'
+      }
+    });
   },
   getCurrentPageName: function () {
     return this.currentPageName;
-  },
-  getPageTitle: function () {
-    return this.pageTitle;
   },
   getState: function () {
     return {

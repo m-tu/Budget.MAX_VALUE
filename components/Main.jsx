@@ -1,3 +1,5 @@
+'use strict';
+
 var React = require('react');
 var RouterMixin = require('flux-router-component').RouterMixin;
 var StoreMixin = require('fluxible-app').StoreMixin;
@@ -7,6 +9,7 @@ var Header = require('./Header.jsx');
 var Register = require('./pages/Register.jsx');
 var Login = require('./pages/Login.jsx');
 var Home = require('./pages/Home.jsx');
+var Transactions = require('./pages/Transactions.jsx');
 
 var Main = React.createClass({
   mixins: [RouterMixin, StoreMixin],
@@ -48,6 +51,9 @@ var Main = React.createClass({
         break;
       case 'login':
         page = <Login context={this.props.context} />;
+        break;
+      case 'transactions':
+        page = <Transactions context={this.props.context} />;
         break;
       case 'register':
         page = (

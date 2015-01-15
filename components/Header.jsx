@@ -1,3 +1,5 @@
+'use strict';
+
 var React = require('react');
 var ReactBootstrap = require('react-bootstrap');
 var Navbar = ReactBootstrap.Navbar;
@@ -7,9 +9,10 @@ var NavLink = require('flux-router-component').NavLink;
 var AuthStore = require('../stores/AuthStore');
 var StoreMixin = require('fluxible-app').StoreMixin;
 var logout = require('../actions/logout');
+var RouterMixin = require('flux-router-component').RouterMixin;
 
 var Header = React.createClass({
-  mixins: [StoreMixin],
+  mixins: [StoreMixin, RouterMixin],
   statics: {
     storeListeners: {
       _onChange: [AuthStore]
@@ -24,7 +27,7 @@ var Header = React.createClass({
     this.setState(this.getInitialState());
   },
   render: function() {
-    var menus = this.state.isLoggedIn ? ['home', 'users'] : ['home', 'login', 'register'];
+    var menus = this.state.isLoggedIn ? ['home', 'transactions'] : ['home', 'login', 'register'];
     var selected = this.props.selected;
     var links = this.props.links;
     var context = this.props.context;

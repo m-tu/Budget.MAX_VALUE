@@ -1,17 +1,14 @@
 'use strict';
 
 var showUser = require('../actions/showUsers');
+var showTransactions = require('../actions/showTransactions');
 
 module.exports = {
   home: {
     path: '/',
     method: 'get',
     page: 'home',
-    label: 'Home',
-    action: function (context, payload, done) {
-      //context.dispatch('UPDATE_PAGE_TITLE', { pageTitle: 'Home | flux-examples | routing' });
-      done();
-    }
+    label: 'Home'
   },
   users: {
     path: '/users',
@@ -19,6 +16,13 @@ module.exports = {
     page: 'users',
     label: 'Users',
     action: showUser
+  },
+  transactions: {
+    path: '/transactions',
+    method: 'get',
+    page: 'transactions',
+    label: 'Transactions',
+    action: showTransactions
   },
   register: {
     path: '/register',

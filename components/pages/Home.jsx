@@ -1,3 +1,5 @@
+'use strict';
+
 var React = require('react/addons');
 var AuthStore = require('../../stores/AuthStore');
 var StoreMixin = require('fluxible-app').StoreMixin;

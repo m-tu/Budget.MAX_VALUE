@@ -17,6 +17,7 @@ app.plug(routrPlugin({
 
 app.registerStore(require('./stores/ApplicationStore'));
 app.registerStore(require('./stores/UserStore'));
+app.registerStore(require('./stores/TransactionStore'));
 app.registerStore(require('./stores/AuthStore'));
 
 module.exports = app;
