@@ -35,15 +35,17 @@ var Transactions = React.createClass({
 
     return (
       <table className="table table-striped table-bordered table-hover">
-        <tr>
-          <th>Id</th>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Location</th>
-          <th>Amount</th>
-          <th>Payment method</th>
-        </tr>
-        {transactions}
+        <tbody>
+          <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Amount</th>
+            <th>Payment method</th>
+          </tr>
+          {transactions}
+        </tbody>
       </table>
     );
   }

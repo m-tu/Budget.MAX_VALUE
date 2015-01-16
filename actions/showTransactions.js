@@ -1,15 +1,25 @@
 'use strict';
 
-module.exports = function (context, payload, done) {
-  context.dispatch('RECEIVE_TRANSACTIONS_START', payload);
+var TransactionStore = require('../stores/TransactionStore');
 
-  context.service.read('transaction', {}, {}, function (err, transactions) {
-    if (err) {
-      context.dispatch('RECEIVE_TRANSACTIONS_FAILURE', payload);
+module.exports = function (context, payload, done) {
+  done = done || function() {};
+
+  var transactionStore = context.getStore(TransactionStore);
+
+  if (!transactionStore.isPopulated()) {
+    context.dispatch('RECEIVE_TRANSACTIONS_START', payload);
+
+    context.service.read('transaction', {}, {}, function (err, transactions) {
+      if (err) {
+        context.dispatch('RECEIVE_TRANSACTIONS_FAILURE', payload);
+        done();
+        return;
+      }
+      context.dispatch('RECEIVE_TRANSACTIONS_SUCCESS', transactions);
       done();
-      return;
-    }
-    context.dispatch('RECEIVE_TRANSACTIONS_SUCCESS', transactions);
+    });
+  } else {
     done();
-  });
+  }
 };

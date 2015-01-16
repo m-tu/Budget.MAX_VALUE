@@ -22,7 +22,11 @@ module.exports = {
     method: 'get',
     page: 'transactions',
     label: 'Transactions',
-    action: showTransactions
+    action: function(context, payload, done) {
+      // TODO find better solution
+      context.dispatch('CHANGE_ROUTE_SUCCESS', payload);
+      context.executeAction(showTransactions, null, done);
+    }
   },
   register: {
     path: '/register',
