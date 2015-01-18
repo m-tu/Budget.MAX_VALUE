@@ -10,6 +10,7 @@ var Register = require('./pages/Register.jsx');
 var Login = require('./pages/Login.jsx');
 var Home = require('./pages/Home.jsx');
 var Transactions = require('./pages/Transactions.jsx');
+var UpdateTransaction = require('./pages/UpdateTransaction.jsx');
 
 var Main = React.createClass({
   mixins: [RouterMixin, StoreMixin],
@@ -54,6 +55,9 @@ var Main = React.createClass({
         break;
       case 'transactions':
         page = <Transactions context={this.props.context} />;
+        break;
+      case 'updateTransaction':
+        page = <UpdateTransaction context={this.props.context} />;
         break;
       case 'register':
         page = (

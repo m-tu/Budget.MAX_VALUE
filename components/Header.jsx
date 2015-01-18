@@ -27,7 +27,7 @@ var Header = React.createClass({
     this.setState(this.getInitialState());
   },
   render: function() {
-    var menus = this.state.isLoggedIn ? ['home', 'transactions'] : ['home', 'login', 'register'];
+    var menus = this.state.isLoggedIn ? ['home', 'transactions', 'updateTransaction'] : ['home', 'login', 'register'];
     var selected = this.props.selected;
     var links = this.props.links;
     var context = this.props.context;

@@ -5,7 +5,8 @@ var createStore = require('fluxible-app/utils/createStore');
 module.exports = createStore({
   storeName: 'TransactionStore',
   handlers: {
-    RECEIVE_TRANSACTIONS_SUCCESS: '_receiveTransactions'
+    RECEIVE_TRANSACTIONS_SUCCESS: '_receiveTransactions',
+    CREATE_TRANSACTION_DONE: '_createTransaction'
   },
   initialize: function () {
     this.transactions = [];
@@ -17,6 +18,12 @@ module.exports = createStore({
       populated: true
     });
 
+    this.emitChange();
+  },
+  _createTransaction: function(transaction) {
+    transaction.date = new Date(transaction.date);
+
+    this.transactions.push(transaction);
     this.emitChange();
   },
   getAll: function () {

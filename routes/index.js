@@ -28,6 +28,12 @@ module.exports = {
       context.executeAction(showTransactions, null, done);
     }
   },
+  updateTransaction: {
+    path: '/updateTransaction',
+    method: 'get',
+    page: 'updateTransaction',
+    label: 'Create transaction'
+  },
   register: {
     path: '/register',
     method: 'get',
