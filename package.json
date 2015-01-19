@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node_modules/.bin/nodemon --ignore build/ -e js,jsx server & node_modules/.bin/webpack --watch",
-    "build": "node_modules/.bin/webpack"
+    "build": "node_modules/.bin/webpack",
+    "webpack": "node_modules/.bin/webpack --watch"
   },
   "repository": {
     "type": "git",

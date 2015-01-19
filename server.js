@@ -79,7 +79,31 @@ server.use(function (req, res, next) {
 
 var port = process.env.PORT || 3005;
 
-models.sequelize.sync().then(function() {
-  server.listen(port);
-  console.log('Listening on port ' + port);
+models.sequelize.sync({force: true}).then(function() {
+  // TODO move initialization to separate file
+  // initialize data
+  models.User.create({
+    username: 'timmu',
+    password: 'parool'
+  }).then(function(user) {
+    return models.Transaction.bulkCreate([{
+      date: new Date(),
+      description: 'positive',
+      location: 'Töö',
+      amount: 100,
+      method: 'bank',
+      UserId: user.id
+    }, {
+      date: new Date(),
+      description: 'negative',
+      location: 'selver',
+      amount: -13.55,
+      method: 'debit',
+      UserId: user.id
+    }]);
+  }).then(function() {
+    // start server
+    server.listen(port);
+    console.log('Listening on port ' + port);
+  });
 });

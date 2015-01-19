@@ -4,34 +4,52 @@ var React = require('react/addons');
 var TransactionStore = require('../../stores/TransactionStore');
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
+var Alert = ReactBootstrap.Alert;
 var createTransaction = require('../../actions/createTransaction');
+var validateTransaction = require('../../validators/transaction');
 
 var Transactions = React.createClass({
   mixins: [React.addons.LinkedStateMixin],
   getInitialState: function() {
+    // TEMP test data
     return {
-      date: '',
-      description: '',
-      location: '',
-      amount: '',
-      method: ''
+      date: '1990-01-19T20:15',
+      description: 'test',
+      location: 'koht',
+      amount: '-15.45',
+      method: 'credit',
+      errors: {},
+      hasErrors: false
     };
   },
   render: function() {
+    var errorMessage = null;
+    var errors = this.state.errors;
+
+    if (this.state.hasErrors) {
+      errorMessage = (
+        <Alert bsStyle="danger">
+          <strong>There were problems creating transaction</strong>
+        </Alert>
+      );
+    }
+
     return (
       <div>
         <h2>Create transaction</h2>
-        <form className="form-horizontal" onSubmit={this._onSubmit}>
+        {errorMessage}
+        <form className="form-horizontal" onSubmit={this._onSubmit} noValidate>
           <Input type="datetime-local" label="Date" labelClassName="col-xs-2" wrapperClassName="col-xs-10"
-            valueLink={this.linkState('date')} />
+            valueLink={this.linkState('date')} help={errors.date} bsStyle={errors.date ? 'error' : null} />
           <Input type="textarea" label="Description" labelClassName="col-xs-2" wrapperClassName="col-xs-10"
-            valueLink={this.linkState('description')} />
+            valueLink={this.linkState('description')} help={errors.description} bsStyle={errors.description ? 'error' : null} />
           <Input type="text" label="Location" labelClassName="col-xs-2" wrapperClassName="col-xs-10"
-            valueLink={this.linkState('location')} />
+            valueLink={this.linkState('location')} help={errors.location} bsStyle={errors.location ? 'error' : null} />
           <Input type="number" label="Amount" labelClassName="col-xs-2" wrapperClassName="col-xs-10"
-            valueLink={this.linkState('amount')} />
+            valueLink={this.linkState('amount')} help={errors.amount} bsStyle={errors.amount ? 'error' : null} />
           <Input type="select" label="Method" defaultValue="debit" labelClassName="col-xs-2"
             wrapperClassName="col-xs-10" valueLink={this.linkState('method')}
+            help={errors.method} bsStyle={errors.method ? 'error' : null}
           >
             <option value="debit">Debit card</option>
             <option value="credit">Credit card</option>
@@ -46,15 +64,23 @@ var Transactions = React.createClass({
   _onSubmit: function(e) {
     e.preventDefault();
 
-    var transaction = {
-      date: new Date(this.state.date),
-      description: this.state.description,
-      location: this.state.location,
-      amount: parseFloat(this.state.amount),
-      method: this.state.method
-    };
+    var result = validateTransaction(this.state);
 
-    this.props.context.executeAction(createTransaction, transaction);
+    if (result.hasErrors) {
+      this.setState({
+        hasErrors: true,
+        errors: result.errors
+      });
+
+      return;
+    }
+
+    this.setState({
+      hasErrors: false,
+      errors: {}
+    });
+
+    this.props.context.executeAction(createTransaction, result.data);
   }
 });
 
