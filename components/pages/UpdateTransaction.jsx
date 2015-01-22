@@ -4,11 +4,15 @@ var React = require('react/addons');
 var TransactionStore = require('../../stores/TransactionStore');
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
+var Button = ReactBootstrap.Button;
+var ButtonToolbar = ReactBootstrap.ButtonToolbar;
 var Alert = ReactBootstrap.Alert;
 var createTransaction = require('../../actions/createTransaction');
 var validateTransaction = require('../../validators/transaction');
+var cx = React.addons.classSet;
 
 var Transactions = React.createClass({
+  dragCount: 0,
   mixins: [React.addons.LinkedStateMixin],
   getInitialState: function() {
     // TEMP test data
@@ -27,13 +31,15 @@ var Transactions = React.createClass({
     };
   },
   componentDidMount: function() {
-    document.addEventListener('dragover', this._onDragStart);
-    document.addEventListener('dragleave', this._onDragEnd);
+    document.addEventListener('dragenter', this._onDragStart);
+    document.addEventListener('dragleave', this._onDragLeaveDocument);
+    document.addEventListener('dragend', this._onDragEnd);
   },
 
   componentWillUnmount: function() {
-    document.removeEventListener('dragover', this._onDragStart);
+    document.removeEventListener('dragenter', this._onDragStart);
     document.removeEventListener('dragleave', this._onDragEnd);
+    document.removeEventListener('dragend', this._onDragLeaveDocument);
   },
   render: function() {
     var errorMessage = null;
@@ -47,12 +53,13 @@ var Transactions = React.createClass({
       );
     }
 
-    var dropZoneStyle = {
-      borderWidth: '1px',
-      borderColor: '#666',
-      borderStyle: this.state.dragInZone ? 'solid' : 'dashed',
-      backgroundColor: this.state.dragActive ? 'yellow' : 'cyan'
-    };
+
+    var dropZoneClasses = cx({
+      dropzone: true,
+      visible: this.state.dragActive,
+      active: this.state.dragInZone
+    });
+    var dropZoneMessage = this.state.dragActive ? 'Drop here' : 'or drag here';
 
     return (
       <div>
@@ -77,15 +84,19 @@ var Transactions = React.createClass({
             <option value="bank">Bank</option>
             <option value="cash">Cash</option>
           </Input>
-          <div className="col-xs-offset-2 col-xs-10" style={dropZoneStyle}
-            onDragStart={this._onDragStart} onDragEnd={this._onDragEnd}
-            onDragLeave={this._onDragLeave} onDragOver={this._onDragOver} onDrop={this._onDrop}
-          >
-            {this.state.files.map(function(file) {
-              return (<div onClick={this._onRemoveFile.bind(this, file)}>{file.name}</div>);
-            }.bind(this))}
-            {this.state.dragFileName}
-          </div>
+          <input ref="file" type="file" multiple className="hidden" />
+          <Input label="Add files" labelClassName="col-xs-2" wrapperClassName="col-xs-10">
+              <div className={dropZoneClasses}
+                onDragLeave={this._onDragLeave} onDragOver={this._onDragOver} onDrop={this._onDrop}
+              >
+                <Button onClick={this._onSelectFile}>
+                  Browse files
+                </Button>
+                <p>
+                  {dropZoneMessage}
+                </p>
+              </div>
+          </Input>
           <Input type="submit" value="Save" wrapperClassName="col-xs-offset-2 col-xs-10" />
         </form>
       </div>
@@ -125,22 +136,35 @@ var Transactions = React.createClass({
   },
   _onDragStart: function(e) {
     e.preventDefault();
+    e.dataTransfer.dropEffect = 'none';
+    this.dragCount++;
 
     if (!this.state.dragActive) {
       this.setState({
         dragActive: true
       });
-    }
 
-    e.dataTransfer.dropEffect = this.state.dragInZone ? 'copy' : 'none';
+      this._updateDragIcon(e);
+    }
   },
-  _onDragEnd: function() {
+  _onDragLeaveDocument: function(e) {
+    this.dragCount--;
+
+    if (this.dragCount > 0) {
+      return
+    }
+    //console.log(e.target)
     this.setState({
       dragActive: false
     });
   },
+  _onDragEnd: function() {
+    this.setState({
+      dragActive: false
+    })
+  },
   _onDragOver: function(e) {
-    e.preventDefault();
+    e.stopPropagation();
 
     if (!this.state.dragInZone) {
       this.setState({
@@ -148,11 +172,14 @@ var Transactions = React.createClass({
       });
     }
   },
-  _onDragLeave: function() {
+  _onDragLeave: function(e) {
+    e.stopPropagation();
+
     this.setState({
       dragInZone: false,
       dragFileName: 'choose file'
     });
+    this._updateDragIcon(e);
   },
   _onDrop: function(e) {
     console.log('drop', e.target);
@@ -170,6 +197,19 @@ var Transactions = React.createClass({
       dragActive: false,
       files: this.state.files
     });
+    this._updateDragIcon(e);
+  },
+  _onSelectFile: function() {
+    this.refs.file.getDOMNode().click();
+  },
+  _updateDragIcon: function(e) {
+    console.log(e, e.dataTransfer);
+    if (!e || !e.dataTransfer) {
+      return;
+    }
+
+    console.log('niiger', this.state.dragInZone)
+    //e.dataTransfer.dropEffect = this.state.dragInZone ? 'copy' : 'none';
   }
 });
 

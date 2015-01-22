@@ -4,3 +4,29 @@ footer {
     border-top: 1px solid #e5e5e5;
     font-size: 90%;
 }
+
+.dropzone {
+    /*display: flex;*/
+    height: 50px;
+}
+.dropzone p {
+
+}
+
+.dropzone.visible {
+    display: flex;
+    padding: 5px;
+    border: 4px #cecece dashed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-color: #cecece;
+    font-size: 120%;
+}
+.dropzone.visible button {
+    display: none;
+}
+
+.dropzone.active {
+    border-color: #355969;
+}
