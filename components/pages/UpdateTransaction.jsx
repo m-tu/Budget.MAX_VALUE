@@ -12,7 +12,10 @@ var validateTransaction = require('../../validators/transaction');
 var cx = React.addons.classSet;
 
 var Transactions = React.createClass({
-  dragCount: 0,
+  // must use counter, because dragEnter of child might come before dragLeave of parent
+  _dragEnterDocumentCount: 0,
+  _dragEnterDropZoneCount: 0,
+  _nextFileId: 0,
   mixins: [React.addons.LinkedStateMixin],
   getInitialState: function() {
     // TEMP test data
@@ -31,15 +34,14 @@ var Transactions = React.createClass({
     };
   },
   componentDidMount: function() {
-    document.addEventListener('dragenter', this._onDragStart);
+    document.addEventListener('dragenter', this._onDragEnterDocument);
     document.addEventListener('dragleave', this._onDragLeaveDocument);
-    document.addEventListener('dragend', this._onDragEnd);
+    document.addEventListener('dragover', this._onDragOver);
   },
-
   componentWillUnmount: function() {
-    document.removeEventListener('dragenter', this._onDragStart);
-    document.removeEventListener('dragleave', this._onDragEnd);
-    document.removeEventListener('dragend', this._onDragLeaveDocument);
+    document.removeEventListener('dragenter', this._onDragEnterDocument);
+    document.removeEventListener('dragleave', this._onDragLeaveDocument);
+    document.removeEventListener('dragover', this._onDragOver);
   },
   render: function() {
     var errorMessage = null;
@@ -84,32 +86,47 @@ var Transactions = React.createClass({
             <option value="bank">Bank</option>
             <option value="cash">Cash</option>
           </Input>
-          <input ref="file" type="file" multiple className="hidden" />
+          <input ref="file" type="file" multiple className="hidden" onChange={this._onFilesSelected} />
           <Input label="Add files" labelClassName="col-xs-2" wrapperClassName="col-xs-10">
-              <div className={dropZoneClasses}
-                onDragLeave={this._onDragLeave} onDragOver={this._onDragOver} onDrop={this._onDrop}
-              >
-                <Button onClick={this._onSelectFile}>
-                  Browse files
-                </Button>
-                <p>
-                  {dropZoneMessage}
-                </p>
-              </div>
+            <div className={dropZoneClasses}
+              onDragLeave={this._onDragLeave} onDragEnter={this._onDragEnter} onDrop={this._onDrop}
+            >
+              <Button onClick={this._onSelectFile}>
+                Browse files
+              </Button>
+              <p>
+                {dropZoneMessage}
+              </p>
+            </div>
+            {this._renderFilesList()}
           </Input>
           <Input type="submit" value="Save" wrapperClassName="col-xs-offset-2 col-xs-10" />
         </form>
       </div>
     );
   },
+  _renderFilesList: function() {
+    return (
+      this.state.files.length === 0
+        ? null :
+        <div>
+          {this.state.files.map(this._renderFile)}
+        </div>
+    );
+  },
+  _renderFile: function(file) {
+    return <div key={file._id} onClick={this._onRemoveFile.bind(this, file)}>{file.name}</div>;
+  },
   _onRemoveFile: function(file) {
     var index = this.state.files.indexOf(file);
 
     if (index !== -1) {
-      this.state.files.splice(index, 1);
-
       this.setState({
-        files: this.state.files
+        files: React.addons.update(this.state.files, {
+          $splice: [
+            [index, 1]
+          ]
+        })
       });
     }
   },
@@ -134,82 +151,87 @@ var Transactions = React.createClass({
 
     this.props.context.executeAction(createTransaction, result.data);
   },
-  _onDragStart: function(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'none';
-    this.dragCount++;
+
+  _onDragEnterDocument: function() {
+    this._dragEnterDocumentCount++;
 
     if (!this.state.dragActive) {
       this.setState({
         dragActive: true
       });
-
-      this._updateDragIcon(e);
     }
   },
-  _onDragLeaveDocument: function(e) {
-    this.dragCount--;
+  _onDragLeaveDocument: function() {
+    this._dragEnterDocumentCount--;
 
-    if (this.dragCount > 0) {
-      return
+    if (this._dragEnterDocumentCount === 0) {
+      // user cancelled dragging
+      this._endDrag();
     }
-    //console.log(e.target)
-    this.setState({
-      dragActive: false
-    });
-  },
-  _onDragEnd: function() {
-    this.setState({
-      dragActive: false
-    })
   },
   _onDragOver: function(e) {
-    e.stopPropagation();
+    e.preventDefault(); // so we can drop file
+
+    // only place where we can update dropEffect
+    e.dataTransfer.dropEffect = this.state.dragInZone > 0 ? 'copy' : 'none';
+  },
+  _onDragEnter: function() {
+    this._dragEnterDropZoneCount++;
 
     if (!this.state.dragInZone) {
       this.setState({
         dragInZone: true
+      })
+    }
+  },
+  _onDragLeave: function() {
+    this._dragEnterDropZoneCount--;
+
+    if (this._dragEnterDropZoneCount === 0) {
+      this.setState({
+        dragInZone: false
       });
     }
   },
-  _onDragLeave: function(e) {
-    e.stopPropagation();
-
-    this.setState({
-      dragInZone: false,
-      dragFileName: 'choose file'
-    });
-    this._updateDragIcon(e);
-  },
   _onDrop: function(e) {
-    console.log('drop', e.target);
-    e.preventDefault();
-    //e.stopPropagation();
+    e.preventDefault(); // prevent browser default action
 
-    var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-
-    if (file) {
-      this.state.files.push(file);
-    }
-
-    this.setState({
-      dragInZone: false,
-      dragActive: false,
-      files: this.state.files
-    });
-    this._updateDragIcon(e);
+    this._endDrag(this.state.files);
+    this._addFiles(e.dataTransfer.files);
   },
   _onSelectFile: function() {
     this.refs.file.getDOMNode().click();
   },
-  _updateDragIcon: function(e) {
-    console.log(e, e.dataTransfer);
-    if (!e || !e.dataTransfer) {
-      return;
-    }
+  _onFilesSelected: function(e) {
+    this._addFiles(e.target.files);
+    e.target.value = null;
+  },
+  _endDrag: function() {
+    this._dragEnterDocumentCount = 0;
+    this._dragEnterDropZoneCount = 0;
 
-    console.log('niiger', this.state.dragInZone)
-    //e.dataTransfer.dropEffect = this.state.dragInZone ? 'copy' : 'none';
+    this.setState({
+      dragActive: false,
+      dragInZone: false
+    });
+  },
+  /**
+   *
+   * @param {FileList} files
+   * @private
+   */
+  _addFiles: function(files) {
+    var filesArray = Array.prototype.slice.call(files);
+
+    filesArray.forEach(function(file) {
+      file._id = this._nextFileId++;
+    }.bind(this));
+
+    this.setState({
+      files: React.addons.update(this.state.files, {
+        $push : filesArray
+      })
+    });
   }
 });
 
