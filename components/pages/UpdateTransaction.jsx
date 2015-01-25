@@ -74,7 +74,7 @@ var Transactions = React.createClass({
             <option value="cash">Cash</option>
           </Input>
           <Input label="Add files" labelClassName="col-xs-2" wrapperClassName="col-xs-10">
-            <FileSelector ref="fileSelector" />
+            <FileSelector ref="fileSelector" context={this.props.context} />
           </Input>
           <Input type="submit" value="Save" wrapperClassName="col-xs-offset-2 col-xs-10" />
         </form>
