@@ -28,7 +28,7 @@ var FileSelector = React.createClass({
     document.removeEventListener('dragover', this._onDragOver);
   },
   getFiles: function() {
-    return this.state.files;
+    return this.state.files.slice(0);
   },
   render: function() {
     var dropZoneClasses = cx({

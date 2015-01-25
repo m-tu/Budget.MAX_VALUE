@@ -74,7 +74,7 @@ var Transactions = React.createClass({
             <option value="cash">Cash</option>
           </Input>
           <Input label="Add files" labelClassName="col-xs-2" wrapperClassName="col-xs-10">
-            <FileSelector ref="files" />
+            <FileSelector ref="fileSelector" />
           </Input>
           <Input type="submit" value="Save" wrapperClassName="col-xs-offset-2 col-xs-10" />
         </form>
@@ -94,6 +94,16 @@ var Transactions = React.createClass({
 
       return;
     }
+
+    result.data.files = this.refs.fileSelector.getFiles().map(function(file) {
+      return {
+        data: file._dataUrl,
+        lastModified: file.lastModified,
+        name: file.name,
+        size: file.size,
+        type: file.type
+      };
+    });
 
     this.setState({
       hasErrors: false,

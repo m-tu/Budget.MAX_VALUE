@@ -23,6 +23,17 @@ module.exports = function(sequelize, DataTypes) {
     location: {
       type: DataTypes.STRING
     }
+  }, {
+    classMethods: {
+      associate: function(models) {
+        Transaction.hasMany(models.File, {
+          foreignKey: {
+            allowNull: false
+          },
+          onDelete: 'CASCADE'
+        });
+      }
+    }
   });
 
   return Transaction;

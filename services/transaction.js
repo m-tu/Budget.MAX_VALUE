@@ -32,20 +32,35 @@ module.exports = {
     var result = validateTransaction(body);
 
     if (result.hasErrors) {
-      callback({
+      return callback({
         message: result.errors
       });
-    } else {
-      result.data.UserId = user.id;
-      models.Transaction.create(result.data).complete(function(err, transaction) {
-        if (err) {
-          callback({
-            message: err
-          });
-        } else {
-          callback(null, transaction);
-        }
-      });
     }
+
+    result.data.UserId = user.id;
+    models.Transaction.create(result.data).then(function(transaction) {
+      var files = body.files;
+      if (!files || files.length === 0) {
+        return transaction;
+      }
+
+      return models.File.bulkCreate(files.map(function(file) {
+        return {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          data: new Buffer(file.data.split(',')[1], 'base64'),
+          TransactionId: transaction.id
+        };
+      })).then(function() {
+        return transaction;
+      });
+    }).then(function(transaction) {
+      callback(null, transaction);
+    }).catch(function(err) {
+      callback({
+        message: err
+      });
+    });
   }
 };

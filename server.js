@@ -11,12 +11,13 @@ var React = require('react');
 var app = require('./app');
 var HtmlComponent = React.createFactory(require('./components/Html.jsx'));
 var models = require('./models');
+var fs = require('fs');
 
 var server = express();
 server.set('state namespace', 'App');
 server.use('/public', express.static(__dirname + '/build'));
 server.use('/public', express.static(__dirname + '/assets'));
-server.use(bodyParser.json());
+server.use(bodyParser.json({limit: '20mb'}));
 server.use(session({
   store: new RedisStore(),
   secret: 'budget max valuez',
@@ -24,6 +25,21 @@ server.use(session({
   saveUninitialized: true
 }));
 
+// get user file
+server.get('/files/:id([0-9]+)', function(req, res, next) {
+  models.File.findOne({
+    where: {
+      id: req.params.id
+    }
+  }).then(function(file) {
+    if (file) {
+      res.writeHeader(200, {'Content-Type': file.type});
+      res.end(file.data, 'binary');
+    } else {
+      return new Error();
+    }
+  }).finally(next);
+});
 
 // Get access to the fetchr plugin instance
 var fetchrPlugin = app.getPlugin('FetchrPlugin');
@@ -101,6 +117,13 @@ models.sequelize.sync({force: true}).then(function() {
       method: 'debit',
       UserId: user.id
     }]);
+  }).then(function() {
+    return models.File.create({
+      name: 'image',
+      type: 'image/png',
+      data: fs.readFileSync('dev/logo.png'),
+      TransactionId: 1
+    });
   }).then(function() {
     // start server
     server.listen(port);
