@@ -20,7 +20,7 @@ var googleApiUtil = {
   },
   _load: function() {
     return new Promise(function(resolve) {
-      window.gapi.load('auth', resolve);
+      window.gapi.client.load('drive', 'v2', resolve);
       window.gapi.load('picker');
     }.bind(this))
       .then(function() {
@@ -54,11 +54,22 @@ var googleApiUtil = {
         .setOAuthToken(this._accessToken)
         .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
         .setDeveloperKey(API_KEY)
+        .setAppId(CLIENT_ID.split('-')[0])
         .setCallback(this._onFilesPicked.bind(this, resolve, reject))
         .build();
 
       picker.setVisible(true);
-    }.bind(this));
+    }.bind(this))
+      .then(function(files) {
+        return Promise.all(files.map(this._getFileMetaData.bind(this)));
+      }.bind(this));
+  },
+  _getFileMetaData: function(file) {
+    return new Promise(function(resolve, reject) {
+      return window.gapi.client.drive.files.get({fileId: file.id}).then(function(data) {
+        resolve(data.result);
+      }, reject);
+    });
   },
   _authorize: function(immediateMode) {
     return new Promise(function(resolve, reject) {
@@ -76,5 +87,8 @@ var googleApiUtil = {
     });
   }
 };
+
+if (typeof window != 'undefined')
+  window.mygapi = googleApiUtil;
 
 module.exports = googleApiUtil;

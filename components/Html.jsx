@@ -23,7 +23,7 @@ var Component = React.createClass({
         </body>
         <script dangerouslySetInnerHTML={{__html: this.props.state}}></script>
         <script src="/public/js/client.js" defer></script>
-        <script src="https://apis.google.com/js/api.js?onload=onGoogleApiLoaded" defer></script>
+        <script src="https://apis.google.com/js/client.js?onload=onGoogleApiLoaded" defer></script>
       </html>
     );
   }
