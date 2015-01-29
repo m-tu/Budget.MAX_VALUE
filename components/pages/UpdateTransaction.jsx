@@ -5,9 +5,12 @@ var TransactionStore = require('../../stores/TransactionStore');
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
 var Alert = ReactBootstrap.Alert;
+var Button = ReactBootstrap.Button;
 var createTransaction = require('../../actions/createTransaction');
 var validateTransaction = require('../../validators/transaction');
 var FileSelector = require('../FileSelector.jsx');
+var FileGallery = require('../FileGallery.jsx');
+var openGooglePicker = require('../../actions/openGooglePicker');
 
 var Transactions = React.createClass({
   // must use counter, because dragEnter of child might come before dragLeave of parent
@@ -73,13 +76,17 @@ var Transactions = React.createClass({
             <option value="bank">Bank</option>
             <option value="cash">Cash</option>
           </Input>
-          <Input label="Add files" labelClassName="col-xs-2" wrapperClassName="col-xs-10">
-            <FileSelector ref="fileSelector" context={this.props.context} />
+          <Input label="Files" labelClassName="col-xs-2" wrapperClassName="col-xs-10">
+            <Button onClick={this._onAddFilesFromGoogle}>Add from Google drive</Button>
+            <FileGallery context={this.props.context} />
           </Input>
-          <Input type="submit" value="Save" wrapperClassName="col-xs-offset-2 col-xs-10" />
+          <Input bsStyle="primary" type="submit" value="Save" wrapperClassName="col-xs-offset-2 col-xs-10" />
         </form>
       </div>
     );
+  },
+  _onAddFilesFromGoogle: function() {
+    this.props.context.executeAction(openGooglePicker);
   },
   _onSubmit: function(e) {
     e.preventDefault();

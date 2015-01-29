@@ -5,8 +5,11 @@ var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Glyphicon = ReactBootstrap.Glyphicon;
 var cx = React.addons.classSet;
-var loadGooglePickerAction = require('../actions/loadGooglePicker');
 
+/**
+ *
+ * @type {*|Function}
+ */
 var FileSelector = React.createClass({
   _dragEnterDocumentCount: 0,
   _dragEnterDropZoneCount: 0,
@@ -42,7 +45,6 @@ var FileSelector = React.createClass({
 
     return (
       <div>
-        <Button onClick={this._openGooglePicker}>Choose files from google drive</Button>
         <input ref="file" type="file" multiple className="hidden" onChange={this._onFilesSelected} />
         <div className={dropZoneClasses}
           onDragLeave={this._onDragLeave} onDragEnter={this._onDragEnter} onDrop={this._onDrop}
@@ -57,9 +59,6 @@ var FileSelector = React.createClass({
             {this._renderFilesList()}
       </div>
     );
-  },
-  _openGooglePicker: function() {
-    this.props.context.executeAction(loadGooglePickerAction, {open: true});
   },
   _renderFilesList: function() {
     return (

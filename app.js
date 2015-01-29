@@ -19,5 +19,6 @@ app.registerStore(require('./stores/ApplicationStore'));
 app.registerStore(require('./stores/UserStore'));
 app.registerStore(require('./stores/TransactionStore'));
 app.registerStore(require('./stores/AuthStore'));
+app.registerStore(require('./stores/CreateTransactionStore'));
 
 module.exports = app;
