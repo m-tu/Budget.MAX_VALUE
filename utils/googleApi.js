@@ -1,5 +1,4 @@
 'use strict';
-/*global window, gapi, google */
 
 var Promise = require('es6-promise').Promise;
 var API_KEY = 'AIzaSyBLxnn2Y2IqVWCj0vLtXOZzHlMaxB0Iw8E';
@@ -9,14 +8,17 @@ var googleApiUtil = {
   _loaded: false,
   _accessToken: null,
   openPicker: function() {
-    if (this._accessToken !== null) {
-      // TODO check if token is valid, it might time out
-      return this._openDialog();
-    } else if (this._loaded) {
-      return this._requestAccessToken().then(this._openDialog.bind(this));
-    } else {
-      return this._load().then(this._requestAccessToken.bind(this)).then(this._openDialog.bind(this));
+    var promise = Promise.resolve();
+
+    if (!this._loaded) {
+      promise = promise.then(this._load.bind(this));
     }
+    if (!this._accessToken) {
+      promise = promise.then(this._requestAccessToken.bind(this));
+    }
+
+    // TODO check if token is valid, it might time out
+    return promise.then(this._openDialog.bind(this));
   },
   _load: function() {
     return new Promise(function(resolve) {
@@ -74,9 +76,9 @@ var googleApiUtil = {
   _authorize: function(immediateMode) {
     return new Promise(function(resolve, reject) {
       window.gapi.auth.authorize({
-        'client_id': CLIENT_ID,
-        'scope': ['https://www.googleapis.com/auth/drive.file'],
-        'immediate': immediateMode
+        client_id: CLIENT_ID,
+        scope: ['https://www.googleapis.com/auth/drive.file'],
+        immediate: immediateMode
       }, function(result) {
         if (result && !result.error) {
           resolve(result.access_token);
@@ -87,8 +89,5 @@ var googleApiUtil = {
     });
   }
 };
-
-if (typeof window != 'undefined')
-  window.mygapi = googleApiUtil;
 
 module.exports = googleApiUtil;

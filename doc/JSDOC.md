@@ -1,0 +1,1 @@
+[gapi](https://github.com/borisyankov/DefinitelyTyped/blob/master/gapi/gapi.d.ts)
