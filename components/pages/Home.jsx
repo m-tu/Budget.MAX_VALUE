@@ -2,7 +2,7 @@
 
 var React = require('react/addons');
 var AuthStore = require('../../stores/AuthStore');
-var StoreMixin = require('fluxible-app').StoreMixin;
+var StoreMixin = require('fluxible').StoreMixin;
 var NavLink = require('flux-router-component').NavLink;
 
 var Home = React.createClass({

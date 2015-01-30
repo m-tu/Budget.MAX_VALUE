@@ -2,7 +2,7 @@
 
 var React = require('react');
 var RouterMixin = require('flux-router-component').RouterMixin;
-var StoreMixin = require('fluxible-app').StoreMixin;
+var StoreMixin = require('fluxible').StoreMixin;
 var UserStore = require('../stores/UserStore');
 var ApplicationStore = require('../stores/ApplicationStore');
 var Header = require('./Header.jsx');

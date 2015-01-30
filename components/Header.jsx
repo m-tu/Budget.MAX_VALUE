@@ -7,7 +7,7 @@ var Nav = ReactBootstrap.Nav;
 var NavItem = ReactBootstrap.NavItem;
 var NavLink = require('flux-router-component').NavLink;
 var AuthStore = require('../stores/AuthStore');
-var StoreMixin = require('fluxible-app').StoreMixin;
+var StoreMixin = require('fluxible').StoreMixin;
 var logout = require('../actions/logout');
 var RouterMixin = require('flux-router-component').RouterMixin;
 

@@ -1,5 +1,5 @@
 'use strict';
-var createStore = require('fluxible-app/utils/createStore');
+var createStore = require('fluxible/utils/createStore');
 
 module.exports = createStore({
   storeName: 'UserStore',

@@ -1,6 +1,7 @@
 'use strict';
-var createStore = require('fluxible-app/utils/createStore');
+var createStore = require('fluxible/utils/createStore');
 
+// TODO do we need this store?
 module.exports = createStore({
   storeName: 'ApiStore',
   handlers: {

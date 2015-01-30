@@ -2,7 +2,7 @@
 
 var React = require('react/addons');
 var CreateTransactionStore = require('../stores/CreateTransactionStore');
-var StoreMixin = require('fluxible-app').StoreMixin;
+var StoreMixin = require('fluxible').StoreMixin;
 
 var FileGallery = React.createClass({
   mixins: [StoreMixin],
