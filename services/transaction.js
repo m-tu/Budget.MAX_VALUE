@@ -15,7 +15,11 @@ module.exports = {
     models.Transaction.findAll({
       where: {
         UserId: user.id
-      }
+      },
+      include: [{
+        model: models.File,
+        as: 'files'
+      }]
     }).then(function(transactions) {
       callback(null, transactions);
     });

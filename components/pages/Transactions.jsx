@@ -3,6 +3,7 @@
 var React = require('react/addons');
 var TransactionStore = require('../../stores/TransactionStore');
 var StoreMixin = require('fluxible').StoreMixin;
+var FileGallery = require('../FileGallery.jsx');
 
 var Transactions = React.createClass({
   mixins: [StoreMixin],
@@ -29,6 +30,7 @@ var Transactions = React.createClass({
           <td>{transaction.location}</td>
           <td>{transaction.amount}</td>
           <td>{transaction.method}</td>
+          <td><FileGallery files={transaction.files} /></td>
         </tr>
       );
     });
@@ -43,6 +45,7 @@ var Transactions = React.createClass({
             <th>Location</th>
             <th>Amount</th>
             <th>Payment method</th>
+            <th>Files</th>
           </tr>
           {transactions}
         </tbody>

@@ -2,6 +2,8 @@
 
 var React = require('react/addons');
 var TransactionStore = require('../../stores/TransactionStore');
+var CreateTransactionStore = require('../../stores/CreateTransactionStore');
+var StoreMixin = require('fluxible').StoreMixin;
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
 var Alert = ReactBootstrap.Alert;
@@ -13,8 +15,16 @@ var FileGallery = require('../FileGallery.jsx');
 var openGooglePicker = require('../../actions/openGooglePicker');
 
 var Transactions = React.createClass({
+  mixins: [
+    React.addons.LinkedStateMixin,
+    StoreMixin
+  ],
+  statics: {
+    storeListeners: {
+      _onChange: [CreateTransactionStore]
+    }
+  },
   // must use counter, because dragEnter of child might come before dragLeave of parent
-  mixins: [React.addons.LinkedStateMixin],
   getInitialState: function() {
     // TEMP test data
     return {
@@ -27,9 +37,14 @@ var Transactions = React.createClass({
       hasErrors: false,
       dragActive: false,
       dragInZone: false,
-      files: [],
+      files: this.getStore(CreateTransactionStore).getFiles(),
       dragFileName: 'choose file'
     };
+  },
+  _onChange: function() {
+    this.setState({
+      files: this.getStore(CreateTransactionStore).getFiles()
+    });
   },
   componentDidMount: function() {
     document.addEventListener('dragenter', this._onDragEnterDocument);
@@ -40,6 +55,7 @@ var Transactions = React.createClass({
     document.removeEventListener('dragenter', this._onDragEnterDocument);
     document.removeEventListener('dragleave', this._onDragLeaveDocument);
     document.removeEventListener('dragover', this._onDragOver);
+    // TODO clear CreateTransactionStore
   },
   render: function() {
     var errorMessage = null;
@@ -78,7 +94,7 @@ var Transactions = React.createClass({
           </Input>
           <Input label="Files" labelClassName="col-xs-2" wrapperClassName="col-xs-10">
             <Button onClick={this._onAddFilesFromGoogle}>Add from Google drive</Button>
-            <FileGallery context={this.props.context} />
+            <FileGallery files={this.state.files} />
           </Input>
           <Input bsStyle="primary" type="submit" value="Save" wrapperClassName="col-xs-offset-2 col-xs-10" />
         </form>

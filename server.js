@@ -118,13 +118,6 @@ models.sequelize.sync({force: true}).then(function() {
       UserId: user.id
     }]);
   }).then(function() {
-    return models.File.create({
-      name: 'image',
-      type: 'image/png',
-      data: fs.readFileSync('dev/logo.png'),
-      TransactionId: 1
-    });
-  }).then(function() {
     // start server
     server.listen(port);
     console.log('Listening on port ' + port);

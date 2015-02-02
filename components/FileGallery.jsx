@@ -1,33 +1,20 @@
 'use strict';
 
 var React = require('react/addons');
-var CreateTransactionStore = require('../stores/CreateTransactionStore');
-var StoreMixin = require('fluxible').StoreMixin;
 var ReactBootstrap = require('react-bootstrap');
 var Glyphicon = ReactBootstrap.Glyphicon;
 var cx = React.addons.classSet;
 
 var FileGallery = React.createClass({
-  mixins: [StoreMixin],
-  statics: {
-    storeListeners: {
-      _onChange: [CreateTransactionStore]
-    }
-  },
-  getInitialState: function() {
-    return {
-      files: this.getStore(CreateTransactionStore).getFiles()
-    };
-  },
-  _onChange: function() {
-    this.setState(this.getInitialState());
+  propTypes: {
+    files: React.PropTypes.array
   },
   render: function() {
     return (
-      this.state.files.length === 0
+      this.props.files.length === 0
         ? null :
         <div className="fileList">
-          {this.state.files.map(this._renderFile)}
+          {this.props.files.map(this._renderFile)}
         </div>
     );
   },

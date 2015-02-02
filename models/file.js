@@ -2,10 +2,17 @@
 
 module.exports = function(sequelize, DataTypes) {
   var File = sequelize.define('File', {
-    name: DataTypes.STRING,
-    size: DataTypes.INTEGER,
-    type: DataTypes.STRING,
-    data: DataTypes.BLOB('medium')
+    googleDriveId: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    title: DataTypes.STRING,
+    thumbnailLink: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    embedLink: DataTypes.STRING,
+    imageUrl: DataTypes.STRING
   });
 
   return File;
