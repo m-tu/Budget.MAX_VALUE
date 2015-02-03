@@ -11,7 +11,6 @@ var React = require('react');
 var app = require('./app');
 var HtmlComponent = React.createFactory(require('./components/Html.jsx'));
 var models = require('./models');
-var fs = require('fs');
 
 var server = express();
 server.set('state namespace', 'App');
@@ -33,8 +32,8 @@ server.get('/files/:id([0-9]+)', function(req, res, next) {
     }
   }).then(function(file) {
     if (file) {
-      res.writeHeader(200, {'Content-Type': file.type});
-      res.end(file.data, 'binary');
+      res.writeHeader(200, {'Content-Type': file.thumbnailType});
+      res.end(file.thumbnailData, 'binary');
     } else {
       return new Error();
     }

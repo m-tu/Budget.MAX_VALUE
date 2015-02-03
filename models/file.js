@@ -7,10 +7,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     title: DataTypes.STRING,
-    thumbnailLink: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
+    thumbnailData: DataTypes.BLOB,
+    thumbnailType: DataTypes.STRING,
     embedLink: DataTypes.STRING,
     imageUrl: DataTypes.STRING
   });

@@ -38,6 +38,7 @@
     "node-jsx": "^0.12.4",
     "react": "^0.12.2",
     "react-bootstrap": "^0.13.3",
+    "request": "^2.53.0",
     "restify": "^2.8.5",
     "sequelize": "^2.0.0-rc8",
     "sequelize-cli": "^1.0.5",

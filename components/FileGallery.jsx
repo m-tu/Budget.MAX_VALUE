@@ -10,23 +10,25 @@ var FileGallery = React.createClass({
     files: React.PropTypes.array
   },
   render: function() {
+    var files = this.props.files || [];
+
     return (
-      this.props.files.length === 0
+      files.length === 0
         ? null :
         <div className="fileList">
-          {this.props.files.map(this._renderFile)}
+          {files.map(this._renderFile)}
         </div>
     );
   },
   _renderFile: function(file) {
-    var hasThumbnail = !!file.thumbnailLink;
+    var hasThumbnail = true;
     var viewUrl = file.embedLink || file.alternateLink; // TODO use webcontentLink and img tag
     var classes = cx({
       file: true,
       placeholder: !hasThumbnail
     });
 
-    var fileElement = hasThumbnail ? <img src={file.thumbnailLink} title={file.title} /> : file.title;
+    var fileElement = hasThumbnail ? <img src={file.thumbnailLink || '/files/' + file.id} title={file.title} /> : file.title;
 
     return (
       <div key={file.id} className={classes}>

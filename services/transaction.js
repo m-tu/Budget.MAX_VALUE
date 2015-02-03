@@ -2,6 +2,8 @@
 
 var models  = require('../models');
 var validateTransaction = require('../validators/transaction');
+var Promise = require('es6-promise').Promise;
+var request = require('request');
 
 module.exports = {
   name: 'transaction',
@@ -48,16 +50,34 @@ module.exports = {
         return transaction;
       }
 
-      return models.File.bulkCreate(files.map(function(file) {
-        return {
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          data: new Buffer(file.data.split(',')[1], 'base64'),
-          TransactionId: transaction.id
-        };
-      })).then(function() {
-        return transaction;
+      // download thumbnails
+      return Promise.all(files.map(function(file) {
+        return new Promise(function(resolve, reject) {
+          request.get(file.thumbnailLink, {encoding: 'binary'}, function(err, response, body) {
+            if (err) {
+              return reject(err);
+            }
+
+            file.mimeType = response.headers['content-type'];
+            file.data = new Buffer(body, 'binary');
+
+            resolve(file);
+          }).auth(null, null, true, body.accessToken);
+        });
+      })).then(function(files) {
+        return models.File.bulkCreate(files.map(function(file) {
+          return {
+            googleDriveId: file.id,
+            title: file.title,
+            thumbnailData: file.data,
+            thumbnailType: file.mimeType,
+            embedLink: file.embedLink,
+            imageUrl: file.imageUrl,
+            TransactionId: transaction.id
+          };
+        })).then(function() {
+          return transaction;
+        });
       });
     }).then(function(transaction) {
       callback(null, transaction);

@@ -87,6 +87,9 @@ var googleApiUtil = {
         }
       });
     });
+  },
+  getAccessToken: function() {
+    return this._accessToken;
   }
 };
 

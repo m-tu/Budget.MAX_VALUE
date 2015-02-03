@@ -118,13 +118,13 @@ var Transactions = React.createClass({
       return;
     }
 
-    result.data.files = this.refs.fileSelector.getFiles().map(function(file) {
+    result.data.files = this.state.files.map(function(file) {
       return {
-        data: file._dataUrl,
-        lastModified: file.lastModified,
-        name: file.name,
-        size: file.size,
-        type: file.type
+        id: file.id,
+        title: file.title,
+        embedLink: file.embedLink,
+        imageUrl: file.imageUrl,
+        thumbnailLink: file.thumbnailLink
       };
     });
 
