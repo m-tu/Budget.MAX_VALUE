@@ -4,6 +4,7 @@ var React = require('react/addons');
 var TransactionStore = require('../../stores/TransactionStore');
 var StoreMixin = require('fluxible').StoreMixin;
 var FileGallery = require('../FileGallery.jsx');
+var NavLink = require('flux-router-component').NavLink;
 
 var Transactions = React.createClass({
   mixins: [StoreMixin],
@@ -24,7 +25,11 @@ var Transactions = React.createClass({
     var transactions = this.state.transactions.map(function(transaction) {
       return (
         <tr key={transaction.id}>
-          <td>{transaction.id}</td>
+          <td>
+            <NavLink routeName="updateTransaction" navParams={{id: transaction.id}} context={this.props.context}>
+              {transaction.id}
+            </NavLink>
+          </td>
           <td>{transaction.date.toString()}</td>
           <td>{transaction.description}</td>
           <td>{transaction.location}</td>
@@ -33,7 +38,7 @@ var Transactions = React.createClass({
           <td><FileGallery files={transaction.files} /></td>
         </tr>
       );
-    });
+    }.bind(this));
 
     return (
       <table className="table table-striped table-bordered table-hover">

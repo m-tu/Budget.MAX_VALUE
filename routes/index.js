@@ -28,8 +28,14 @@ module.exports = {
       context.executeAction(showTransactions, null, done);
     }
   },
+  createTransaction: {
+    path: '/createTransaction',
+    method: 'get',
+    page: 'updateTransaction',
+    label: 'Create transaction'
+  },
   updateTransaction: {
-    path: '/updateTransaction',
+    path: '/updateTransaction/:id',
     method: 'get',
     page: 'updateTransaction',
     label: 'Create transaction'

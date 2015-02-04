@@ -3,6 +3,8 @@
 var React = require('react/addons');
 var TransactionStore = require('../../stores/TransactionStore');
 var CreateTransactionStore = require('../../stores/CreateTransactionStore');
+var ApplicationStore = require('../../stores/ApplicationStore');
+var TransactionStore = require('../../stores/TransactionStore');
 var StoreMixin = require('fluxible').StoreMixin;
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
@@ -15,21 +17,27 @@ var FileGallery = require('../FileGallery.jsx');
 var openGooglePicker = require('../../actions/openGooglePicker');
 
 var Transactions = React.createClass({
+  _mounted: false,
   mixins: [
     React.addons.LinkedStateMixin,
     StoreMixin
   ],
   statics: {
     storeListeners: {
-      _onChange: [CreateTransactionStore]
+      _onChange: [CreateTransactionStore],
+      _onRouteChange: [ApplicationStore]
     }
   },
   // must use counter, because dragEnter of child might come before dragLeave of parent
   getInitialState: function() {
+    var transactionId = this._getTransactionId();
+    var transaction = this.getStore(TransactionStore).getTransaction(transactionId) || {};
+
+    console.log(transactionId, transaction)
     // TEMP test data
     return {
       date: '1990-01-19T20:15',
-      description: 'kirjeldus',
+      description: transaction.description || 'kirjeldus',
       location: 'koht',
       amount: '-15.45',
       method: 'credit',
@@ -38,20 +46,34 @@ var Transactions = React.createClass({
       dragActive: false,
       dragInZone: false,
       files: this.getStore(CreateTransactionStore).getFiles(),
-      dragFileName: 'choose file'
+      dragFileName: 'choose file',
+      transactionId: transactionId
     };
+  },
+  _getTransactionId: function() {
+    return parseInt(this.getStore(ApplicationStore).getState().route.params.id, 10) || null;
   },
   _onChange: function() {
     this.setState({
       files: this.getStore(CreateTransactionStore).getFiles()
     });
   },
+  _onRouteChange: function() {
+    if (!this._mounted) {
+      return;
+    }
+    this.setState({
+      transactionId: this._getTransactionId()
+    });
+  },
   componentDidMount: function() {
+    this._mounted = true;
     document.addEventListener('dragenter', this._onDragEnterDocument);
     document.addEventListener('dragleave', this._onDragLeaveDocument);
     document.addEventListener('dragover', this._onDragOver);
   },
   componentWillUnmount: function() {
+    this._mounted = false;
     document.removeEventListener('dragenter', this._onDragEnterDocument);
     document.removeEventListener('dragleave', this._onDragLeaveDocument);
     document.removeEventListener('dragover', this._onDragOver);

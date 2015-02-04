@@ -29,6 +29,20 @@ module.exports = createStore({
   getAll: function () {
     return this.transactions;
   },
+  getTransaction: function(id) {
+    var i;
+    var transaction;
+
+    for (i = 0; i < this.transactions.length; i++) {
+      transaction = this.transactions[i];
+
+      if (transaction.id === id) {
+        return transaction;
+      }
+    }
+
+    return null;
+  },
   isPopulated: function() {
     return this.populated;
   },
