@@ -39,7 +39,7 @@ var Transactions = React.createClass({
       description: transaction.description || '',
       location: transaction.location || '',
       amount: transaction.amount || '',
-      method: transaction.method || '',
+      method: transaction.method || 'bank',
       errors: {},
       hasErrors: false,
       dragActive: false,
@@ -70,7 +70,7 @@ var Transactions = React.createClass({
       description: transaction.description || '',
       location: transaction.location || '',
       amount: transaction.amount || '',
-      method: transaction.method || '',
+      method: transaction.method || 'bank',
       transactionId: transactionId
     });
   },
@@ -147,6 +147,8 @@ var Transactions = React.createClass({
 
       return;
     }
+
+    result.data.transactionId = this.state.transactionId;
 
     result.data.files = this.state.files.map(function(file) {
       return {

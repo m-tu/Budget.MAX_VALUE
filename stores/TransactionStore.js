@@ -1,6 +1,7 @@
 'use strict';
 
 var createStore = require('fluxible/utils/createStore');
+var objectAssign = require('object-assign');
 
 module.exports = createStore({
   storeName: 'TransactionStore',
@@ -23,7 +24,14 @@ module.exports = createStore({
   _createTransaction: function(transaction) {
     transaction.date = new Date(transaction.date);
 
-    this.transactions.push(transaction);
+    var oldTransaction = this.getTransaction(transaction.id);
+
+    if (oldTransaction) {
+      objectAssign(oldTransaction, transaction);
+    } else {
+      this.transactions.push(transaction);
+    }
+
     this.emitChange();
   },
   getAll: function () {
