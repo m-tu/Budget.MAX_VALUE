@@ -38,7 +38,12 @@ module.exports = {
     path: '/updateTransaction/:id',
     method: 'get',
     page: 'updateTransaction',
-    label: 'Create transaction'
+    label: 'Create transaction',
+    action: function(context, payload, done) {
+      context.dispatch('CHANGE_ROUTE_SUCCESS', payload);
+      // TODO load only required transaction payload.params.id
+      context.executeAction(showTransactions, null, done);
+    }
   },
   register: {
     path: '/register',

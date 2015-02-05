@@ -33,14 +33,13 @@ var Transactions = React.createClass({
     var transactionId = this._getTransactionId();
     var transaction = this.getStore(TransactionStore).getTransaction(transactionId) || {};
 
-    console.log(transactionId, transaction)
     // TEMP test data
     return {
-      date: '1990-01-19T20:15',
-      description: transaction.description || 'kirjeldus',
-      location: 'koht',
-      amount: '-15.45',
-      method: 'credit',
+      date: transaction.date ? transaction.date.toISOString().slice(0, -1) : '',
+      description: transaction.description || '',
+      location: transaction.location || '',
+      amount: transaction.amount || '',
+      method: transaction.method || '',
       errors: {},
       hasErrors: false,
       dragActive: false,
@@ -62,8 +61,17 @@ var Transactions = React.createClass({
     if (!this._mounted) {
       return;
     }
+
+    var transactionId = this._getTransactionId();
+    var transaction = this.getStore(TransactionStore).getTransaction(transactionId) || {};
+
     this.setState({
-      transactionId: this._getTransactionId()
+      date: transaction.date ? transaction.date.toISOString().slice(0, -1) : '',
+      description: transaction.description || '',
+      location: transaction.location || '',
+      amount: transaction.amount || '',
+      method: transaction.method || '',
+      transactionId: transactionId
     });
   },
   componentDidMount: function() {
@@ -118,7 +126,7 @@ var Transactions = React.createClass({
             <Button onClick={this._onAddFilesFromGoogle}>Add from Google drive</Button>
             <FileGallery files={this.state.files} />
           </Input>
-          <Input bsStyle="primary" type="submit" value="Save" wrapperClassName="col-xs-offset-2 col-xs-10" />
+          <Input bsStyle="primary" type="submit" value={this.state.transactionId ? 'Update' : 'Create'} wrapperClassName="col-xs-offset-2 col-xs-10" />
         </form>
       </div>
     );

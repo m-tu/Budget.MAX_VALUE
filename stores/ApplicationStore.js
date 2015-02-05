@@ -33,10 +33,6 @@ var ApplicationStore = createStore({
   _openPage: function(pageName, route) {
     var page = this.pages[pageName];
 
-    if (pageName === this.getCurrentPageName()) {
-      return;
-    }
-
     this.currentPageName = pageName;
     this.currentPage = page;
     this.currentRoute = route;
