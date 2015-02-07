@@ -13,6 +13,7 @@ var Button = ReactBootstrap.Button;
 var createTransaction = require('../../actions/createTransaction');
 var validateTransaction = require('../../validators/transaction');
 var FileSelector = require('../FileSelector.jsx');
+var TransactionItemEditor = require('../TransactionItemEditor.jsx');
 var FileGallery = require('../FileGallery.jsx');
 var openGooglePicker = require('../../actions/openGooglePicker');
 
@@ -126,8 +127,9 @@ var Transactions = React.createClass({
             <Button onClick={this._onAddFilesFromGoogle}>Add from Google drive</Button>
             <FileGallery files={this.state.files} />
           </Input>
-          <Input bsStyle="primary" type="submit" value={this.state.transactionId ? 'Update' : 'Create'} wrapperClassName="col-xs-offset-2 col-xs-10" />
         </form>
+        <TransactionItemEditor />
+        <Input bsStyle="primary" type="submit" onClick={this._onSubmit} value={this.state.transactionId ? 'Update' : 'Create'} wrapperClassName="col-xs-offset-2 col-xs-10" />
       </div>
     );
   },
