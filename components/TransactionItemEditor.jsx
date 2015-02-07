@@ -11,8 +11,8 @@ var TransactionItemEditor = React.createClass({
   getInitialState: function() {
     return {
       items: [],
-      newName: 'test',
-      newAmount: '48.45',
+      newName: '',
+      newAmount: '',
       nameError: false,
       amountError: false,
       sum: 0
