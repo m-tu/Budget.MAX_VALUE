@@ -4,11 +4,18 @@ var React = require('react/addons');
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
 var Table = ReactBootstrap.Table;
+var Button = ReactBootstrap.Button;
 
 var TransactionItemEditor = React.createClass({
+  mixins: [React.addons.LinkedStateMixin],
   getInitialState: function() {
     return {
-      items: []
+      items: [],
+      newName: 'test',
+      newAmount: '48.45',
+      nameError: false,
+      amountError: false,
+      sum: 0
     }
   },
   render: function() {
@@ -25,6 +32,7 @@ var TransactionItemEditor = React.createClass({
           <tbody>
             {this._renderForm()}
             {this.state.items.map(this._renderItem)}
+            {this._renderTotal()}
           </tbody>
         </Table>
       </div>
@@ -33,15 +41,103 @@ var TransactionItemEditor = React.createClass({
   _renderForm: function() {
     return (
       <tr>
-        <td><Input type="text" placeholder="Name" /></td>
-        <td><Input type="number" placeholder="Amount" /></td>
-        <td><Input type="button"  value="Add" onSubmit={this._onSubmit} /></td>
+        <td><Input type="text" placeholder="Name" ref="name" onKeyUp={this._onKeyUp} bsStyle={this.state.nameError ? 'error' : null} valueLink={this.linkState('newName')} /></td>
+        <td><Input type="number" placeholder="Amount" ref="amount" onKeyUp={this._onKeyUp} bsStyle={this.state.amountError ? 'error' : null} valueLink={this.linkState('newAmount')} /></td>
+        <td><Input type="button"  value="Add" onClick={this._onSubmit} /></td>
       </tr>
     );
 
   },
-  _renderItem: function() {
-    return null
+  _renderItem: function(item) {
+    return (
+      <tr>
+        <td>{item.name}</td>
+        <td>{item.amount}</td>
+        <td><Button bsStyle="danger" bsSize="xsmall" onClick={this._onRemove.bind(this, item)}>Remove</Button></td>
+      </tr>
+    );
+  },
+  _onRemove: function(item) {
+    var index = this.state.items.indexOf(item);
+
+    if (item === -1) {
+      return;
+    }
+
+    this.setState({
+      sum: this._round(this.state.sum - item.amount),
+      items: React.addons.update(this.state.items, {
+        $splice: [
+          [index, 1]
+        ]
+      })
+    });
+
+    this._focus();
+  },
+  _renderTotal: function() {
+    return (
+      <tr>
+        <th>{this.state.items.length} items</th>
+        <th>{this.state.sum}</th>
+        <th></th>
+      </tr>
+    );
+  },
+  _onSubmit: function() {
+    if (!this._validate()) {
+      return;
+    }
+
+    var amount = this._round(parseFloat(this.state.newAmount));
+
+    this.setState({
+      items: React.addons.update(this.state.items, {
+        $unshift: [{
+          name: this.state.newName,
+          amount: amount
+        }]
+      }),
+      newName: '',
+      newAmount: '',
+      sum: this._round(this.state.sum + amount)
+    });
+
+    this._focus();
+  },
+  _validate: function() {
+    var nameError = false;
+    var amountError = false;
+
+    if (isNaN(parseFloat(this.state.newAmount))) {
+      amountError = true;
+      this._focus('amount');
+    }
+
+    if (this.state.newName === '') {
+      nameError = true;
+      this._focus('name');
+    }
+
+    this.setState({
+      nameError: nameError,
+      amountError: amountError
+    });
+
+    return !nameError && !amountError;
+  },
+  _onKeyUp: function(e) {
+    if (e.keyCode === 13) {
+      this._onSubmit();
+    }
+  },
+  _focus: function(ref) {
+    ref = ref || 'name';
+
+    this.refs[ref].getDOMNode().firstChild.focus();
+  },
+  _round: function(amount) {
+    return Math.round(amount * 100) / 100;
   }
 });
 
