@@ -6,6 +6,10 @@ var Input = ReactBootstrap.Input;
 var Table = ReactBootstrap.Table;
 var Button = ReactBootstrap.Button;
 
+var ENTER_KEY = 13;
+var ESCAPE_KEY = 27;
+var id = 0;
+
 var TransactionItemEditor = React.createClass({
   mixins: [React.addons.LinkedStateMixin],
   getInitialState: function() {
@@ -15,7 +19,8 @@ var TransactionItemEditor = React.createClass({
       newAmount: '',
       nameError: false,
       amountError: false,
-      sum: 0
+      sum: 0,
+      editing: null
     }
   },
   render: function() {
@@ -48,14 +53,41 @@ var TransactionItemEditor = React.createClass({
     );
 
   },
-  _renderItem: function(item) {
+  _renderItem: function(item, index) {
     return (
       <tr>
-        <td>{item.name}</td>
-        <td>{item.amount}</td>
+        <td onDoubleClick={this._handleEditName.bind(this, item, 'name')}>
+          {(this.state.editing === item.id && this.state.editType === 'name'
+            ? <Input type="text" placeholder="Name" ref={'name' + item.id} onBlur={this._handleSave} defaultValue={item.name} />
+            : item.name)}
+        </td>
+        <td onDoubleClick={this._handleEditName.bind(this, item, 'amount')}>
+          {(this.state.editing === item.id && this.state.editType === 'amount'
+            ? <Input type="text" placeholder="Amount" ref={'amount' + item.id} onBlur={this._handleSave} defaultValue={item.amount} />
+            : item.amount)}
+        </td>
         <td><Button bsStyle="danger" bsSize="xsmall" onClick={this._onRemove.bind(this, item)}>Remove</Button></td>
       </tr>
     );
+  },
+  _handleEditName: function(item, name) {
+
+    this.setState({
+      editing: item.id,
+      editType: name
+    });
+
+    window.setTimeout(function() {
+      var node = this.refs[name + item.id].getDOMNode().firstChild;
+      node.focus();
+      //console.log(node)
+      node.setSelectionRange(0, node.value.length);
+    }.bind(this),100)
+  },
+  _handleSave: function() {
+    this.setState({
+      editing: null
+    });
   },
   _onRemove: function(item) {
     var index = this.state.items.indexOf(item);
@@ -94,6 +126,7 @@ var TransactionItemEditor = React.createClass({
     this.setState({
       items: React.addons.update(this.state.items, {
         $unshift: [{
+          id: id++,
           name: this.state.newName,
           amount: amount
         }]
@@ -127,7 +160,7 @@ var TransactionItemEditor = React.createClass({
     return !nameError && !amountError;
   },
   _onKeyUp: function(e) {
-    if (e.keyCode === 13) {
+    if (e.which === ENTER_KEY) {
       this._onSubmit();
     }
   },
