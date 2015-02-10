@@ -92,6 +92,14 @@ server.use(function (req, res, next) {
   });
 });
 
+if (server.get('env') === 'development') {
+  // run livereload and webpack dev server
+  // use webpack dev server for serving js files
+  server.use('/js', function (req, res) {
+    res.redirect('http://localhost:3006/public/js' + req.path);
+  });
+}
+
 var port = process.env.PORT || 3005;
 
 models.sequelize.sync({force: true}).then(function() {

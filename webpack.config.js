@@ -6,20 +6,30 @@
 var webpack = require('webpack');
 
 module.exports = {
-    resolve: {
-        extensions: ['', '.js', '.jsx']
-    },
-    entry: './client.js',
-    output: {
-        path: __dirname+'/build/js',
-        filename: 'client.js'
-    },
-    module: {
-        loaders: [
-            { test: /\.jsx$/, loader: 'jsx-loader' }
-        ]
-    },
-    plugins: [
-        // new webpack.optimize.UglifyJsPlugin()
+  watch: true,
+  resolve: {
+    extensions: ['', '.js', '.jsx']
+  },
+  entry: [
+    'webpack-dev-server/client?http://localhost:3006',
+    'webpack/hot/dev-server',
+    './client.js'
+  ],
+  module: {
+    loaders: [
+      { test: /\.jsx$/, loaders: ['react-hot', 'jsx-loader'] }
     ]
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  output: {
+    // Where to put build results when doing production builds:
+    // (Server doesn't write to the disk, but this is required.)
+    path: __dirname + '/build/js/',
+
+    // Filename to use in HTML
+    filename: 'client.js',
+    publicPath: 'http://localhost:3005/build/js'
+  }
 };
