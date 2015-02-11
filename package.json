@@ -48,6 +48,7 @@
   "devDependencies": {
     "gulp": "^3.8.11",
     "gulp-nodemon": "^1.0.5",
+    "gulp-util": "^3.0.3",
     "gulp-webpack": "^1.2.0",
     "gulp-webpack-build": "^0.3.2",
     "jsx-loader": "^0.12.0",

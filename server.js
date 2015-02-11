@@ -14,7 +14,7 @@ var models = require('./models');
 
 var server = express();
 server.set('state namespace', 'App');
-server.use('/public', express.static(__dirname + '/build'));
+//server.use('/public', express.static(__dirname + '/build'));
 server.use('/public', express.static(__dirname + '/assets'));
 server.use(bodyParser.json({limit: '20mb'}));
 server.use(session({
@@ -95,7 +95,7 @@ server.use(function (req, res, next) {
 if (server.get('env') === 'development') {
   // run livereload and webpack dev server
   // use webpack dev server for serving js files
-  server.use('/js', function (req, res) {
+  server.use('/public/js', function (req, res) {
     res.redirect('http://localhost:3006/public/js' + req.path);
   });
 }
