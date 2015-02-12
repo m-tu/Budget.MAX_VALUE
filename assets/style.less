@@ -1,0 +1,73 @@
+footer {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e5e5;
+  font-size: 90%;
+}
+
+.dropzone {
+  /*display: flex;*/
+  height: 50px;
+}
+
+.dropzone p {
+
+}
+
+.dropzone.visible {
+  display: flex;
+  padding: 5px;
+  border: 4px #cecece dashed;
+  align-items: center;
+  justify-content: center;
+  font-size: 120%;
+}
+
+.dropzone.visible button {
+  display: none;
+}
+
+.dropzone.active {
+  border-color: #355969;
+}
+
+.fileList {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.file {
+  position: relative;
+  height: 75px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.file img {
+  height: 100%;
+}
+
+.file .glyphicon {
+  display: none;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  background: white;
+}
+
+.file .glyphicon:hover {
+  cursor: pointer;
+}
+
+.file:hover .glyphicon {
+  display: inline-block;
+}
+
+.file.placeholder {
+  width: 75px;
+  word-break: break-all;
+  border: 2px solid gray;
+  padding: 1px;
+  font-size: 85%;
+}

@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var path = require('path');
 
 module.exports = {
   // Entry point for static analyzer:
@@ -11,17 +12,17 @@ module.exports = {
   output: {
     // Where to put build results when doing production builds:
     // (Server doesn't write to the disk, but this is required.)
-    path: __dirname,
+    path: path.join(__dirname, 'build'),
 
     // Filename to use in HTML
-    filename: 'client.js',
+    filename: '[name].js',
 
     // Path to use in HTML
-    publicPath: 'http://localhost:3006/public/js/'
+    publicPath: 'http://localhost:3006/public/'
   },
-
   plugins: [
     new webpack.HotModuleReplacementPlugin()
+    //, new ExtractTextPlugin('[name].css') // for production build
   ],
 
   resolve: {
@@ -35,9 +36,13 @@ module.exports = {
       {
         test: /\.jsx$/,
         loaders: ['react-hot', 'jsx']
+      }, {
+        test: /\.less$/,
+        //loader: ExtractTextPlugin.extract('style-loader', 'css-loader') // for production build
+        loader: 'style-loader!css-loader'
       }
+
     ]
   },
-  devtool: "#inline-source-map",
-  externals: { }
+  devtool: '#inline-source-map'
 };

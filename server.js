@@ -13,9 +13,17 @@ var HtmlComponent = React.createFactory(require('./components/Html.jsx'));
 var models = require('./models');
 
 var server = express();
+var isDevEnv = server.get('env') === 'development';
 server.set('state namespace', 'App');
-//server.use('/public', express.static(__dirname + '/build'));
-server.use('/public', express.static(__dirname + '/assets'));
+
+if (isDevEnv) {
+  // use webpack dev server for serving static files
+  server.use('/public', function (req, res) {
+    res.redirect('http://localhost:3006/public' + req.path);
+  });
+}
+
+server.use('/public', express.static(__dirname + '/build'));
 server.use(bodyParser.json({limit: '20mb'}));
 server.use(session({
   store: new RedisStore(),
@@ -80,6 +88,7 @@ server.use(function (req, res, next) {
 
     var AppComponent = app.getAppComponent();
     var html = React.renderToStaticMarkup(HtmlComponent({
+      isDevEnv: isDevEnv,
       state: exposed,
       //context: context.getComponentContext(),
       markup: React.renderToString(AppComponent({
@@ -91,14 +100,6 @@ server.use(function (req, res, next) {
     res.end();
   });
 });
-
-if (server.get('env') === 'development') {
-  // run livereload and webpack dev server
-  // use webpack dev server for serving js files
-  server.use('/public/js', function (req, res) {
-    res.redirect('http://localhost:3006/public/js' + req.path);
-  });
-}
 
 var port = process.env.PORT || 3005;
 

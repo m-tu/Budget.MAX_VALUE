@@ -12,7 +12,6 @@ gulp.task('dev', function() {
   var server = new WebpackDevServer(webpack(webpackConfig), {
     publicPath: webpackConfig.output.publicPath,
     contentBase: 'http://localhost:3005',
-    noInfo: true,
     hot: true,
     headers: {
       "Access-Control-Allow-Origin": "*"
