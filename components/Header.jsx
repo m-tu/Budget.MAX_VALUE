@@ -4,15 +4,14 @@ var React = require('react');
 var ReactBootstrap = require('react-bootstrap');
 var Navbar = ReactBootstrap.Navbar;
 var Nav = ReactBootstrap.Nav;
-var NavItem = ReactBootstrap.NavItem;
-var NavLink = require('flux-router-component').NavLink;
 var AuthStore = require('../stores/AuthStore');
 var StoreMixin = require('fluxible').StoreMixin;
 var logout = require('../actions/logout');
-var RouterMixin = require('flux-router-component').RouterMixin;
+var ReactRouterBootstrap = require('react-router-bootstrap');
+var NavItemLink = ReactRouterBootstrap.NavItemLink;
 
 var Header = React.createClass({
-  mixins: [StoreMixin, RouterMixin],
+  mixins: [StoreMixin],
   statics: {
     storeListeners: {
       _onChange: [AuthStore]
@@ -28,19 +27,13 @@ var Header = React.createClass({
   },
   render: function() {
     var menus = this.state.isLoggedIn ? ['home', 'transactions', 'createTransaction'] : ['home', 'login', 'register'];
-    var selected = this.props.selected;
-    var links = this.props.links;
-    var context = this.props.context;
     var linksHTML = menus.map(function(name) {
-      var link = links[name],
-          className = selected === name ? 'active' : '';
+      var label = name.slice(0, 1).toUpperCase() + name.slice(1);
 
-        return (
-          <li key={link.path} className={className}>
-            <NavLink routeName={name} context={context}>{link.label}</NavLink>
-          </li>
-        );
-      });
+      return (
+        <NavItemLink key={name} to={name}>{label}</NavItemLink>
+      );
+    });
 
     if (this.state.isLoggedIn) {
       linksHTML.push(

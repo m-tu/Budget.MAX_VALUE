@@ -63,12 +63,18 @@ var Router = require('react-router');
 var getRoutes = require('./routes.jsx');
 
 // Every other request gets the app bootstrap
-server.use(function (req, res, next) {
+server.use(function (req, res) {
   var path = req.url;
 
   var context = app.createContext({
     req: req // The fetchr plugin depends on this
   });
+
+  // Initialize store states: maybe come up with better solution?
+  var actionContext = context.getActionContext();
+  if (req.session.user) {
+    actionContext.dispatch('LOGGED_IN', req.session.user);
+  }
 
   var router = Router.create({
     routes: getRoutes(),
@@ -87,72 +93,18 @@ server.use(function (req, res, next) {
   router.run(function(Handler, state) {
     var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
 
-    var Factory = React.createFactory(Handler);
     var html = React.renderToStaticMarkup(HtmlComponent({
       isDevEnv: isDevEnv,
       state: exposed,
       //context: context.getComponentContext(),
-      markup: React.renderToString(React.createElement(Handler))
+      markup: React.renderToString(React.createElement(Handler, {
+        context: context.getComponentContext()
+      }))
     }));
 
     res.write(html);
     res.end();
-
-
-    //if (state.routes[0].name === 'not-found') {
-    //  var html = React.renderToStaticMarkup(<Handler/>);
-    //  cb({notFound: true}, html);
-    //  return;
-    //}
-    //fetchData(token, state).then((data) => {
-    //  var clientHandoff = { token, data: cache.clean(token) };
-    //  var html = React.renderToString(<Handler data={data} />);
-    //  var output = indexHTML.
-    //    replace(htmlRegex, html).
-    //    replace(dataRegex, JSON.stringify(clientHandoff));
-    //  cb(null, output, token);
-    //});
   });
-
-  ////return;
-  //var context = app.createContext({
-  //  req: req // The fetchr plugin depends on this
-  //});
-  //
-  //var actionContext = context.getActionContext();
-  //
-  //// Initialize store states: maybe come up with better solution?
-  //if (req.session.user) {
-  //  actionContext.dispatch('LOGGED_IN', req.session.user);
-  //}
-  //
-  //actionContext.executeAction(navigateAction, {
-  //  url: req.url
-  //}, function (err) {
-  //  if (err) {
-  //    if (err.status && err.status === 404) {
-  //      return next();
-  //    }
-  //    else {
-  //      return next(err);
-  //    }
-  //  }
-  //
-  //  var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
-  //
-  //  var AppComponent = app.getAppComponent();
-  //  var html = React.renderToStaticMarkup(HtmlComponent({
-  //    isDevEnv: isDevEnv,
-  //    state: exposed,
-  //    //context: context.getComponentContext(),
-  //    markup: React.renderToString(AppComponent({
-  //      context: context.getComponentContext()
-  //    }))
-  //  }));
-  //
-  //  res.write(html);
-  //  res.end();
-  //});
 });
 
 var port = process.env.PORT || 3005;
