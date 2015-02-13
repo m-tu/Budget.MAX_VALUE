@@ -59,46 +59,100 @@ fetchrPlugin.registerService(require('./services/transaction'));
 // Set up the fetchr middleware
 server.use(fetchrPlugin.getXhrPath(), fetchrPlugin.getMiddleware());
 
+var Router = require('react-router');
+var getRoutes = require('./routes.jsx');
+
 // Every other request gets the app bootstrap
 server.use(function (req, res, next) {
+  var path = req.url;
+
   var context = app.createContext({
     req: req // The fetchr plugin depends on this
   });
 
-  var actionContext = context.getActionContext();
-
-  // Initialize store states: maybe come up with better solution?
-  if (req.session.user) {
-    actionContext.dispatch('LOGGED_IN', req.session.user);
-  }
-
-  actionContext.executeAction(navigateAction, {
-    url: req.url
-  }, function (err) {
-    if (err) {
-      if (err.status && err.status === 404) {
-        return next();
-      }
-      else {
-        return next(err);
-      }
+  var router = Router.create({
+    routes: getRoutes(),
+    location: path,
+    onAbort: function (redirect) {
+      // TODO redirect
+      res.end();
+      //cb({redirect});
+    },
+    onError: function (err) {
+      console.log('Routing Error');
+      console.log(err);
     }
+  });
 
+  router.run(function(Handler, state) {
     var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
 
-    var AppComponent = app.getAppComponent();
+    var Factory = React.createFactory(Handler);
     var html = React.renderToStaticMarkup(HtmlComponent({
       isDevEnv: isDevEnv,
       state: exposed,
       //context: context.getComponentContext(),
-      markup: React.renderToString(AppComponent({
-        context: context.getComponentContext()
-      }))
+      markup: React.renderToString(React.createElement(Handler))
     }));
 
     res.write(html);
     res.end();
+
+
+    //if (state.routes[0].name === 'not-found') {
+    //  var html = React.renderToStaticMarkup(<Handler/>);
+    //  cb({notFound: true}, html);
+    //  return;
+    //}
+    //fetchData(token, state).then((data) => {
+    //  var clientHandoff = { token, data: cache.clean(token) };
+    //  var html = React.renderToString(<Handler data={data} />);
+    //  var output = indexHTML.
+    //    replace(htmlRegex, html).
+    //    replace(dataRegex, JSON.stringify(clientHandoff));
+    //  cb(null, output, token);
+    //});
   });
+
+  ////return;
+  //var context = app.createContext({
+  //  req: req // The fetchr plugin depends on this
+  //});
+  //
+  //var actionContext = context.getActionContext();
+  //
+  //// Initialize store states: maybe come up with better solution?
+  //if (req.session.user) {
+  //  actionContext.dispatch('LOGGED_IN', req.session.user);
+  //}
+  //
+  //actionContext.executeAction(navigateAction, {
+  //  url: req.url
+  //}, function (err) {
+  //  if (err) {
+  //    if (err.status && err.status === 404) {
+  //      return next();
+  //    }
+  //    else {
+  //      return next(err);
+  //    }
+  //  }
+  //
+  //  var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
+  //
+  //  var AppComponent = app.getAppComponent();
+  //  var html = React.renderToStaticMarkup(HtmlComponent({
+  //    isDevEnv: isDevEnv,
+  //    state: exposed,
+  //    //context: context.getComponentContext(),
+  //    markup: React.renderToString(AppComponent({
+  //      context: context.getComponentContext()
+  //    }))
+  //  }));
+  //
+  //  res.write(html);
+  //  res.end();
+  //});
 });
 
 var port = process.env.PORT || 3005;

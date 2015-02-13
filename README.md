@@ -9,4 +9,4 @@ Run/Develop
 * install MySQL and create table `budget_dev`
 * install dependencies: `npm install`
 * install gulp globally: `npm install -g gulp`
-* `gulp dev`
+* `gulp`

@@ -24,3 +24,5 @@ gulp.task('dev', function() {
     nodemon();
   });
 });
+
+gulp.task('default', ['dev']);
