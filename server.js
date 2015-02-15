@@ -6,7 +6,6 @@ var serialize = require('serialize-javascript');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
-var navigateAction = require('flux-router-component').navigateAction;
 var React = require('react');
 var app = require('./app');
 var HtmlComponent = React.createFactory(require('./components/Html.jsx'));
@@ -25,12 +24,32 @@ if (isDevEnv) {
 
 server.use('/public', express.static(__dirname + '/build'));
 server.use(bodyParser.json({limit: '20mb'}));
-server.use(session({
-  store: new RedisStore(),
+
+// session
+
+var sessionStore = new RedisStore();
+sessionStore.client.on('error', function(err) {
+  console.warn('REDIS error', err);
+  console.log('Switching to memory store');
+  sessionStore.client.end();
+
+  sessionMiddleware = session({
+    secret: 'budget max valuez',
+    resave: false,
+    saveUninitialized: true
+  });
+});
+var sessionMiddleware = session({
+  store: sessionStore,
   secret: 'budget max valuez',
   resave: false,
   saveUninitialized: true
-}));
+});
+
+server.use(function(req, res, next) {
+  sessionMiddleware(req, res, next);
+});
+
 
 // get user file
 server.get('/files/:id([0-9]+)', function(req, res, next) {
@@ -90,7 +109,7 @@ server.use(function (req, res) {
     }
   });
 
-  router.run(function(Handler, state) {
+  router.run(function(Handler) {
     var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
 
     var html = React.renderToStaticMarkup(HtmlComponent({
