@@ -28,7 +28,6 @@
     "flux-router-component": "^0.5.6",
     "fluxible": "^0.1.5",
     "fluxible-plugin-fetchr": "^0.2.2",
-    "fluxible-plugin-routr": "^0.3.0",
     "mysql": "^2.5.4",
     "node-jsx": "^0.12.4",
     "object-assign": "^2.0.0",
