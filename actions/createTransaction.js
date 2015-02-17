@@ -1,9 +1,8 @@
 'use strict';
 
-var navigateAction = require('flux-router-component').navigateAction;
 var googleApiUtil = require('../utils/googleApi');
 
-module.exports = function(context, transaction, done) {
+module.exports = function(context, transaction) {
   context.dispatch('CREATE_TRANSACTION_START', transaction);
   transaction.accessToken = googleApiUtil.getAccessToken();
 
@@ -14,8 +13,8 @@ module.exports = function(context, transaction, done) {
 
     context.dispatch('CREATE_TRANSACTION_DONE', newTransaction);
 
-    context.executeAction(navigateAction, {
-      url: '/transactions'
-    }, done);
+    //context.executeAction(navigateAction, {
+    //  url: '/transactions'
+    //}, done);
   });
 };

@@ -79,43 +79,27 @@ fetchrPlugin.registerService(require('./services/transaction'));
 server.use(fetchrPlugin.getXhrPath(), fetchrPlugin.getMiddleware());
 
 var Router = require('react-router');
-var getRoutes = require('./routes.jsx');
+var routes = require('./routes.jsx')();
 
 // Every other request gets the app bootstrap
 server.use(function (req, res) {
-  var path = req.url;
-
   var context = app.createContext({
     req: req // The fetchr plugin depends on this
   });
 
   // Initialize store states: maybe come up with better solution?
   var actionContext = context.getActionContext();
+
   if (req.session.user) {
     actionContext.dispatch('LOGGED_IN', req.session.user);
   }
 
-  var router = Router.create({
-    routes: getRoutes(),
-    location: path,
-    onAbort: function (redirect) {
-      // TODO redirect
-      res.end();
-      //cb({redirect});
-    },
-    onError: function (err) {
-      console.log('Routing Error');
-      console.log(err);
-    }
-  });
-
-  router.run(function(Handler) {
+  Router.run(routes, req.url, function(Handler) {
     var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
 
     var html = React.renderToStaticMarkup(HtmlComponent({
       isDevEnv: isDevEnv,
       state: exposed,
-      //context: context.getComponentContext(),
       markup: React.renderToString(React.createElement(Handler, {
         context: context.getComponentContext()
       }))

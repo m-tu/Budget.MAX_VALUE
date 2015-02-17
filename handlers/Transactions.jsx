@@ -1,10 +1,13 @@
 'use strict';
 
 var React = require('react/addons');
+var Router = require('react-router');
 var TransactionStore = require('../stores/TransactionStore');
 var StoreMixin = require('fluxible').StoreMixin;
 var FileGallery = require('../components/FileGallery.jsx');
-var NavLink = require('flux-router-component').NavLink;
+var showTransactions = require('../actions/showTransactions');
+
+var Link = Router.Link;
 
 var Transactions = React.createClass({
   mixins: [StoreMixin],
@@ -18,6 +21,9 @@ var Transactions = React.createClass({
       transactions: this.getStore(TransactionStore).getAll()
     };
   },
+  componentDidMount: function() {
+    this.props.context.executeAction(showTransactions);
+  },
   _onChange: function() {
     this.setState(this.getInitialState());
   },
@@ -26,9 +32,9 @@ var Transactions = React.createClass({
       return (
         <tr key={transaction.id}>
           <td>
-            <NavLink routeName="updateTransaction" navParams={{id: transaction.id}} context={this.props.context}>
+            <Link to="updateTransaction" params={{id: transaction.id}}>
               {transaction.id}
-            </NavLink>
+            </Link>
           </td>
           <td>{transaction.date.toString()}</td>
           <td>{transaction.description}</td>

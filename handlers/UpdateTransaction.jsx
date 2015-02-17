@@ -16,7 +16,6 @@ var Input = ReactBootstrap.Input;
 var Alert = ReactBootstrap.Alert;
 var Button = ReactBootstrap.Button;
 
-var FileSelector = require('../components/FileSelector.jsx');
 var TransactionItemEditor = require('../components/TransactionItemEditor.jsx');
 var FileGallery = require('../components/FileGallery.jsx');
 
@@ -55,6 +54,9 @@ var Transactions = React.createClass({
       dragFileName: 'choose file',
       transactionId: transactionId
     };
+  },
+  componentWillReceiveProps: function() {
+    this.setState(this.getInitialState());
   },
   _getTransactionId: function() {
     return parseInt(this.getParams().id) || null;

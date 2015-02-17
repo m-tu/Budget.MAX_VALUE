@@ -1,11 +1,10 @@
 'use strict';
+
 var React = require('react');
 var FluxibleApp = require('fluxible');
 var fetchrPlugin = require('fluxible-plugin-fetchr');
 
-var app = new FluxibleApp({
-  appComponent: React.createFactory(require('./components/Main.jsx'))
-});
+var app = new FluxibleApp();
 
 app.plug(fetchrPlugin({
   xhrPath: '/api'
