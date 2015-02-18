@@ -6,7 +6,6 @@ var Router = require('react-router');
 var StoreMixin = require('fluxible').StoreMixin;
 var TransactionStore = require('../stores/TransactionStore');
 var CreateTransactionStore = require('../stores/CreateTransactionStore');
-var ApplicationStore = require('../stores/ApplicationStore');
 
 var createTransaction = require('../actions/createTransaction');
 var openGooglePicker = require('../actions/openGooglePicker');
@@ -30,8 +29,7 @@ var Transactions = React.createClass({
   ],
   statics: {
     storeListeners: {
-      _onChange: [CreateTransactionStore],
-      _onRouteChange: [ApplicationStore]
+      _onChange: [CreateTransactionStore]
     }
   },
   // must use counter, because dragEnter of child might come before dragLeave of parent
@@ -64,23 +62,6 @@ var Transactions = React.createClass({
   _onChange: function() {
     this.setState({
       files: this.getStore(CreateTransactionStore).getFiles()
-    });
-  },
-  _onRouteChange: function() {
-    if (!this._mounted) {
-      return;
-    }
-
-    var transactionId = this._getTransactionId();
-    var transaction = this.getStore(TransactionStore).getTransaction(transactionId) || {};
-
-    this.setState({
-      date: transaction.date ? transaction.date.toISOString().slice(0, -1) : '',
-      description: transaction.description || '',
-      location: transaction.location || '',
-      amount: transaction.amount || '',
-      method: transaction.method || 'bank',
-      transactionId: transactionId
     });
   },
   componentDidMount: function() {

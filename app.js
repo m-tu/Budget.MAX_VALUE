@@ -10,7 +10,6 @@ app.plug(fetchrPlugin({
   xhrPath: '/api'
 }));
 
-app.registerStore(require('./stores/ApplicationStore'));
 app.registerStore(require('./stores/UserStore'));
 app.registerStore(require('./stores/TransactionStore'));
 app.registerStore(require('./stores/AuthStore'));

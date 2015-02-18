@@ -1,5 +1,7 @@
 'use strict';
 
+var router = require('../router');
+
 module.exports = function (context, payload, done) {
   context.dispatch('LOG_OUT_START');
 
@@ -10,6 +12,7 @@ module.exports = function (context, payload, done) {
       context.dispatch('LOG_OUT_DONE');
     }
 
+    router.transitionTo('home');
     done();
   });
 };

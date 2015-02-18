@@ -2,7 +2,7 @@
 
 var React = require('react');
 var Router = require('react-router');
-var getRoutes = require('./routes');
+var router = require('./router');
 var app = require('./app');
 
 // dynamic stylesheet
@@ -17,7 +17,7 @@ app.rehydrate(dehydratedState, function(err, context) {
     throw new Error(err);
   }
 
-  Router.run(getRoutes(), Router.HistoryLocation, function(Handler) {
+  router.run(Router.HistoryLocation, function(Handler) {
     React.render(<Handler context={context.getComponentContext()} />, document.getElementById('app'));
   });
 });

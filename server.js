@@ -8,6 +8,7 @@ var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var React = require('react');
 var app = require('./app');
+var router = require('./router');
 var HtmlComponent = React.createFactory(require('./components/Html.jsx'));
 var models = require('./models');
 
@@ -78,9 +79,6 @@ fetchrPlugin.registerService(require('./services/transaction'));
 // Set up the fetchr middleware
 server.use(fetchrPlugin.getXhrPath(), fetchrPlugin.getMiddleware());
 
-var Router = require('react-router');
-var routes = require('./routes.jsx')();
-
 // Every other request gets the app bootstrap
 server.use(function (req, res) {
   var context = app.createContext({
@@ -94,7 +92,7 @@ server.use(function (req, res) {
     actionContext.dispatch('LOGGED_IN', req.session.user);
   }
 
-  Router.run(routes, req.url, function(Handler) {
+  router.run(req.url, function(Handler) {
     var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
 
     var html = React.renderToStaticMarkup(HtmlComponent({
