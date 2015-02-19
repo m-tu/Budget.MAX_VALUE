@@ -39,7 +39,7 @@ module.exports = {
       }, {
         test: /\.less$/,
         //loader: ExtractTextPlugin.extract('style-loader', 'css-loader') // for production build
-        loader: 'style-loader!css-loader'
+        loader: 'style-loader!css-loader!less-loader'
       }
 
     ]

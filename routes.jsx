@@ -13,6 +13,7 @@ module.exports =  (
     <Route name="transactions" handler={require('./handlers/Transactions.jsx')}/>
     <Route name="createTransaction" handler={UpdateTransaction}/>
     <Route name="updateTransaction" path="updateTransaction/:id" handler={UpdateTransaction}/>
+    <Route name="labels" path="labels" handler={require('./handlers/Labels.jsx')}/>
 
     <DefaultRoute name="home" handler={require('./handlers/Home.jsx')}/>
     <NotFoundRoute name="not-found" handler={require('./handlers/NotFound.jsx')}/>
