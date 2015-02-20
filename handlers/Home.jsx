@@ -1,11 +1,11 @@
 var React = require('react');
 var ReactRouterBootstrap = require('react-router');
-var StoreMixin = require('fluxible').StoreMixin;
+var FluxibleMixin = require('fluxible').Mixin;
 var AuthStore = require('../stores/AuthStore');
 var Link = ReactRouterBootstrap.Link;
 
-var Home = module.exports = React.createClass({
-  mixins: [StoreMixin],
+module.exports = React.createClass({
+  mixins: [FluxibleMixin],
   statics: {
     storeListeners: {
       _onChange: [AuthStore]
@@ -26,9 +26,12 @@ var Home = module.exports = React.createClass({
     if (loggedIn) {
       content = <h1>Welcome, {this.state.user.username}</h1>;
     } else {
-      content = <p><span>Log in </span>
-        <Link to="login">here</Link>
-      </p>;
+      content = (
+        <p>
+          <span>Log in </span>
+          <Link to="login">here</Link>
+        </p>
+      );
     }
 
     return (

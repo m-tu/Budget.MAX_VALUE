@@ -3,14 +3,13 @@
 var React = require('react/addons');
 var ReactBootstrap = require('react-bootstrap');
 var AuthStore = require('../stores/AuthStore');
-var StoreMixin = require('fluxible').StoreMixin;
+var FluxibleMixin = require('fluxible').Mixin;
 var Input = ReactBootstrap.Input;
-var Button = ReactBootstrap.Button;
 var Alert = ReactBootstrap.Alert;
 var login = require('../actions/login');
 
 var Login = React.createClass({
-  mixins: [React.addons.LinkedStateMixin, StoreMixin],
+  mixins: [React.addons.LinkedStateMixin, FluxibleMixin],
   statics: {
     storeListeners: {
       _onChange: [AuthStore]

@@ -3,14 +3,14 @@
 var React = require('react/addons');
 var Router = require('react-router');
 var TransactionStore = require('../stores/TransactionStore');
-var StoreMixin = require('fluxible').StoreMixin;
+var FluxibleMixin = require('fluxible').Mixin;
 var FileGallery = require('../components/FileGallery.jsx');
 var showTransactions = require('../actions/showTransactions');
 
 var Link = Router.Link;
 
 var Transactions = React.createClass({
-  mixins: [StoreMixin],
+  mixins: [FluxibleMixin],
   statics: {
     storeListeners: {
       _onChange: [TransactionStore]

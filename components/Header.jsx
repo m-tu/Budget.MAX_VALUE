@@ -5,13 +5,13 @@ var ReactBootstrap = require('react-bootstrap');
 var Navbar = ReactBootstrap.Navbar;
 var Nav = ReactBootstrap.Nav;
 var AuthStore = require('../stores/AuthStore');
-var StoreMixin = require('fluxible').StoreMixin;
+var FluxibleMixin = require('fluxible').Mixin;
 var logout = require('../actions/logout');
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var NavItemLink = ReactRouterBootstrap.NavItemLink;
 
 var Header = React.createClass({
-  mixins: [StoreMixin],
+  mixins: [FluxibleMixin],
   statics: {
     storeListeners: {
       _onChange: [AuthStore]

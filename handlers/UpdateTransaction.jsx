@@ -3,7 +3,7 @@
 var React = require('react/addons');
 var Router = require('react-router');
 
-var StoreMixin = require('fluxible').StoreMixin;
+var FluxibleMixin = require('fluxible').Mixin;
 var TransactionStore = require('../stores/TransactionStore');
 var CreateTransactionStore = require('../stores/CreateTransactionStore');
 
@@ -25,7 +25,7 @@ var Transactions = React.createClass({
   mixins: [
     React.addons.LinkedStateMixin,
     Router.State,
-    StoreMixin
+    FluxibleMixin
   ],
   statics: {
     storeListeners: {

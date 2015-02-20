@@ -2,91 +2,96 @@
 
 var React = require('react/addons');
 
-var StoreMixin = require('fluxible').StoreMixin;
+var FluxibleMixin = require('fluxible').Mixin;
+var LabelStore = require('../stores/LabelStore');
+
+var updateLabelsAction = require('../actions/updateLabel');
+var deleteLabelAction = require('../actions/deleteLabel');
+
+var LabelInput = require('../components/LabelInput.jsx');
 
 var ReactBootstrap = require('react-bootstrap');
-var Input = ReactBootstrap.Input;
 var Button = ReactBootstrap.Button;
 var Label = ReactBootstrap.Label;
 var Glyphicon = ReactBootstrap.Glyphicon;
 var Modal = ReactBootstrap.Modal;
 
+// some hack to use refs in modal
+var MyModal = React.createClass({
+  propTypes: {
+    label: React.PropTypes.object.isRequired,
+    onSave: React.PropTypes.func.isRequired,
+    onClose: React.PropTypes.func.isRequired
+  },
+  render: function () {
+    return (
+      <Modal title="Edit modal" onRequestHide={this.props.onClose}>
+        <div className="modal-body">
+          <LabelInput ref="labelInput" label={this.props.label.name} onChange={this.props.onSave} isModal={true} />
+        </div>
+        <div className="modal-footer">
+          <Button bsStyle="success" onClick={this._onSave}>Save</Button>
+        </div>
+      </Modal>
+    );
+  },
+  _onSave: function() {
+    var labelInput = this.refs.labelInput;
+
+    if (labelInput.isValid()) {
+      this.props.onSave(labelInput.getLabelName());
+    }
+  }
+});
+
 var Transactions = React.createClass({
   mixins: [
     ReactBootstrap.OverlayMixin,
-    StoreMixin
+    FluxibleMixin
   ],
   statics: {
     storeListeners: {
+      _onChange: [LabelStore]
     }
+  },
+  _onChange: function() {
+    this.setState(this.getInitialState());
   },
   getInitialState: function() {
     return {
-      labels: [{
-        id: 1,
-        name: 'tere'
-      }, {
-        id: 2,
-        name: 'sup'
-      }]
+      newLabelName: '',
+      labels: this.getStore(LabelStore).getLabels()
     };
-  },
-
-  _onChange: function() {
-    this.setState({
-      labels: [],
-      editing: null
-    });
   },
   render: function() {
     return (
       <div>
         <h2>Manage labels</h2>
-        <form className="form-inline" onSubmit={this._onAddLabel}>
-          <Input type="text" className="form-control" buttonAfter={<Button bsStyle="success">Add</Button>} />
-        </form>
+        <LabelInput onChange={this._onAddLabel} withButton={true} inline={true} />
         {this.state.labels.map(this._renderLabel)}
       </div>
     );
   },
   renderOverlay: function () {
     if (!this.state.editing) {
-      return <span/>;
+      return null;
     }
 
     return (
-      <Modal title="Edit modal" onRequestHide={this._closeModal}>
-        <div className="modal-body">
-          <form className="inline-form" onSubmit={this._saveLabel}>
-            <Input type="text" value={this.state.editing.name} onChange={this._labelNameChanged} />
-          </form>
-        </div>
-        <div className="modal-footer">
-          <Button bsStyle="success" onClick={this._saveLabel}>Save</Button>
-        </div>
-      </Modal>
+      <MyModal label={this.state.editing} onSave={this._saveLabel} onClose={this._closeModal} />
     );
-  },
-  _saveLabel: function(e) {
-    e.preventDefault();
-
-    this._closeModal();
-  },
-  _labelNameChanged: function(e) {
-    this.setState({
-      editing: {
-        name: e.target.value,
-        id: this.state.editing.id
-      }
-    });
   },
   _renderLabel: function(label) {
     return (
       <Label key={label.id}>
         <span className="text">{label.name}</span>
-        <Glyphicon glyph="edit" onClick={this._editLabel.bind(this, label)} /> | <Glyphicon glyph="remove" />
+        <Glyphicon glyph="edit" onClick={this._editLabel.bind(this, label)} /> |
+        <Glyphicon glyph="remove" onClick={this._deleteLabel.bind(this, label)} />
       </Label>
     );
+  },
+  _deleteLabel: function(label) {
+    this.props.context.executeAction(deleteLabelAction, label);
   },
   _closeModal: function() {
     this.setState({
@@ -101,14 +106,22 @@ var Transactions = React.createClass({
       }
     });
   },
-  _onAddLabel: function(e) {
-    e.preventDefault();
+  _saveLabel: function(name) {
+    var label = this.state.editing;
 
-    //this.setState({
-    //  labels:
-    //})
+    label.name = name;
+    this.props.context.executeAction(updateLabelsAction, label);
 
-    this.props.context.executeAction(createTransaction, result.data);
+    this._closeModal();
+  },
+  _onAddLabel: function(name) {
+    this.props.context.executeAction(updateLabelsAction, {
+      name: name
+    });
+
+    this.setState({
+      newLabelName: ''
+    });
   }
 });
 

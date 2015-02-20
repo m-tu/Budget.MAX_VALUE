@@ -11,6 +11,7 @@ app.plug(fetchrPlugin({
 }));
 
 app.registerStore(require('./stores/UserStore'));
+app.registerStore(require('./stores/LabelStore'));
 app.registerStore(require('./stores/TransactionStore'));
 app.registerStore(require('./stores/AuthStore'));
 app.registerStore(require('./stores/CreateTransactionStore'));
