@@ -4,14 +4,12 @@ var createStore = require('fluxible/utils/createStore');
 module.exports = createStore({
   storeName: 'LabelStore',
   handlers: {
+    RECEIVE_LABELS_DONE: '_receiveLabels',
     UPDATE_LABEL: '_updateLabel',
     DELETE_LABEL: '_deleteLabel'
   },
   initialize: function () {
-    this.labels = [{
-      id: 1,
-      name: 'nigger'
-    }];
+    this.labels = [];
   },
   _updateLabel: function(label) {
     var existingLabel = label.id ? this.getLabelById(label.id) : null;

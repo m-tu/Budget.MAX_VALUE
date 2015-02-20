@@ -2,7 +2,6 @@
 
 var models  = require('../models');
 var validateTransaction = require('../validators/transaction');
-var Promise = require('es6-promise').Promise;
 var request = require('request');
 
 function saveFiles(transaction, files) {

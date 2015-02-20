@@ -13,6 +13,13 @@ module.exports = function(sequelize, DataTypes) {
           },
           onDelete: 'CASCADE'
         });
+
+        User.hasMany(models.Label, {
+          foreignKey: {
+            allowNull: false
+          },
+          onDelete: 'CASCADE'
+        });
       }
     }
   });

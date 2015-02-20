@@ -1,6 +1,5 @@
 'use strict';
 
-var Promise = require('es6-promise').Promise;
 var API_KEY = 'AIzaSyBLxnn2Y2IqVWCj0vLtXOZzHlMaxB0Iw8E';
 var CLIENT_ID = '296834620179-tp0br8ov1ghhdfkilnrp0h32eab72dt7.apps.googleusercontent.com';
 

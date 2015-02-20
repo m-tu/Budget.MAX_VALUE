@@ -7,6 +7,7 @@ var LabelStore = require('../stores/LabelStore');
 
 var updateLabelsAction = require('../actions/updateLabel');
 var deleteLabelAction = require('../actions/deleteLabel');
+var showLabelsAction = require('../actions/showLabels');
 
 var LabelInput = require('../components/LabelInput.jsx');
 
@@ -56,6 +57,9 @@ var Transactions = React.createClass({
   },
   _onChange: function() {
     this.setState(this.getInitialState());
+  },
+  componentDidMount: function() {
+    this.props.context.executeAction(showLabelsAction);
   },
   getInitialState: function() {
     return {

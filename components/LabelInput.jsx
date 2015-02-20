@@ -27,7 +27,7 @@ module.exports = React.createClass({
     return (
       <form className={this.props.inline ? 'form-inline' : ''} onSubmit={this.validate}>
         <Input
-          type="text" placeholder="Label name"
+          type="text" placeholder="Label name" autoFocus
           value={this.state.name} onChange={this._onChange}
           help={this.state.error} bsStyle={this.state.error ? 'error' : null}
           buttonAfter={this.props.withButton ? <Button type="submit" bsStyle="success">Add</Button> : null}

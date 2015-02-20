@@ -12,6 +12,8 @@ var router = require('./router');
 var HtmlComponent = React.createFactory(require('./components/Html.jsx'));
 var models = require('./models');
 
+require('es6-promise').polyfill();
+
 var server = express();
 var isDevEnv = server.get('env') === 'development';
 server.set('state namespace', 'App');
@@ -72,7 +74,9 @@ server.get('/files/:id([0-9]+)', function(req, res, next) {
 var fetchrPlugin = app.getPlugin('FetchrPlugin');
 
 // Register our users REST service
+// TODO read dynamically
 fetchrPlugin.registerService(require('./services/user'));
+fetchrPlugin.registerService(require('./services/label'));
 fetchrPlugin.registerService(require('./services/auth'));
 fetchrPlugin.registerService(require('./services/transaction'));
 
@@ -131,7 +135,16 @@ models.sequelize.sync({force: true}).then(function() {
       amount: -13.55,
       method: 'debit',
       UserId: user.id
-    }]);
+    }])
+      .then(function() {
+        return models.Label.bulkCreate([{
+          name: 'Food',
+          UserId: user.id
+        }, {
+          name: 'Drink',
+          UserId: user.id
+        }]);
+      });
   }).then(function() {
     // start server
     server.listen(port);

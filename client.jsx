@@ -5,6 +5,8 @@ var Router = require('react-router');
 var router = require('./router');
 var app = require('./app');
 
+require('es6-promise').polyfill();
+
 // dynamic stylesheet
 require('./assets/style.less');
 
