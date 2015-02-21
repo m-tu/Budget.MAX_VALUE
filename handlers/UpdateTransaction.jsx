@@ -5,10 +5,12 @@ var Router = require('react-router');
 
 var FluxibleMixin = require('fluxible').Mixin;
 var TransactionStore = require('../stores/TransactionStore');
+var LabelStore = require('../stores/LabelStore');
 var CreateTransactionStore = require('../stores/CreateTransactionStore');
 
 var createTransaction = require('../actions/createTransaction');
 var openGooglePicker = require('../actions/openGooglePicker');
+var showLabelsAction = require('../actions/showLabels');
 
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
@@ -29,7 +31,7 @@ var Transactions = React.createClass({
   ],
   statics: {
     storeListeners: {
-      _onChange: [CreateTransactionStore]
+      _onChange: [CreateTransactionStore, LabelStore]
     }
   },
   // must use counter, because dragEnter of child might come before dragLeave of parent
@@ -40,6 +42,7 @@ var Transactions = React.createClass({
     // TEMP test data
     return {
       date: transaction.date ? transaction.date.toISOString().slice(0, -1) : '',
+      labels: this.getStore(LabelStore).getLabels(),
       description: transaction.description || '',
       location: transaction.location || '',
       amount: transaction.amount || '',
@@ -61,10 +64,13 @@ var Transactions = React.createClass({
   },
   _onChange: function() {
     this.setState({
-      files: this.getStore(CreateTransactionStore).getFiles()
+      files: this.getStore(CreateTransactionStore).getFiles(),
+      labels: this.getStore(LabelStore).getLabels()
     });
   },
   componentDidMount: function() {
+    this.props.context.executeAction(showLabelsAction);
+
     this._mounted = true;
     document.addEventListener('dragenter', this._onDragEnterDocument);
     document.addEventListener('dragleave', this._onDragLeaveDocument);
@@ -117,7 +123,7 @@ var Transactions = React.createClass({
             <FileGallery files={this.state.files} />
           </Input>
         </form>
-        <TransactionItemEditor />
+        <TransactionItemEditor labels={this.state.labels} />
         <Input bsStyle="primary" type="submit" onClick={this._onSubmit} value={this.state.transactionId ? 'Update' : 'Create'} wrapperClassName="col-xs-offset-2 col-xs-10" />
       </div>
     );

@@ -2,12 +2,15 @@
 
 var React = require('react/addons');
 var ReactBootstrap = require('react-bootstrap');
+var LabelEditor = require('./LabelEditor.jsx');
+
 var Input = ReactBootstrap.Input;
 var Table = ReactBootstrap.Table;
 var Button = ReactBootstrap.Button;
+var DropdownButton = ReactBootstrap.DropdownButton;
 
 var ENTER_KEY = 13;
-var ESCAPE_KEY = 27;
+//var ESCAPE_KEY = 27;
 var id = 0;
 
 var TransactionItemEditor = React.createClass({
@@ -31,6 +34,7 @@ var TransactionItemEditor = React.createClass({
             <tr>
               <th>Item</th>
               <th>Amount</th>
+              <th>Labels</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -48,12 +52,17 @@ var TransactionItemEditor = React.createClass({
       <tr>
         <td><Input type="text" placeholder="Name" ref="name" onKeyUp={this._onKeyUp} bsStyle={this.state.nameError ? 'error' : null} valueLink={this.linkState('newName')} /></td>
         <td><Input type="number" placeholder="Amount" ref="amount" onKeyUp={this._onKeyUp} bsStyle={this.state.amountError ? 'error' : null} valueLink={this.linkState('newAmount')} /></td>
+        <td>
+          <DropdownButton eventKey={4} title="Labels" noCaret>
+            <LabelEditor labels={this.props.labels} />
+          </DropdownButton>
+        </td>
         <td><Input type="button"  value="Add" onClick={this._onSubmit} /></td>
       </tr>
     );
 
   },
-  _renderItem: function(item, index) {
+  _renderItem: function(item) {
     return (
       <tr>
         <td onDoubleClick={this._handleEditName.bind(this, item, 'name')}>
@@ -112,6 +121,7 @@ var TransactionItemEditor = React.createClass({
       <tr>
         <th>{this.state.items.length} items</th>
         <th>{this.state.sum}</th>
+        <th></th>
         <th></th>
       </tr>
     );
