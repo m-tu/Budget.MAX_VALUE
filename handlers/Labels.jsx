@@ -10,11 +10,10 @@ var deleteLabelAction = require('../actions/deleteLabel');
 var showLabelsAction = require('../actions/showLabels');
 
 var LabelInput = require('../components/LabelInput.jsx');
+var Label = require('../components/Label.jsx');
 
 var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
-var Label = ReactBootstrap.Label;
-var Glyphicon = ReactBootstrap.Glyphicon;
 var Modal = ReactBootstrap.Modal;
 
 // some hack to use refs in modal
@@ -87,11 +86,7 @@ var Transactions = React.createClass({
   },
   _renderLabel: function(label) {
     return (
-      <Label key={label.id}>
-        <span className="text">{label.name}</span>
-        <Glyphicon glyph="edit" onClick={this._editLabel.bind(this, label)} /> |
-        <Glyphicon glyph="remove" onClick={this._deleteLabel.bind(this, label)} />
-      </Label>
+      <Label label={label} onDelete={this._deleteLabel} onEdit={this._editLabel} />
     );
   },
   _deleteLabel: function(label) {
