@@ -3,6 +3,7 @@
 var React = require('react/addons');
 var ReactBootstrap = require('react-bootstrap');
 var LabelEditor = require('./LabelEditor.jsx');
+var Label = require('./Label.jsx');
 
 var Input = ReactBootstrap.Input;
 var Table = ReactBootstrap.Table;
@@ -19,6 +20,7 @@ var TransactionItemEditor = React.createClass({
       items: [],
       newName: '',
       newAmount: '',
+      newLabels: [],
       nameError: false,
       amountError: false,
       sum: 0,
@@ -52,7 +54,7 @@ var TransactionItemEditor = React.createClass({
         <td><Input type="text" placeholder="Name" ref="name" onKeyUp={this._onKeyUp} bsStyle={this.state.nameError ? 'error' : null} valueLink={this.linkState('newName')} /></td>
         <td><Input type="number" placeholder="Amount" ref="amount" onKeyUp={this._onKeyUp} bsStyle={this.state.amountError ? 'error' : null} valueLink={this.linkState('newAmount')} /></td>
         <td>
-          <LabelEditor labels={this.props.labels} />
+          <LabelEditor labels={this.props.labels} value={this.state.newLabels} onChange={this._onLabelsChange} />
         </td>
         <td><Input type="button"  value="Add" onClick={this._onSubmit} /></td>
       </tr>
@@ -72,9 +74,15 @@ var TransactionItemEditor = React.createClass({
             ? <Input type="text" placeholder="Amount" ref={'amount' + item.id} onBlur={this._handleSave} defaultValue={item.amount} />
             : item.amount)}
         </td>
+        <td>{item.labels.map(this._renderItemLabels)}</td>
         <td><Button bsStyle="danger" bsSize="xsmall" onClick={this._onRemove.bind(this, item)}>Remove</Button></td>
       </tr>
     );
+  },
+  _renderItemLabels: function(label) {
+    return (
+      <Label key={label.id} label={label} />
+    )
   },
   _handleEditName: function(item, name) {
 
@@ -93,6 +101,11 @@ var TransactionItemEditor = React.createClass({
   _handleSave: function() {
     this.setState({
       editing: null
+    });
+  },
+  _onLabelsChange: function(labels) {
+    this.setState({
+      newLabels: labels
     });
   },
   _onRemove: function(item) {
@@ -135,11 +148,13 @@ var TransactionItemEditor = React.createClass({
         $unshift: [{
           id: id++,
           name: this.state.newName,
-          amount: amount
+          amount: amount,
+          labels: this.state.newLabels
         }]
       }),
       newName: '',
       newAmount: '',
+      newLabels: [],
       sum: this._round(this.state.sum + amount)
     });
 

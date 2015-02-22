@@ -1,11 +1,20 @@
 var React = require('react');
 
 var ReactBootstrap = require('react-bootstrap');
+var Input = ReactBootstrap.Input;
 var Label = require('./Label.jsx');
 
 module.exports = React.createClass({
+  mixins: [React.addons.LinkedStateMixin],
   propTypes: {
-    labels: React.PropTypes.array.isRequired
+    labels: React.PropTypes.array.isRequired,
+    value: React.PropTypes.array,
+    onChange: React.PropTypes.func.isRequired
+  },
+  getDefaultProps: function() {
+    return {
+      value: []
+    }
   },
   getInitialState: function() {
     return {
@@ -18,8 +27,9 @@ module.exports = React.createClass({
     return (
       <div>
         <div>
-          {this.state.labels.map(this._renderLabel)}
-          <input type="text" value={this.state.filterText} onFocus={this._showChoices} onBlur={this._hideChoices}
+          {this.props.value.map(this._renderLabel)}
+          <Input type="text" placeholder="Add labels"
+                 value={this.state.filterText} onFocus={this._showChoices} onBlur={this._hideChoices}
                  onChange={this._filterTextChanged} />
         </div>
         {this._renderChoices()}
@@ -46,7 +56,7 @@ module.exports = React.createClass({
     var nameMatches = this.state.filterText === '' ||
       label.name.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1;
 
-    return nameMatches && this.state.labels.indexOf(label) === -1;
+    return nameMatches && this.props.value.indexOf(label) === -1;
   },
   _renderChoice: function(label) {
     return (
@@ -56,11 +66,14 @@ module.exports = React.createClass({
   _onChoiceSelected: function(label) {
     this.setState({
       filterText: '',
-      showChoices: false,
-      labels: React.addons.update(this.state.labels, {
+      showChoices: false
+    });
+
+    this.props.onChange(
+      React.addons.update(this.props.value, {
         $push: [label]
       })
-    });
+    );
   },
   _showChoices: function() {
     this.setState({
@@ -81,14 +94,14 @@ module.exports = React.createClass({
     );
   },
   _onRemove: function(label) {
-    var index = this.state.labels.indexOf(label);
+    var index = this.props.value.indexOf(label);
 
     if (index !== -1) {
-      this.setState({
-        labels: React.addons.update(this.state.labels, {
+      this.props.onChange(
+        React.addons.update(this.props.value, {
           $splice: [[index, 1]]
         })
-      });
+      );
     }
   }
 });
