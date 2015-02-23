@@ -41,7 +41,7 @@ function saveFiles(transaction, files) {
 }
 
 module.exports = {
-  name: 'transaction',
+  name: 'transactions',
   read: function (req, resource, params, config, callback) {
     var user = req.session.user;
 
@@ -49,7 +49,8 @@ module.exports = {
       return callback(403);
     }
 
-    models.Transaction.findAll({
+    var promise;
+    var query = {
       where: {
         UserId: user.id
       },
@@ -57,8 +58,17 @@ module.exports = {
         model: models.File,
         as: 'files'
       }]
-    }).then(function(transactions) {
-      callback(null, transactions);
+    };
+
+    if (params.id) {
+      query.where.id = params.id;
+      promise = models.Transaction.findOne(query);
+    } else {
+      promise = models.Transaction.findAll(query);
+    }
+
+    promise.then(function(result) {
+      callback(null, result);
     });
   },
   create: function(req, resource, params, body, config, callback) {

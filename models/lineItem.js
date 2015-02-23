@@ -1,16 +1,16 @@
 'use strict';
 
 module.exports = function(sequelize, DataTypes) {
-  var Item = sequelize.define('Item', {
+  var LineItem = sequelize.define('LineItem', {
     name: DataTypes.STRING,
     amount: DataTypes.DECIMAL(10, 2)
   }, {
     classMethods: {
       associate: function(models) {
-        Item.belongsToMany(models.Label);
+        LineItem.belongsToMany(models.Label);
       }
     }
   });
 
-  return Item;
+  return LineItem;
 };

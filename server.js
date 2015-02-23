@@ -78,7 +78,7 @@ var fetchrPlugin = app.getPlugin('FetchrPlugin');
 fetchrPlugin.registerService(require('./services/user'));
 fetchrPlugin.registerService(require('./services/label'));
 fetchrPlugin.registerService(require('./services/auth'));
-fetchrPlugin.registerService(require('./services/transaction'));
+fetchrPlugin.registerService(require('./services/transactions'));
 
 // Set up the fetchr middleware
 server.use(fetchrPlugin.getXhrPath(), fetchrPlugin.getMiddleware());

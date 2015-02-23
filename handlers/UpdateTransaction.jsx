@@ -11,6 +11,7 @@ var CreateTransactionStore = require('../stores/CreateTransactionStore');
 var createTransaction = require('../actions/createTransaction');
 var openGooglePicker = require('../actions/openGooglePicker');
 var showLabelsAction = require('../actions/showLabels');
+var showTransactions = require('../actions/showTransactions');
 
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
@@ -31,7 +32,7 @@ var Transactions = React.createClass({
   ],
   statics: {
     storeListeners: {
-      _onChange: [CreateTransactionStore, LabelStore]
+      _onChange: [CreateTransactionStore, LabelStore, TransactionStore]
     }
   },
   // must use counter, because dragEnter of child might come before dragLeave of parent
@@ -58,18 +59,24 @@ var Transactions = React.createClass({
   },
   componentWillReceiveProps: function() {
     this.setState(this.getInitialState());
+    this._loadTransaction();
   },
   _getTransactionId: function() {
     return parseInt(this.getParams().id) || null;
   },
   _onChange: function() {
-    this.setState({
-      files: this.getStore(CreateTransactionStore).getFiles(),
-      labels: this.getStore(LabelStore).getLabels()
-    });
+    this.setState(this.getInitialState());
+  },
+  _loadTransaction: function() {
+    var transactionId = this._getTransactionId();
+
+    if (transactionId !== null) {
+      this.props.context.executeAction(showTransactions, {id: transactionId});
+    }
   },
   componentDidMount: function() {
     this.props.context.executeAction(showLabelsAction);
+    this._loadTransaction();
 
     this._mounted = true;
     document.addEventListener('dragenter', this._onDragEnterDocument);
