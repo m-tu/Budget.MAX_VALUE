@@ -57,6 +57,14 @@ module.exports = {
       include: [{
         model: models.File,
         as: 'files'
+      }, {
+        model: models.LineItem,
+        as: 'lineItems',
+        include: [{
+          model: models.Label,
+          as: 'labels',
+          attributes: ['id', 'name']
+        }]
       }]
     };
 

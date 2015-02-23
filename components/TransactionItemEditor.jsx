@@ -15,6 +15,9 @@ var id = 0;
 
 var TransactionItemEditor = React.createClass({
   mixins: [React.addons.LinkedStateMixin],
+  propTypes: {
+    value: React.PropTypes.array.isRequired
+  },
   getInitialState: function() {
     return {
       items: [],
@@ -41,7 +44,7 @@ var TransactionItemEditor = React.createClass({
           </thead>
           <tbody>
             {this._renderForm()}
-            {this.state.items.map(this._renderItem)}
+            {this.props.value.map(this._renderItem)}
             {this._renderTotal()}
           </tbody>
         </Table>
@@ -59,7 +62,6 @@ var TransactionItemEditor = React.createClass({
         <td><Input type="button"  value="Add" onClick={this._onSubmit} /></td>
       </tr>
     );
-
   },
   _renderItem: function(item) {
     return (
@@ -74,7 +76,7 @@ var TransactionItemEditor = React.createClass({
             ? <Input type="text" placeholder="Amount" ref={'amount' + item.id} onBlur={this._handleSave} defaultValue={item.amount} />
             : item.amount)}
         </td>
-        <td>{item.labels.map(this._renderItemLabels)}</td>
+        <td>{(item.labels || []).map(this._renderItemLabels)}</td>
         <td><Button bsStyle="danger" bsSize="xsmall" onClick={this._onRemove.bind(this, item)}>Remove</Button></td>
       </tr>
     );

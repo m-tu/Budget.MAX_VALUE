@@ -14,6 +14,7 @@ gulp.task('dev', function() {
     contentBase: 'http://localhost:3005',
     hot: true,
     noInfo: true,
+    quiet: true,
     headers: {
       "Access-Control-Allow-Origin": "*"
     }

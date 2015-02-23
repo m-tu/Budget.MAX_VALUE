@@ -33,6 +33,14 @@ module.exports = function(sequelize, DataTypes) {
           },
           onDelete: 'CASCADE'
         });
+
+        Transaction.hasMany(models.LineItem, {
+          as: 'lineItems',
+          foreignKey: {
+            allowNull: false
+          },
+          onDelete: 'CASCADE'
+        });
       }
     }
   });

@@ -48,6 +48,7 @@ var Transactions = React.createClass({
       location: transaction.location || '',
       amount: transaction.amount || '',
       method: transaction.method || 'bank',
+      lineItems: transaction.lineItems || [],
       errors: {},
       hasErrors: false,
       dragActive: false,
@@ -130,7 +131,7 @@ var Transactions = React.createClass({
             <FileGallery files={this.state.files} />
           </Input>
         </form>
-        <TransactionItemEditor labels={this.state.labels} />
+        <TransactionItemEditor labels={this.state.labels} value={this.state.lineItems} />
         <Input bsStyle="primary" type="submit" onClick={this._onSubmit} value={this.state.transactionId ? 'Update' : 'Create'} wrapperClassName="col-xs-offset-2 col-xs-10" />
       </div>
     );

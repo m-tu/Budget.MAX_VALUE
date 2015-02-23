@@ -115,6 +115,8 @@ server.use(function (req, res) {
 var port = process.env.PORT || 3005;
 
 models.sequelize.sync({force: true}).then(function() {
+  var transaction1;
+
   // TODO move initialization to separate file
   // initialize data
   models.User.create({
@@ -136,7 +138,9 @@ models.sequelize.sync({force: true}).then(function() {
       method: 'debit',
       UserId: user.id
     }])
-      .then(function() {
+      .then(function(transactions) {
+        transaction1 = transactions[0];
+
         return models.Label.bulkCreate([{
           name: 'Food',
           UserId: user.id
@@ -144,6 +148,20 @@ models.sequelize.sync({force: true}).then(function() {
           name: 'Drink',
           UserId: user.id
         }]);
+      })
+      .then(function() {
+        return models.LineItem.bulkCreate([{
+          name: 'item 1',
+          amount: 100,
+          TransactionId: 1,
+          labels: [1,2]
+        }]).then(function() {
+          return models.Label.findAll().then(function(labels) {
+            return models.LineItem.findAll().then(function(lineItems) {
+              return lineItems[0].addLabels(labels);
+            });
+          });
+        });
       });
   }).then(function() {
     // start server
