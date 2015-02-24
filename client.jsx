@@ -12,6 +12,8 @@ require('./assets/style.less');
 
 window.React = React; // For chrome dev tool support
 
+window.app = app;
+
 var dehydratedState = window.App;
 
 app.rehydrate(dehydratedState, function(err, context) {

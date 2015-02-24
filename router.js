@@ -25,8 +25,21 @@ module.exports = {
     this.router.goBack();
   },
 
-  run: function(location, callback) {
-    this.router = Router.run(this.routes, location, callback);
+  run: function(location, options, callback) {
+    var createOptions = {
+      routes: this.routes,
+      location: location
+    };
+
+    if (typeof options === 'object') {
+      createOptions.onAbort = options.onAbort;
+    } else {
+      callback = options;
+    }
+
+    this.router = Router.create(createOptions);
+
+    this.router.run(callback);
 
     return this.router;
   }

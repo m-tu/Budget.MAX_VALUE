@@ -26,7 +26,9 @@ var Header = React.createClass({
     this.setState(this.getInitialState());
   },
   render: function() {
-    var menus = this.state.isLoggedIn ? ['home', 'transactions', 'createTransaction', 'labels'] : ['home', 'login', 'register'];
+    var menus = this.state.isLoggedIn
+      ? ['home', 'transactions', 'createTransaction', 'labels']
+      : ['home', 'transactions', 'login', 'register'];
     var linksHTML = menus.map(function(name) {
       var label = name.slice(0, 1).toUpperCase() + name.slice(1);
 

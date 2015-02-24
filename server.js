@@ -96,20 +96,32 @@ server.use(function (req, res) {
     actionContext.dispatch('LOGGED_IN', req.session.user);
   }
 
-  router.run(req.url, function(Handler) {
-    var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
+  router.run(
+    req.url,
+    {
+      onAbort: function(abortReason) {
+        if (abortReason.to) {
+          res.redirect(abortReason.to);
+        } else {
+          res.sendStatus(500);
+        }
+      }
+    },
+    function(Handler) {
+      var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
 
-    var html = React.renderToStaticMarkup(HtmlComponent({
-      isDevEnv: isDevEnv,
-      state: exposed,
-      markup: React.renderToString(React.createElement(Handler, {
-        context: context.getComponentContext()
-      }))
-    }));
+      var html = React.renderToStaticMarkup(HtmlComponent({
+        isDevEnv: isDevEnv,
+        state: exposed,
+        markup: React.renderToString(React.createElement(Handler, {
+          context: context.getComponentContext()
+        }))
+      }));
 
-    res.write(html);
-    res.end();
-  });
+      res.write(html);
+      res.end();
+    }
+  );
 });
 
 var port = process.env.PORT || 3005;

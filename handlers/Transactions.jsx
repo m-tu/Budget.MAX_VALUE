@@ -7,10 +7,12 @@ var FluxibleMixin = require('fluxible').Mixin;
 var FileGallery = require('../components/FileGallery.jsx');
 var showTransactions = require('../actions/showTransactions');
 
+var AuthMixin = require('../mixins/Auth');
+
 var Link = Router.Link;
 
 var Transactions = React.createClass({
-  mixins: [FluxibleMixin],
+  mixins: [AuthMixin, FluxibleMixin],
   statics: {
     storeListeners: {
       _onChange: [TransactionStore]

@@ -16,4 +16,14 @@ app.registerStore(require('./stores/TransactionStore'));
 app.registerStore(require('./stores/AuthStore'));
 app.registerStore(require('./stores/CreateTransactionStore'));
 
+// TODO ugly
+var createContext = app.createContext;
+
+app.createContext = function() {
+
+  app.context = createContext.apply(app, arguments);
+  return app.context;
+};
+
+
 module.exports = app;
