@@ -98,15 +98,6 @@ server.use(function (req, res) {
 
   router.run(
     req.url,
-    {
-      onAbort: function(abortReason) {
-        if (abortReason.to) {
-          res.redirect(abortReason.to);
-        } else {
-          res.sendStatus(500);
-        }
-      }
-    },
     function(Handler) {
       var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
 
@@ -120,6 +111,13 @@ server.use(function (req, res) {
 
       res.write(html);
       res.end();
+    },
+    function(abortReason) {
+      if (abortReason.to) {
+        res.redirect(abortReason.to);
+      } else {
+        res.sendStatus(500);
+      }
     }
   );
 });

@@ -25,19 +25,14 @@ module.exports = {
     this.router.goBack();
   },
 
-  run: function(location, options, callback) {
-    var createOptions = {
+  run: function(location, callback, abortHandler) {
+    var options = {
       routes: this.routes,
-      location: location
+      location: location,
+      onAbort: abortHandler
     };
 
-    if (typeof options === 'object') {
-      createOptions.onAbort = options.onAbort;
-    } else {
-      callback = options;
-    }
-
-    this.router = Router.create(createOptions);
+    this.router = Router.create(options);
 
     this.router.run(callback);
 
@@ -45,6 +40,6 @@ module.exports = {
   }
 };
 
-// routes might require vies that might require actions that might require this file
-// so we export some stuff and then require routes
+// routes might require views that might require actions that might require this file
+// so we first export some stuff and then require routes
 module.exports.routes = require('./routes');
