@@ -130,6 +130,38 @@ module.exports = {
         });
       }
     }).then(function(transaction) {
+      if (body.lineItems) {
+        // TODO validate
+        body.lineItems.forEach(function(lineItem) {
+          lineItem.TransactionId = transaction.id;
+        });
+        return models.LineItem.bulkCreate(body.lineItems).then(function() {
+          return models.LineItem.findAll({
+            where: {
+              TransactionId: transaction.id
+            },
+            attributes: ['id']
+          }, {raw: true});
+        }).then(function(lineItems) {
+          // yolo - hopefully IDS are in correct order
+          var lineItemLabels = [];
+          lineItems.forEach(function(lineItem, index) {
+            body.lineItems[index].labels.forEach(function(labelId) {
+              lineItemLabels.push({
+                LineItemId: lineItem.id,
+                LabelId: labelId
+              });
+            });
+          });
+
+          return models.LineItemLabels.bulkCreate(lineItemLabels);
+        }).then(function() {
+          return transaction;
+        });
+      } else {
+        return transaction;
+      }
+    }).then(function(transaction) {
       callback(null, transaction);
       // TODO handle update fail
     }).catch(function(error) {

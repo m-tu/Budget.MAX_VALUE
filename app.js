@@ -3,6 +3,7 @@
 var React = require('react');
 var FluxibleApp = require('fluxible');
 var fetchrPlugin = require('fluxible-plugin-fetchr');
+require('./utils/polyfills/Object.assign');
 
 var app = new FluxibleApp();
 

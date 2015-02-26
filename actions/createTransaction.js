@@ -1,6 +1,7 @@
 'use strict';
 
 var googleApiUtil = require('../utils/googleApi');
+var router = require('../router');
 
 module.exports = function(context, transaction) {
   context.dispatch('CREATE_TRANSACTION_START', transaction);
@@ -12,9 +13,6 @@ module.exports = function(context, transaction) {
     }
 
     context.dispatch('CREATE_TRANSACTION_DONE', newTransaction);
-
-    //context.executeAction(navigateAction, {
-    //  url: '/transactions'
-    //}, done);
+    router.transitionTo('transactions');
   });
 };

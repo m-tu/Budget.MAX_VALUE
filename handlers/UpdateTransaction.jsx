@@ -18,14 +18,17 @@ var Input = ReactBootstrap.Input;
 var Alert = ReactBootstrap.Alert;
 var Button = ReactBootstrap.Button;
 
-var TransactionItemEditor = require('../components/TransactionItemEditor.jsx');
+var TransactionItemsForm = require('../components/TransactionItemsForm.jsx');
 var FileGallery = require('../components/FileGallery.jsx');
 
 var validateTransaction = require('../validators/transaction');
 
+var AuthMixin = require('../mixins/Auth');
+
 var Transactions = React.createClass({
   _mounted: false,
   mixins: [
+    AuthMixin,
     React.addons.LinkedStateMixin,
     Router.State,
     FluxibleMixin
@@ -131,7 +134,7 @@ var Transactions = React.createClass({
             <FileGallery files={this.state.files} />
           </Input>
         </form>
-        <TransactionItemEditor labels={this.state.labels} value={this.state.lineItems} />
+        <TransactionItemsForm labels={this.state.labels} value={this.state.lineItems} />
         <Input bsStyle="primary" type="submit" onClick={this._onSubmit} value={this.state.transactionId ? 'Update' : 'Create'} wrapperClassName="col-xs-offset-2 col-xs-10" />
       </div>
     );

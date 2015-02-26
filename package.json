@@ -29,7 +29,6 @@
     "fluxible-plugin-fetchr": "^0.2.3",
     "mysql": "^2.5.4",
     "node-jsx": "^0.12.4",
-    "object-assign": "^2.0.0",
     "react": "^0.12.2",
     "react-bootstrap": "^0.15.1",
     "react-router": "^0.12.0",

@@ -8,6 +8,7 @@ var Label = require('./Label.jsx');
 var Input = ReactBootstrap.Input;
 var Table = ReactBootstrap.Table;
 var Button = ReactBootstrap.Button;
+var ButtonToolbar = ReactBootstrap.ButtonToolbar;
 
 var ENTER_KEY = 13;
 //var ESCAPE_KEY = 27;
@@ -16,7 +17,9 @@ var id = 0;
 var TransactionItemEditor = React.createClass({
   mixins: [React.addons.LinkedStateMixin],
   propTypes: {
-    value: React.PropTypes.array.isRequired
+    labels: React.PropTypes.array.isRequired,
+    lineItems: React.PropTypes.array.isRequired,
+    onChange: React.PropTypes.func
   },
   getInitialState: function() {
     return {
@@ -44,7 +47,7 @@ var TransactionItemEditor = React.createClass({
           </thead>
           <tbody>
             {this._renderForm()}
-            {this.props.value.map(this._renderItem)}
+            {this.props.lineItems.map(this._renderItem)}
             {this._renderTotal()}
           </tbody>
         </Table>
@@ -59,13 +62,43 @@ var TransactionItemEditor = React.createClass({
         <td>
           <LabelEditor labels={this.props.labels} value={this.state.newLabels} onChange={this._onLabelsChange} />
         </td>
-        <td><Input type="button"  value="Add" onClick={this._onSubmit} /></td>
+        <td style={{whiteSpace: 'nowrap'}}>
+          <ButtonToolbar>
+            <Button bsStyle="primary" onClick={this._onSubmit}>Add</Button>
+            <Button bsStyle="warning" bsSize="xsmall" onClick={this._clear}>Empty</Button>
+          </ButtonToolbar>
+        </td>
       </tr>
     );
   },
+  _clear: function() {
+    this.setState({
+      newName: '',
+      newAmount: '',
+      newLabels: [],
+      nameError: false,
+      amountError: false
+    });
+  },
+  validate: function() {
+    if (this.state.newName === '' && this.state.newAmount === '' && this.state.newLabels.length === 0) {
+      this.setState({
+        nameError: false,
+        amountError: false
+      });
+
+      return {
+        hasErrors: false
+      }
+    } else {
+      return {
+        hasErrors: this._validate()
+      };
+    }
+  },
   _renderItem: function(item) {
     return (
-      <tr>
+      <tr key={item.id}>
         <td onDoubleClick={this._handleEditName.bind(this, item, 'name')}>
           {(this.state.editing === item.id && this.state.editType === 'name'
             ? <Input type="text" placeholder="Name" ref={'name' + item.id} onBlur={this._handleSave} defaultValue={item.name} />
@@ -117,22 +150,32 @@ var TransactionItemEditor = React.createClass({
       return;
     }
 
-    this.setState({
-      sum: this._round(this.state.sum - item.amount),
-      items: React.addons.update(this.state.items, {
-        $splice: [
-          [index, 1]
-        ]
-      })
+    this._emitChange({
+      $splice: [
+        [index, 1]
+      ]
     });
+  },
+  _emitChange: function(diff) {
+    if (!this.props.onChange) {
+      return;
+    }
+
+    this.props.onChange(
+      React.addons.update(this.props.lineItems, diff)
+    );
 
     this._focus();
   },
   _renderTotal: function() {
+    var sum = this.props.lineItems.reduce(function(sum, item) {
+      return sum + item.amount;
+    }, 0);
+
     return (
       <tr>
-        <th>{this.state.items.length} items</th>
-        <th>{this.state.sum}</th>
+        <th>{this.props.lineItems.length} items</th>
+        <th>{sum}</th>
         <th></th>
         <th></th>
       </tr>
@@ -143,24 +186,20 @@ var TransactionItemEditor = React.createClass({
       return;
     }
 
-    var amount = this._round(parseFloat(this.state.newAmount));
-
     this.setState({
-      items: React.addons.update(this.state.items, {
-        $unshift: [{
-          id: id++,
-          name: this.state.newName,
-          amount: amount,
-          labels: this.state.newLabels
-        }]
-      }),
       newName: '',
       newAmount: '',
-      newLabels: [],
-      sum: this._round(this.state.sum + amount)
+      newLabels: []
     });
 
-    this._focus();
+    this._emitChange({
+      $unshift: [{
+        id: id++,
+        name: this.state.newName,
+        amount: this._round(parseFloat(this.state.newAmount)),
+        labels: this.state.newLabels
+      }]
+    });
   },
   _validate: function() {
     var nameError = false;

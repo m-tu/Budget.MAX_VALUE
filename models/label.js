@@ -6,7 +6,9 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        Label.belongsToMany(models.LineItem);
+        Label.belongsToMany(models.LineItem, {
+          through: models.LineItemLabels
+        });
       }
     }
   });

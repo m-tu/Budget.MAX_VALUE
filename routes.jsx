@@ -3,7 +3,6 @@ var Router = require('react-router');
 var DefaultRoute = Router.DefaultRoute;
 var Route = Router.Route;
 var NotFoundRoute = Router.NotFoundRoute;
-var UpdateTransaction = require('./handlers/UpdateTransaction.jsx');
 
 module.exports =  (
   <Route name="root" path="/" handler={require('./handlers/Root.jsx')}>
@@ -11,8 +10,8 @@ module.exports =  (
     <Route name="register" handler={require('./handlers/Register.jsx')}/>
 
     <Route name="transactions" handler={require('./handlers/Transactions.jsx')}/>
-    <Route name="createTransaction" handler={UpdateTransaction}/>
-    <Route name="updateTransaction" path="updateTransaction/:id" handler={UpdateTransaction}/>
+    <Route name="createTransaction" handler={require('./handlers/CreateTransaction.jsx')}/>
+    <Route name="updateTransaction" path="updateTransaction/:id" handler={require('./handlers/UpdateTransaction.jsx')}/>
     <Route name="labels" path="labels" handler={require('./handlers/Labels.jsx')}/>
 
     <DefaultRoute name="home" handler={require('./handlers/Home.jsx')}/>

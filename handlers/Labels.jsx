@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react/addons');
+var AuthMixin = require('../mixins/Auth');
 
 var FluxibleMixin = require('fluxible').Mixin;
 var LabelStore = require('../stores/LabelStore');
@@ -18,6 +19,7 @@ var Modal = ReactBootstrap.Modal;
 
 // some hack to use refs in modal
 var MyModal = React.createClass({
+  mixins: [AuthMixin],
   propTypes: {
     label: React.PropTypes.object.isRequired,
     onSave: React.PropTypes.func.isRequired,
