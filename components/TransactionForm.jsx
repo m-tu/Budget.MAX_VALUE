@@ -43,8 +43,8 @@ var TransactionForm = React.createClass({
     onChange: React.PropTypes.func
   },
   mixins: [React.addons.LinkedStateMixin],
-  getInitialState: function() {
-    var transaction = this.props.transaction || {};
+  getInitialState: function(transaction) {
+    transaction = transaction || this.props.transaction || {};
 
     return {
       date: transaction.date ? transaction.date.toISOString().slice(0, -1) : '',
@@ -54,6 +54,9 @@ var TransactionForm = React.createClass({
       method: transaction.method || 'bank',
       errors: {}
     };
+  },
+  componentWillReceiveProps: function(nextProps) {
+    this.setState(this.getInitialState(nextProps.transaction));
   },
   render: function() {
     return (
