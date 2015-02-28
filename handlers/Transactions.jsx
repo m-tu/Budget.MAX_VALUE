@@ -4,7 +4,6 @@ var React = require('react/addons');
 var Router = require('react-router');
 var TransactionStore = require('../stores/TransactionStore');
 var FluxibleMixin = require('fluxible').Mixin;
-var FileGallery = require('../components/FileGallery.jsx');
 var showTransactions = require('../actions/showTransactions');
 
 var AuthMixin = require('../mixins/Auth');
@@ -43,7 +42,6 @@ var Transactions = React.createClass({
           <td>{transaction.location}</td>
           <td>{transaction.amount}</td>
           <td>{transaction.method}</td>
-          <td><FileGallery files={transaction.files} /></td>
         </tr>
       );
     }.bind(this));
@@ -58,7 +56,6 @@ var Transactions = React.createClass({
             <th>Location</th>
             <th>Amount</th>
             <th>Payment method</th>
-            <th>Files</th>
           </tr>
           {transactions}
         </tbody>
