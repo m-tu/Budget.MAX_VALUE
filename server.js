@@ -178,4 +178,6 @@ models.sequelize.sync({force: true}).then(function() {
     server.listen(port);
     console.log('Listening on port ' + port);
   });
+}, function(err) {
+  console.log('Failed to connect to DB: ' + err.toString());
 });
