@@ -7,7 +7,10 @@ module.exports = createStore({
   handlers: {
     RECEIVE_TRANSACTION_SUCCESS: '_receiveTransaction',
     RECEIVE_TRANSACTIONS_SUCCESS: '_receiveTransactions',
-    CREATE_TRANSACTION_DONE: '_createTransaction'
+    UPDATE_TRANSACTION_START: '_updateTransactionStart',
+    UPDATE_TRANSACTION_DONE: '_updateTransaction',
+    UPDATE_TRANSACTION_FAIL: '_updateTransactionFail',
+    CLEAR_UNSAVED_TRANSACTION: '_clearUnsavedData'
   },
   initialize: function () {
     this.transactions = [];
@@ -28,22 +31,33 @@ module.exports = createStore({
     if (oldIndex === -1) {
       this.transactions.push(newTransaction);
     } else {
-      this.transactions.splice(index, 1, [newTransaction]);
+      this.transactions.splice(oldIndex, 1, newTransaction);
     }
     this.emitChange();
   },
-  _createTransaction: function(transaction) {
-    transaction.date = new Date(transaction.date);
-
+  _updateTransactionStart: function(transaction) {
     var oldTransaction = this.getTransaction(transaction.id);
 
     if (oldTransaction) {
-      Object.assign(oldTransaction, transaction);
-    } else {
-      this.transactions.push(transaction);
+      oldTransaction.pending = true;
+      oldTransaction.pendingData = transaction;
+      this.emitChange();
     }
-
-    this.emitChange();
+  },
+  _updateTransaction: function(transaction) {
+    this._receiveTransaction(transaction);
+  },
+  _updateTransactionFail: function(transaction, errors) {
+    // TODO check if transaction exists in store
+    transaction.pending = false;
+    // TODO save errors
+  },
+  _clearUnsavedData: function(transaction) {
+    // TODO check if transaction exists in store
+    if (!transaction.pending) {
+      transaction.pendingData = null;
+      this.emitChange();
+    }
   },
   hasTransaction: function(id) {
     return this.transactions.some(function(transaction) {
@@ -53,6 +67,7 @@ module.exports = createStore({
   getAll: function () {
     return this.transactions;
   },
+
   getTransactionIndex: function(id) {
     var i;
 
@@ -74,6 +89,8 @@ module.exports = createStore({
   },
   _formatRawTransaction: function(transaction) {
     transaction.date = new Date(transaction.date);
+    transaction.pending = false;
+    transaction.pendingData = null;
 
     return transaction;
   },

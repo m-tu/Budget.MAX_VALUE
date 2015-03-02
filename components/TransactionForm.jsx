@@ -40,7 +40,8 @@ var formElements = [
 var TransactionForm = React.createClass({
   propTypes: {
     transaction: React.PropTypes.object.isRequired,
-    onChange: React.PropTypes.func
+    onChange: React.PropTypes.func,
+    disabled: React.PropTypes.bool
   },
   mixins: [React.addons.LinkedStateMixin],
   getInitialState: function(transaction) {
@@ -71,11 +72,14 @@ var TransactionForm = React.createClass({
 
     return (
       <Input key={input.name} type={input.type} label={input.label} {...props} value={this.state[input.name]}
-             onChange={this._onInputChange.bind(this, input)}
+             onChange={this._onInputChange.bind(this, input)} disabled={this.props.disabled}
              help={error} bsStyle={error ? 'error' : null}
              labelClassName="col-xs-2" wrapperClassName="col-xs-10" onBlur={this._validateInput.bind(this, input)} />
     );
   },
+  /**
+   * @returns {{data: {}, errors: {}, hasErrors: boolean}}
+   */
   validate: function() {
     var result = validateTransaction(this.state);
 

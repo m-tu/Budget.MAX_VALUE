@@ -9,14 +9,13 @@ var LabelStore = require('../stores/LabelStore');
 var CreateTransactionStore = require('../stores/CreateTransactionStore');
 
 var createTransaction = require('../actions/createTransaction');
+var clearUnsavedTransaction = require('../actions/clearUnsavedTransaction');
 var showLabelsAction = require('../actions/showLabels');
 var showTransactions = require('../actions/showTransactions');
 
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
 var Alert = ReactBootstrap.Alert;
-
-var validateTransaction = require('../validators/transaction');
 
 var AuthMixin = require('../mixins/Auth');
 
@@ -33,6 +32,9 @@ var Transactions = React.createClass({
   statics: {
     storeListeners: {
       _onChange: [CreateTransactionStore, LabelStore, TransactionStore]
+    },
+    willTransitionFrom: function (transition, component) {
+      component._clearUnsavedData();
     }
   },
   getInitialState: function() {
@@ -40,7 +42,7 @@ var Transactions = React.createClass({
   },
   _getStateFromStores: function() {
     return {
-      transaction: this.getStore(TransactionStore).getTransaction(this._getTransactionId()),
+      transaction: this.getStore(TransactionStore).getTransaction(this._getTransactionId()) || {},
       labels: this.getStore(LabelStore).getLabels(),
       lineItems: []
     }
@@ -77,13 +79,16 @@ var Transactions = React.createClass({
       );
     }
 
+    var transaction = this.state.transaction;
+
     return (
       <div>
         <h1>Update Transaction</h1>
         {errorMessage}
-        <TransactionForm ref="transactionForm" transaction={this.state.transaction}/>
+        <TransactionForm ref="transactionForm" transaction={transaction.pendingData || transaction}
+                         disabled={transaction.pending} />
         <Input type="submit" bsStyle="primary" onClick={this._onSubmit} disabled={this.state.working}
-               value={this.state.working ? 'Working...' : 'Save'}
+               value={transaction.pending ? 'Working...' : 'Save'}
         />
         <TransactionItemsForm ref="lineItemsForm" lineItems={this.state.lineItems} onChange={this._onLineItemsChange}
                               labels={this.state.labels} />
@@ -94,7 +99,7 @@ var Transactions = React.createClass({
   _onSubmit: function(e) {
     e.preventDefault();
 
-    var result = validateTransaction(this.state);
+    var result = this.refs.transactionForm.validate();
 
     if (result.hasErrors) {
       this.setState({
@@ -105,17 +110,7 @@ var Transactions = React.createClass({
       return;
     }
 
-    result.data.transactionId = this.state.transactionId;
-
-    result.data.files = this.state.files.map(function(file) {
-      return {
-        id: file.id,
-        title: file.title,
-        embedLink: file.embedLink,
-        imageUrl: file.imageUrl,
-        thumbnailLink: file.thumbnailLink
-      };
-    });
+    result.data.id = this.state.transaction.id;
 
     this.setState({
       hasErrors: false,
@@ -123,6 +118,9 @@ var Transactions = React.createClass({
     });
 
     this.props.context.executeAction(createTransaction, result.data);
+  },
+  _clearUnsavedData: function() {
+    this.props.context.executeAction(clearUnsavedTransaction);
   }
 });
 

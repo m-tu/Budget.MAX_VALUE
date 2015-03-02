@@ -1,5 +1,10 @@
 var paymentMethods = require('../config/constants').PAYMENT_METHODS;
 
+/**
+ *
+ * @param {{}} rawTransaction
+ * @returns {{data: {}, errors: {}, hasErrors: boolean}}
+ */
 module.exports = function(rawTransaction) {
   var errors = {};
   var transaction = {};
