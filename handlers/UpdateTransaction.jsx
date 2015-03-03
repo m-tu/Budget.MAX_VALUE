@@ -90,7 +90,7 @@ var Transactions = React.createClass({
         <Input type="submit" bsStyle="primary" onClick={this._onSubmit} disabled={this.state.working}
                value={transaction.pending ? 'Working...' : 'Save'}
         />
-        <TransactionItemsForm ref="lineItemsForm" lineItems={this.state.lineItems} onChange={this._onLineItemsChange}
+        <TransactionItemsForm ref="lineItemsForm" lineItems={transaction.lineItems} onChange={this._onLineItemsChange}
                               labels={this.state.labels} />
 
       </div>

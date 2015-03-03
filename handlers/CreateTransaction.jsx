@@ -28,11 +28,7 @@ var CreateTransaction = React.createClass({
   },
   getInitialState: function() {
     return Object.assign({
-      lineItems: [{
-        name: 'test',
-        amount: 12,
-        labels: [{id:1,name:'söök'}]
-      }],
+      lineItems: [],
       hasErrors: false
     }, this._getStateFromStores());
   },

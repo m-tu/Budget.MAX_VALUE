@@ -4,6 +4,7 @@ var React = require('react/addons');
 var ReactBootstrap = require('react-bootstrap');
 var LabelEditor = require('./LabelEditor.jsx');
 var Label = require('./Label.jsx');
+var LineItemForm = require('./LineItemForm.jsx');
 
 var Input = ReactBootstrap.Input;
 var Table = ReactBootstrap.Table;
@@ -20,6 +21,12 @@ var TransactionItemEditor = React.createClass({
     labels: React.PropTypes.array.isRequired,
     lineItems: React.PropTypes.array.isRequired,
     onChange: React.PropTypes.func
+  },
+  getDefaultProps: function() {
+    return {
+      labels: [],
+      lineItems: []
+    };
   },
   getInitialState: function() {
     return {
@@ -46,7 +53,7 @@ var TransactionItemEditor = React.createClass({
             </tr>
           </thead>
           <tbody>
-            {this._renderForm()}
+            <LineItemForm labels={this.props.labels} onSave={this._handleSave} />
             {this.props.lineItems.map(this._renderItem)}
             {this._renderTotal()}
           </tbody>
@@ -54,94 +61,69 @@ var TransactionItemEditor = React.createClass({
       </div>
     );
   },
-  _renderForm: function() {
-    return (
-      <tr>
-        <td><Input type="text" placeholder="Name" ref="name" onKeyUp={this._onKeyUp} bsStyle={this.state.nameError ? 'error' : null} valueLink={this.linkState('newName')} /></td>
-        <td><Input type="number" placeholder="Amount" ref="amount" onKeyUp={this._onKeyUp} bsStyle={this.state.amountError ? 'error' : null} valueLink={this.linkState('newAmount')} /></td>
-        <td>
-          <LabelEditor labels={this.props.labels} value={this.state.newLabels} onChange={this._onLabelsChange} />
-        </td>
-        <td style={{whiteSpace: 'nowrap'}}>
-          <ButtonToolbar>
-            <Button bsStyle="primary" onClick={this._onSubmit}>Add</Button>
-            <Button bsStyle="warning" bsSize="xsmall" onClick={this._clear}>Empty</Button>
-          </ButtonToolbar>
-        </td>
-      </tr>
-    );
-  },
-  _clear: function() {
-    this.setState({
-      newName: '',
-      newAmount: '',
-      newLabels: [],
-      nameError: false,
-      amountError: false
-    });
-  },
-  validate: function() {
-    if (this.state.newName === '' && this.state.newAmount === '' && this.state.newLabels.length === 0) {
-      this.setState({
-        nameError: false,
-        amountError: false
-      });
-
-      return {
-        hasErrors: false
-      }
-    } else {
-      return {
-        hasErrors: this._validate()
-      };
-    }
-  },
   _renderItem: function(item) {
-    return (
-      <tr key={item.id}>
-        <td onDoubleClick={this._handleEditName.bind(this, item, 'name')}>
-          {(this.state.editing === item.id && this.state.editType === 'name'
-            ? <Input type="text" placeholder="Name" ref={'name' + item.id} onBlur={this._handleSave} defaultValue={item.name} />
-            : item.name)}
-        </td>
-        <td onDoubleClick={this._handleEditName.bind(this, item, 'amount')}>
-          {(this.state.editing === item.id && this.state.editType === 'amount'
-            ? <Input type="text" placeholder="Amount" ref={'amount' + item.id} onBlur={this._handleSave} defaultValue={item.amount} />
-            : item.amount)}
-        </td>
-        <td>{(item.labels || []).map(this._renderItemLabels)}</td>
-        <td><Button bsStyle="danger" bsSize="xsmall" onClick={this._onRemove.bind(this, item)}>Remove</Button></td>
-      </tr>
-    );
+    var row;
+
+    if (this.state.editing === item.id) {
+      row = (
+        <LineItemForm key={item.id} lineItem={item} onSave={this._handleSave} onCancel={this._handleSave} />
+      );
+    } else {
+      row = (
+        <tr key={item.id}>
+          <td>{item.name}</td>
+          <td>{item.amount}</td>
+          <td>{(item.labels || []).map(this._renderItemLabels)}</td>
+          <td>
+            <ButtonToolbar hidden={this.state.editing}>
+              <Button bsStyle="info" bsSize="xsmall" onClick={this._handleEdit.bind(this, item)}>Edit</Button>
+              <Button bsStyle="danger" bsSize="xsmall" onClick={this._onRemove.bind(this, item)}>Remove</Button>
+            </ButtonToolbar>
+          </td>
+        </tr>
+      )
+    }
+    return row;
   },
   _renderItemLabels: function(label) {
     return (
       <Label key={label.id} label={label} />
     )
   },
-  _handleEditName: function(item, name) {
-
+  _handleEdit: function(item) {
     this.setState({
-      editing: item.id,
-      editType: name
+      editing: item.id
     });
-
-    window.setTimeout(function() {
-      var node = this.refs[name + item.id].getDOMNode().firstChild;
-      node.focus();
-      //console.log(node)
-      node.setSelectionRange(0, node.value.length);
-    }.bind(this),100)
   },
-  _handleSave: function() {
+  _handleSave: function(newItem) {
+    var index = -1;
+    var i;
+
+    for (i = 0; i < this.props.lineItems.length; i++) {
+      if (this.props.lineItems[i].id === newItem.id) {
+        index = i;
+        break;
+      }
+    }
+    var diff;
+
+    if (index === -1) {
+      // new
+      diff = {
+        $unshift: [newItem]
+      };
+    } else {
+      diff = {
+        $splice: [
+          [index, 1, newItem]
+        ]
+      };
+    }
+
     this.setState({
       editing: null
     });
-  },
-  _onLabelsChange: function(labels) {
-    this.setState({
-      newLabels: labels
-    });
+    this._emitChange(diff);
   },
   _onRemove: function(item) {
     var index = this.state.items.indexOf(item);
@@ -165,7 +147,7 @@ var TransactionItemEditor = React.createClass({
       React.addons.update(this.props.lineItems, diff)
     );
 
-    this._focus();
+    //this._focus();
   },
   _renderTotal: function() {
     var sum = this.props.lineItems.reduce(function(sum, item) {
@@ -180,61 +162,13 @@ var TransactionItemEditor = React.createClass({
         <th></th>
       </tr>
     );
-  },
-  _onSubmit: function() {
-    if (!this._validate()) {
-      return;
-    }
-
-    this.setState({
-      newName: '',
-      newAmount: '',
-      newLabels: []
-    });
-
-    this._emitChange({
-      $unshift: [{
-        id: id++,
-        name: this.state.newName,
-        amount: this._round(parseFloat(this.state.newAmount)),
-        labels: this.state.newLabels
-      }]
-    });
-  },
-  _validate: function() {
-    var nameError = false;
-    var amountError = false;
-
-    if (isNaN(parseFloat(this.state.newAmount))) {
-      amountError = true;
-      this._focus('amount');
-    }
-
-    if (this.state.newName === '') {
-      nameError = true;
-      this._focus('name');
-    }
-
-    this.setState({
-      nameError: nameError,
-      amountError: amountError
-    });
-
-    return !nameError && !amountError;
-  },
-  _onKeyUp: function(e) {
-    if (e.which === ENTER_KEY) {
-      this._onSubmit();
-    }
-  },
-  _focus: function(ref) {
-    ref = ref || 'name';
-
-    this.refs[ref].getDOMNode().firstChild.focus();
-  },
-  _round: function(amount) {
-    return Math.round(amount * 100) / 100;
   }
+
+  //_focus: function(ref) {
+  //  ref = ref || 'name';
+  //
+  //  this.refs[ref].getDOMNode().firstChild.focus();
+  //}
 });
 
 module.exports = TransactionItemEditor;
