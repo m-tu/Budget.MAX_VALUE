@@ -4,7 +4,7 @@ var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
 var Button = ReactBootstrap.Button;
 
-module.exports = React.createClass({
+var LabelInput = React.createClass({
   propTypes: {
     onChange: React.PropTypes.func.isRequired,
     label: React.PropTypes.string,
@@ -67,3 +67,5 @@ module.exports = React.createClass({
     }
   }
 });
+
+module.exports = LabelInput;

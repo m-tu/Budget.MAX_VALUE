@@ -72,9 +72,9 @@ var TransactionForm = React.createClass({
 
     return (
       <Input key={input.name} type={input.type} label={input.label} {...props} value={this.state[input.name]}
-             onChange={this._onInputChange.bind(this, input)} disabled={this.props.disabled}
+             onChange={this._onInputChange.bind(null, input)} disabled={this.props.disabled}
              help={error} bsStyle={error ? 'error' : null}
-             labelClassName="col-xs-2" wrapperClassName="col-xs-10" onBlur={this._validateInput.bind(this, input)} />
+             labelClassName="col-xs-2" wrapperClassName="col-xs-10" onBlur={this._validateInput.bind(null, input)} />
     );
   },
   /**

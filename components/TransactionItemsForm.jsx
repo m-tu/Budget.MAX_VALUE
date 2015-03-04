@@ -2,20 +2,16 @@
 
 var React = require('react/addons');
 var ReactBootstrap = require('react-bootstrap');
-var LabelEditor = require('./LabelEditor.jsx');
 var Label = require('./Label.jsx');
 var LineItemForm = require('./LineItemForm.jsx');
 
-var Input = ReactBootstrap.Input;
 var Table = ReactBootstrap.Table;
 var Button = ReactBootstrap.Button;
 var ButtonToolbar = ReactBootstrap.ButtonToolbar;
 
-var ENTER_KEY = 13;
-//var ESCAPE_KEY = 27;
 var id = 0;
 
-var TransactionItemEditor = React.createClass({
+var TransactionItemsForm = React.createClass({
   mixins: [React.addons.LinkedStateMixin],
   propTypes: {
     labels: React.PropTypes.array.isRequired,
@@ -66,7 +62,8 @@ var TransactionItemEditor = React.createClass({
 
     if (this.state.editing === item.id) {
       row = (
-        <LineItemForm key={item.id} lineItem={item} onSave={this._handleSave} onCancel={this._handleSave} />
+        <LineItemForm labels={this.props.labels} key={item.id} lineItem={item}
+                      onSave={this._handleSave} onCancel={this._handleEdit} />
       );
     } else {
       row = (
@@ -76,8 +73,8 @@ var TransactionItemEditor = React.createClass({
           <td>{(item.labels || []).map(this._renderItemLabels)}</td>
           <td>
             <ButtonToolbar hidden={this.state.editing}>
-              <Button bsStyle="info" bsSize="xsmall" onClick={this._handleEdit.bind(this, item)}>Edit</Button>
-              <Button bsStyle="danger" bsSize="xsmall" onClick={this._onRemove.bind(this, item)}>Remove</Button>
+              <Button bsStyle="info" bsSize="xsmall" onClick={this._handleEdit.bind(null, item)}>Edit</Button>
+              <Button bsStyle="danger" bsSize="xsmall" onClick={this._onRemove.bind(null, item)}>Remove</Button>
             </ButtonToolbar>
           </td>
         </tr>
@@ -92,7 +89,7 @@ var TransactionItemEditor = React.createClass({
   },
   _handleEdit: function(item) {
     this.setState({
-      editing: item.id
+      editing: item ? item.id : null
     });
   },
   _handleSave: function(newItem) {
@@ -171,4 +168,4 @@ var TransactionItemEditor = React.createClass({
   //}
 });
 
-module.exports = TransactionItemEditor;
+module.exports = TransactionItemsForm;

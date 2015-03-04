@@ -80,7 +80,7 @@ var FileSelector = React.createClass({
     return (
       <div key={file._id} className={classes}>
         {fileElement}
-        <Glyphicon glyph="remove" className="text-danger" onClick={this._onRemoveFile.bind(this, file)} />
+        <Glyphicon glyph="remove" className="text-danger" onClick={this._onRemoveFile.bind(null, file)} />
       </div>
     );
   },

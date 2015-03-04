@@ -34,7 +34,7 @@ var FileGallery = React.createClass({
       <div key={file.id} className={classes}>
         <a href={viewUrl} target="_blank">
           {fileElement}
-          <Glyphicon glyph="remove" className="text-danger" onClick={this._onRemoveFile.bind(this, file)} />
+          <Glyphicon glyph="remove" className="text-danger" onClick={this._onRemoveFile.bind(null, file)} />
         </a>
       </div>
     );

@@ -14,8 +14,8 @@ module.exports = React.createClass({
     return (
       <Label>
         <span className="text">{this.props.label.name}</span>
-        {this.props.onEdit ? <Glyphicon glyph="edit" onClick={this.props.onEdit.bind(this, this.props.label)} /> : null}
-        {this.props.onDelete ? <Glyphicon glyph="remove" onClick={this.props.onDelete.bind(this, this.props.label)} /> : null }
+        {this.props.onEdit ? <Glyphicon glyph="edit" onClick={this.props.onEdit.bind(null, this.props.label)} /> : null}
+        {this.props.onDelete ? <Glyphicon glyph="remove" onClick={this.props.onDelete.bind(null, this.props.label)} /> : null }
       </Label>
     );
   }

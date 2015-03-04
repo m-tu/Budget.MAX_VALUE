@@ -4,7 +4,7 @@ var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
 var Label = require('./Label.jsx');
 
-module.exports = React.createClass({
+var LabelEditor = React.createClass({
   mixins: [React.addons.LinkedStateMixin],
   propTypes: {
     labels: React.PropTypes.array.isRequired,
@@ -19,7 +19,7 @@ module.exports = React.createClass({
   getInitialState: function() {
     return {
       labels: [],
-      showChoice: false,
+      showChoices: false,
       filterText: ''
     };
   },
@@ -60,7 +60,7 @@ module.exports = React.createClass({
   },
   _renderChoice: function(label) {
     return (
-      <div className="label-choice" key={label.id} onClick={this._onChoiceSelected.bind(this, label)}>{label.name}</div>
+      <div className="label-choice" key={label.id} onClick={this._onChoiceSelected.bind(null, label)}>{label.name}</div>
     );
   },
   _onChoiceSelected: function(label) {
@@ -81,16 +81,17 @@ module.exports = React.createClass({
     });
   },
   _hideChoices: function() {
+    var self = this;
     window.setTimeout(function() {
-      this.setState({
+      self.setState({
         showChoices: false
       });
-    }.bind(this),100)
+    }.bind(this), 100);
 
   },
   _renderLabel: function(label) {
     return (
-      <Label label={label} onDelete={this._onRemove} />
+      <Label key={label.id} label={label} onDelete={this._onRemove} />
     );
   },
   _onRemove: function(label) {
@@ -105,3 +106,5 @@ module.exports = React.createClass({
     }
   }
 });
+
+module.exports = LabelEditor;
