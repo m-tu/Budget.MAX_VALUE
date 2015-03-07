@@ -11,8 +11,6 @@ var router = require('./router');
 var HtmlComponent = React.createFactory(require('./components/Html.jsx'));
 var models = require('./models');
 
-require('es6-promise').polyfill();
-
 var server = express();
 var isDevEnv = server.get('env') === 'development';
 server.set('state namespace', 'App');

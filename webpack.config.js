@@ -1,6 +1,8 @@
 var webpack = require('webpack');
 var path = require('path');
 
+var babelLoader = 'babel-loader?experimental&optional=runtime';
+
 module.exports = {
   // Entry point for static analyzer:
   entry: [
@@ -35,10 +37,10 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: babelLoader
       }, {
         test: /\.jsx$/,
-        loaders: ['react-hot', 'babel-loader']
+        loaders: ['react-hot', babelLoader]
       }, {
         test: /\.less$/,
         //loader: ExtractTextPlugin.extract('style-loader', 'css-loader') // for production build
