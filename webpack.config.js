@@ -32,10 +32,13 @@ module.exports = {
 
   module: {
     loaders: [
-      // Pass *.jsx files through jsx-loader transform
       {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader'
+      }, {
         test: /\.jsx$/,
-        loaders: ['react-hot', 'jsx']
+        loaders: ['react-hot', 'babel-loader']
       }, {
         test: /\.less$/,
         //loader: ExtractTextPlugin.extract('style-loader', 'css-loader') // for production build
