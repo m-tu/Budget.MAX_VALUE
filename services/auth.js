@@ -1,8 +1,8 @@
 'use strict';
 
-var models  = require('../models');
+import models from '../models';
 
-module.exports = {
+export default {
   name: 'auth',
   create: function (req, resource, params, body, config, callback) {
     models.User.find({

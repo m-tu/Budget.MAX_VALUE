@@ -1,11 +1,13 @@
-var paymentMethods = require('../config/constants').PAYMENT_METHODS;
+'use strict';
+
+import { PAYMENT_METHODS } from '../config/constants';
 
 /**
  *
  * @param {{}} rawTransaction
  * @returns {{data: {}, errors: {}, hasErrors: boolean}}
  */
-module.exports = function(rawTransaction) {
+export default function(rawTransaction) {
   var errors = {};
   var transaction = {};
 
@@ -26,7 +28,7 @@ module.exports = function(rawTransaction) {
   }
 
   // method
-  if (paymentMethods.indexOf(rawTransaction.method) === -1) {
+  if (PAYMENT_METHODS.indexOf(rawTransaction.method) === -1) {
     errors.method = 'Invalid method';
   } else {
     transaction.method = rawTransaction.method;

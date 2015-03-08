@@ -1,17 +1,16 @@
 'use strict';
 
-var React = require('react/addons');
-var ReactBootstrap = require('react-bootstrap');
-var Label = require('./Label.jsx');
-var LineItemForm = require('./LineItemForm.jsx');
+import React from 'react/addons';
 
-var Table = ReactBootstrap.Table;
-var Button = ReactBootstrap.Button;
-var ButtonToolbar = ReactBootstrap.ButtonToolbar;
+import { Table, Button, ButtonToolbar } from 'react-bootstrap';
 
+import Label from './Label.jsx';
+import LineItemForm from './LineItemForm.jsx';
+
+// TODO think better solution
 var id = 0;
 
-var TransactionItemsForm = React.createClass({
+export default React.createClass({
   mixins: [React.addons.LinkedStateMixin],
   propTypes: {
     labels: React.PropTypes.array.isRequired,
@@ -167,5 +166,3 @@ var TransactionItemsForm = React.createClass({
   //  this.refs[ref].getDOMNode().firstChild.focus();
   //}
 });
-
-module.exports = TransactionItemsForm;

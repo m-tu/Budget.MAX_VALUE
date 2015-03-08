@@ -1,8 +1,14 @@
 'use strict';
 
-var React = require('react');
-var FluxibleApp = require('fluxible');
-var fetchrPlugin = require('fluxible-plugin-fetchr');
+import React from 'react';
+import FluxibleApp from 'fluxible';
+import fetchrPlugin from 'fluxible-plugin-fetchr';
+
+import UserStore from './stores/UserStore';
+import LabelStore from './stores/LabelStore';
+import TransactionStore from './stores/TransactionStore';
+import AuthStore from './stores/AuthStore';
+import CreateTransactionStore from './stores/CreateTransactionStore';
 
 var app = new FluxibleApp();
 
@@ -10,11 +16,11 @@ app.plug(fetchrPlugin({
   xhrPath: '/api'
 }));
 
-app.registerStore(require('./stores/UserStore'));
-app.registerStore(require('./stores/LabelStore'));
-app.registerStore(require('./stores/TransactionStore'));
-app.registerStore(require('./stores/AuthStore'));
-app.registerStore(require('./stores/CreateTransactionStore'));
+app.registerStore(UserStore);
+app.registerStore(LabelStore);
+app.registerStore(TransactionStore);
+app.registerStore(AuthStore);
+app.registerStore(CreateTransactionStore);
 
 // TODO ugly
 var createContext = app.createContext;
@@ -25,5 +31,4 @@ app.createContext = function() {
   return app.context;
 };
 
-
-module.exports = app;
+export default app;

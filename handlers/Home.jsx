@@ -1,10 +1,11 @@
-var React = require('react');
-var ReactRouterBootstrap = require('react-router');
-var FluxibleMixin = require('fluxible').Mixin;
-var AuthStore = require('../stores/AuthStore');
-var Link = ReactRouterBootstrap.Link;
+'use strict';
 
-module.exports = React.createClass({
+import React from 'react';
+import { Link } from 'react-router';
+import { FluxibleMixin } from 'fluxible';
+import AuthStore from '../stores/AuthStore';
+
+export default React.createClass({
   mixins: [FluxibleMixin],
   statics: {
     storeListeners: {

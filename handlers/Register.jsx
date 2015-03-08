@@ -1,9 +1,9 @@
 'use strict';
 
-var React = require('react');
-var createUser = require('../actions/createUser');
+import React from 'react';
+import createUser from '../actions/createUser';
 
-var Register = React.createClass({
+export default React.createClass({
   getInitialState: function() {
     return {
       username: ''
@@ -31,5 +31,3 @@ var Register = React.createClass({
     this.setState({username: ''});
   }
 });
-
-module.exports = Register;

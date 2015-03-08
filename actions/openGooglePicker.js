@@ -1,8 +1,8 @@
 'use strict';
 
-var googleApiUtil = require('../utils/googleApi');
+import googleApiUtil from '../utils/googleApi';
 
-module.exports = function(context) {
+export default function(context) {
   googleApiUtil.openPicker().then(function(files) {
     context.dispatch('GOOGLE_PICKER_FILES_ADDED', files);
   }).catch(function(err) {

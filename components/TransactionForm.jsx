@@ -1,8 +1,9 @@
-var React = require('react');
+'use strict';
 
-var ReactBootstrap = require('react-bootstrap');
-var Input = ReactBootstrap.Input;
-var validateTransaction = require('../validators/transaction');
+import React from 'react';
+
+import { Input } from 'react-bootstrap';
+import validateTransaction from '../validators/transaction';
 
 var formElements = [
   {
@@ -37,7 +38,7 @@ var formElements = [
   }
 ];
 
-var TransactionForm = React.createClass({
+export default React.createClass({
   propTypes: {
     transaction: React.PropTypes.object.isRequired,
     onChange: React.PropTypes.func,
@@ -115,4 +116,3 @@ var TransactionForm = React.createClass({
     }
   }
 });
-module.exports = TransactionForm;

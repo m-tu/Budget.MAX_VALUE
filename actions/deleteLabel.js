@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(context, label) {
+export default function(context, label) {
   context.dispatch('DELETE_LABEL', label);
 
   context.service.delete('label', {id: label.id}, {}, function(err) {

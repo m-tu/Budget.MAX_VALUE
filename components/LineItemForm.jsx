@@ -1,17 +1,13 @@
 'use strict';
 
-var React = require('react');
-var ReactBootstrap = require('react-bootstrap');
-var LabelEditor = require('./LabelEditor.jsx');
-
-var Input = ReactBootstrap.Input;
-var Button = ReactBootstrap.Button;
-var ButtonToolbar = ReactBootstrap.ButtonToolbar;
+import React from 'react';
+import LabelEditor from './LabelEditor.jsx';
+import { Input, Button, ButtonToolbar } from 'react-bootstrap';
 
 var ENTER_KEY = 13;
 var ESCAPE_KEY = 27;
 
-var LineItemForm = React.createClass({
+export default React.createClass({
   mixins: [React.addons.LinkedStateMixin],
   propTypes: {
     lineItem: React.PropTypes.object,
@@ -126,5 +122,3 @@ var LineItemForm = React.createClass({
     return Math.round(amount * 100) / 100;
   }
 });
-
-module.exports = LineItemForm;

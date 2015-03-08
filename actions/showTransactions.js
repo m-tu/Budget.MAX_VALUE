@@ -1,9 +1,9 @@
 'use strict';
 
-var TransactionStore = require('../stores/TransactionStore');
-var showTransaction = require('./showTransaction');
+import TransactionStore from '../stores/TransactionStore';
+import showTransaction from './showTransaction';
 
-module.exports = function (context, params) {
+export default function (context, params) {
 
   if (typeof params === 'object' && params !== null && typeof params.id !== 'undefined') {
     return context.executeAction(showTransaction, params.id, function() {});

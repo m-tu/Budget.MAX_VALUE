@@ -1,6 +1,8 @@
-var React = require('react');
+'use strict';
 
-var NotFound = module.exports = React.createClass({
+import React from 'react';
+
+export default React.createClass({
   render: function() {
     return <h1>Get rekt</h1>;
   }

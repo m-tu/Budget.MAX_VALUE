@@ -1,8 +1,8 @@
 'use strict';
 
-var models  = require('../models');
-var validateTransaction = require('../validators/transaction');
-var request = require('request');
+import models from '../models';
+import validateTransaction from '../validators/transaction';
+import request from 'request';
 
 function saveFiles(transaction, files) {
   if (!files || files.length === 0) {
@@ -40,7 +40,7 @@ function saveFiles(transaction, files) {
   });
 }
 
-module.exports = {
+export default {
   name: 'transactions',
   read: function (req, resource, params, config, callback) {
     var user = req.session.user;

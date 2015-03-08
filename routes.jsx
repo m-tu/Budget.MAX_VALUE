@@ -1,20 +1,27 @@
-var React = require('react');
-var Router = require('react-router');
-var DefaultRoute = Router.DefaultRoute;
-var Route = Router.Route;
-var NotFoundRoute = Router.NotFoundRoute;
+import React from 'react';
+import { Route, DefaultRoute, NotFoundRoute } from 'react-router';
 
-module.exports =  (
-  <Route name="root" path="/" handler={require('./handlers/Root.jsx')}>
-    <Route name="login" handler={require('./handlers/Login.jsx')}/>
-    <Route name="register" handler={require('./handlers/Register.jsx')}/>
+import Root from './handlers/Root.jsx';
+import Login from './handlers/Login.jsx';
+import Register from './handlers/Register.jsx';
+import Transactions from './handlers/Transactions.jsx';
+import CreateTransaction from './handlers/CreateTransaction.jsx';
+import UpdateTransaction from './handlers/UpdateTransaction.jsx';
+import Labels from './handlers/Labels.jsx';
+import Home from './handlers/Home.jsx';
+import NotFound from './handlers/NotFound.jsx';
 
-    <Route name="transactions" handler={require('./handlers/Transactions.jsx')}/>
-    <Route name="createTransaction" handler={require('./handlers/CreateTransaction.jsx')}/>
-    <Route name="updateTransaction" path="updateTransaction/:id" handler={require('./handlers/UpdateTransaction.jsx')}/>
-    <Route name="labels" path="labels" handler={require('./handlers/Labels.jsx')}/>
+export default (
+  <Route name="root" path="/" handler={Root}>
+    <Route name="login" handler={Login}/>
+    <Route name="register" handler={Register}/>
 
-    <DefaultRoute name="home" handler={require('./handlers/Home.jsx')}/>
-    <NotFoundRoute name="not-found" handler={require('./handlers/NotFound.jsx')}/>
+    <Route name="transactions" handler={Transactions}/>
+    <Route name="createTransaction" handler={CreateTransaction}/>
+    <Route name="updateTransaction" path="updateTransaction/:id" handler={UpdateTransaction}/>
+    <Route name="labels" path="labels" handler={Labels}/>
+
+    <DefaultRoute name="home" handler={Home}/>
+    <NotFoundRoute name="not-found" handler={NotFound}/>
   </Route>
 );

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (context, payload, done) {
+export default function (context, payload, done) {
   context.dispatch('RECEIVE_LABELS_START', payload);
 
   context.service.read('label', {}, {}, function (err, labels) {

@@ -1,8 +1,8 @@
 'use strict';
 
-var LabelStore = require('../stores/LabelStore');
+import LabelStore from '../stores/LabelStore';
 
-module.exports = function(context, label) {
+export default function(context, label) {
   context.service.update('label', {id: label.id}, label, function(err, newLabel) {
     if (err) {
       return;

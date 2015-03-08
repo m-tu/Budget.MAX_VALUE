@@ -1,12 +1,12 @@
 'use strict';
 
-var React = require('react');
-var Router = require('react-router');
-var router = require('./router');
-var app = require('./app');
+import React from 'react';
+import Router from 'react-router';
+import router from './router';
+import app from './app';
 
 // dynamic stylesheet
-require('./assets/style.less');
+import './assets/style.less';
 
 window.React = React; // For chrome dev tool support
 

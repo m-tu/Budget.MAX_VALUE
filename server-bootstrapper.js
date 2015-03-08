@@ -1,15 +1,23 @@
 'use strict';
 
-var express = require('express');
-var serialize = require('serialize-javascript');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var RedisStore = require('connect-redis')(session);
-var React = require('react');
-var app = require('./app');
-var router = require('./router');
-var HtmlComponent = React.createFactory(require('./components/Html.jsx'));
-var models = require('./models');
+import express from 'express';
+import serialize from 'serialize-javascript';
+import bodyParser from 'body-parser';
+import session from 'express-session';
+import connectRedis from 'connect-redis';
+import React from 'react';
+import app from './app';
+import router from './router';
+import Html from './components/Html.jsx';
+import models from './models';
+
+import authService from './services/auth';
+import labelService from './services/label';
+import transactionService from './services/transaction';
+import userService from './services/user';
+
+var HtmlComponent = React.createFactory(Html);
+var RedisStore = connectRedis(session);
 
 var server = express();
 var isDevEnv = server.get('env') === 'development';
@@ -72,10 +80,10 @@ var fetchrPlugin = app.getPlugin('FetchrPlugin');
 
 // Register our users REST service
 // TODO read dynamically
-fetchrPlugin.registerService(require('./services/user'));
-fetchrPlugin.registerService(require('./services/label'));
-fetchrPlugin.registerService(require('./services/auth'));
-fetchrPlugin.registerService(require('./services/transactions'));
+fetchrPlugin.registerService(userService);
+fetchrPlugin.registerService(labelService);
+fetchrPlugin.registerService(authService);
+fetchrPlugin.registerService(transactionService);
 
 // Set up the fetchr middleware
 server.use(fetchrPlugin.getXhrPath(), fetchrPlugin.getMiddleware());

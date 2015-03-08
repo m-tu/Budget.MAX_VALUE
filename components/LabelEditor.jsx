@@ -1,10 +1,10 @@
-var React = require('react');
+'use strict';
 
-var ReactBootstrap = require('react-bootstrap');
-var Input = ReactBootstrap.Input;
-var Label = require('./Label.jsx');
+import React from 'react';
+import { Input } from 'react-bootstrap';
+import Label from './Label.jsx';
 
-var LabelEditor = React.createClass({
+export default React.createClass({
   mixins: [React.addons.LinkedStateMixin],
   propTypes: {
     labels: React.PropTypes.array.isRequired,
@@ -106,5 +106,3 @@ var LabelEditor = React.createClass({
     }
   }
 });
-
-module.exports = LabelEditor;

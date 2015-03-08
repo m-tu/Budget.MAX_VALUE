@@ -1,21 +1,21 @@
-var React = require('react');
+'use strict';
 
-var AuthMixin = require('../mixins/Auth');
-var FluxibleMixin = require('fluxible').Mixin;
+import React from 'react';
 
-var LabelStore = require('../stores/LabelStore');
+import AuthMixin from '../mixins/Auth';
+import { FluxibleMixin } from 'fluxible';
 
-var showLabelsAction = require('../actions/showLabels');
-var createTransactionAction = require('../actions/createTransaction');
+import LabelStore from '../stores/LabelStore';
 
-var TransactionForm = require('../components/TransactionForm.jsx');
-var TransactionItemsForm = require('../components/TransactionItemsForm.jsx');
+import showLabelsAction from '../actions/showLabels';
+import createTransactionAction from '../actions/createTransaction';
 
-var ReactBootstrap = require('react-bootstrap');
-var Alert = ReactBootstrap.Alert;
-var Button = ReactBootstrap.Button;
+import TransactionForm from '../components/TransactionForm.jsx';
+import TransactionItemsForm from '../components/TransactionItemsForm.jsx';
 
-var CreateTransaction = React.createClass({
+import { Alert, Button } from 'react-bootstrap';
+
+export default React.createClass({
   propTypes: {
     context: React.PropTypes.object.isRequired
   },
@@ -102,4 +102,3 @@ var CreateTransaction = React.createClass({
     this.setState(this._getStateFromStores());
   }
 });
-module.exports = CreateTransaction;

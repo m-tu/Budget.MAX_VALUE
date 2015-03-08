@@ -1,10 +1,10 @@
-var React = require('react');
+'use strict';
 
-var ReactBootstrap = require('react-bootstrap');
-var Label = ReactBootstrap.Label;
-var Glyphicon = ReactBootstrap.Glyphicon;
+import React from 'react';
 
-module.exports = React.createClass({
+import { Label, Glyphicon } from 'react-bootstrap';
+
+export default React.createClass({
   propTypes: {
     label: React.PropTypes.object.isRequired,
     onDelete: React.PropTypes.func,

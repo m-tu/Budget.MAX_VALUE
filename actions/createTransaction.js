@@ -1,9 +1,9 @@
 'use strict';
 
-var googleApiUtil = require('../utils/googleApi');
-var router = require('../router');
+import googleApiUtil from '../utils/googleApi';
+import router from '../router';
 
-module.exports = function(context, transaction) {
+export default function(context, transaction) {
   context.dispatch('UPDATE_TRANSACTION_START', transaction);
   transaction.accessToken = googleApiUtil.getAccessToken();
 

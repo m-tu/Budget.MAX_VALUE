@@ -1,12 +1,8 @@
-/**
- * Copyright 2014, Yahoo! Inc.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
 'use strict';
-var createStore = require('fluxible/utils/createStore');
-var routesConfig = require('../routes');
 
-var ApplicationStore = createStore({
+import createStore from 'fluxible/utils/createStore';
+
+export default createStore({
   storeName: 'ApplicationStore',
   handlers: {
     CHANGE_ROUTE_SUCCESS: 'handleNavigate',
@@ -18,7 +14,6 @@ var ApplicationStore = createStore({
     this.currentPageName = null;
     this.currentPage = null;
     this.currentRoute = null;
-    this.pages = routesConfig;
     this.pageTitle = '';
   },
   handleNavigate: function(route) {
@@ -70,5 +65,3 @@ var ApplicationStore = createStore({
     this.pageTitle = state.pageTitle;
   }
 });
-
-module.exports = ApplicationStore;

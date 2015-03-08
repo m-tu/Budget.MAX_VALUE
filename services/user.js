@@ -1,8 +1,8 @@
 'use strict';
 
-var models  = require('../models');
+import models from '../models';
 
-module.exports = {
+export default {
   name: 'user',
   read: function (req, resource, params, config, callback) {
     models.User.findAll().then(function(users) {

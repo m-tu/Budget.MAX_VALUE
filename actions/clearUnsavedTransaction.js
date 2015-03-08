@@ -1,5 +1,5 @@
 'use strict';
 
-module.exports = function(context, transaction) {
+export default function(context, transaction) {
   context.dispatch('CLEAR_UNSAVED_TRANSACTION', transaction);
 };

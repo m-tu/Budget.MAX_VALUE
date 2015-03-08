@@ -1,8 +1,8 @@
 'use strict';
 
-var createStore = require('fluxible/utils/createStore');
+import createStore from 'fluxible/utils/createStore';
 
-module.exports = createStore({
+export default createStore({
   storeName: 'TransactionStore',
   handlers: {
     RECEIVE_TRANSACTION_SUCCESS: '_receiveTransaction',

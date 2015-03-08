@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   var LineItem = sequelize.define('LineItem', {
     name: DataTypes.STRING,
     amount: DataTypes.DECIMAL(10, 2)

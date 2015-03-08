@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   var Label = sequelize.define('Label', {
     name: DataTypes.STRING
   }, {

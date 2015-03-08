@@ -1,8 +1,8 @@
 'use strict';
 
-var models  = require('../models');
+import models from '../models';
 
-module.exports = {
+export default {
   name: 'label',
   read: function (req, resource, params, config, callback) {
     var user = req.session.user;

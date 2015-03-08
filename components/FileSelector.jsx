@@ -1,16 +1,15 @@
 'use strict';
 
-var React = require('react/addons');
-var ReactBootstrap = require('react-bootstrap');
-var Button = ReactBootstrap.Button;
-var Glyphicon = ReactBootstrap.Glyphicon;
+import React from 'react/addons';
+import { Button, Glyphicon } from 'react-bootstrap';
+
 var cx = React.addons.classSet;
 
 /**
  *
  * @type {*|Function}
  */
-var FileSelector = React.createClass({
+export default React.createClass({
   _dragEnterDocumentCount: 0,
   _dragEnterDropZoneCount: 0,
   _nextFileId: 0,
@@ -200,5 +199,3 @@ var FileSelector = React.createClass({
     reader.readAsDataURL(file);
   }
 });
-
-module.exports = FileSelector;

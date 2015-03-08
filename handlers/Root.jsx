@@ -1,10 +1,10 @@
-var React = require('react');
-var Router = require('react-router');
-var Header = require('../components/Header.jsx');
-var Link = Router.Link;
-var RouteHandler  = Router.RouteHandler;
+'use strict';
 
-var Root = module.exports = React.createClass({
+import React from 'react';
+import { Link, RouteHandler } from 'react-router';
+import Header from '../components/Header.jsx';
+
+export default React.createClass({
   render: function() {
     return (
       <div>

@@ -1,32 +1,30 @@
 'use strict';
 
-var React = require('react/addons');
-var Router = require('react-router');
+import React from 'react/addons';
+import { State } from 'react-router';
+import { FluxibleMixin } from 'fluxible';
 
-var FluxibleMixin = require('fluxible').Mixin;
-var TransactionStore = require('../stores/TransactionStore');
-var LabelStore = require('../stores/LabelStore');
-var CreateTransactionStore = require('../stores/CreateTransactionStore');
+import TransactionStore from '../stores/TransactionStore';
+import LabelStore from '../stores/LabelStore';
+import CreateTransactionStore from '../stores/CreateTransactionStore';
 
-var createTransaction = require('../actions/createTransaction');
-var clearUnsavedTransaction = require('../actions/clearUnsavedTransaction');
-var showLabelsAction = require('../actions/showLabels');
-var showTransactions = require('../actions/showTransactions');
+import createTransaction from '../actions/createTransaction';
+import clearUnsavedTransaction from '../actions/clearUnsavedTransaction';
+import showLabelsAction from '../actions/showLabels';
+import showTransactions from '../actions/showTransactions';
 
-var ReactBootstrap = require('react-bootstrap');
-var Input = ReactBootstrap.Input;
-var Alert = ReactBootstrap.Alert;
+import { Input, Alert } from 'react-bootstrap';
 
-var AuthMixin = require('../mixins/Auth');
+import AuthMixin from '../mixins/Auth';
 
-var TransactionForm = require('../components/TransactionForm.jsx');
-var TransactionItemsForm = require('../components/TransactionItemsForm.jsx');
+import TransactionForm from '../components/TransactionForm.jsx';
+import TransactionItemsForm from '../components/TransactionItemsForm.jsx';
 
-var Transactions = React.createClass({
+export default React.createClass({
   mixins: [
     AuthMixin,
     React.addons.LinkedStateMixin,
-    Router.State,
+    State,
     FluxibleMixin
   ],
   statics: {
@@ -123,5 +121,3 @@ var Transactions = React.createClass({
     this.props.context.executeAction(clearUnsavedTransaction);
   }
 });
-
-module.exports = Transactions;

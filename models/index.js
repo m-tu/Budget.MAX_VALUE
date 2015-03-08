@@ -1,11 +1,13 @@
 'use strict';
 
-var fs        = require('fs');
-var path      = require('path');
-var Sequelize = require('sequelize');
-var basename  = path.basename(module.filename);
-var env       = process.env.NODE_ENV || 'development';
-var config    = require('../config/config.json')[env];
+import fs from 'fs';
+import path from 'path';
+import Sequelize from 'sequelize';
+import baseConfig from '../config/config.json';
+
+var basename = path.basename(module.filename);
+var env = process.env.NODE_ENV || 'development';
+var config = baseConfig[env];
 
 config.define = {
   timestamps: false
@@ -33,4 +35,4 @@ Object.keys(db).forEach(function(modelName) {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+export default db;

@@ -1,8 +1,8 @@
 'use strict';
 
-var router = require('../router');
+import router from '../router';
 
-module.exports = function (context, payload, done) {
+export default function (context, payload, done) {
   context.dispatch('LOG_OUT_START');
 
   context.service.delete('auth', payload, {}, function (err) {

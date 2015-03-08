@@ -1,16 +1,14 @@
 'use strict';
 
-var React = require('react/addons');
-var Router = require('react-router');
-var TransactionStore = require('../stores/TransactionStore');
-var FluxibleMixin = require('fluxible').Mixin;
-var showTransactions = require('../actions/showTransactions');
+import React from 'react/addons';
+import { Link } from 'react-router';
+import TransactionStore from '../stores/TransactionStore';
+import { FluxibleMixin } from 'fluxible';
+import showTransactions from '../actions/showTransactions';
 
-var AuthMixin = require('../mixins/Auth');
+import AuthMixin from '../mixins/Auth';
 
-var Link = Router.Link;
-
-var Transactions = React.createClass({
+export default React.createClass({
   mixins: [AuthMixin, FluxibleMixin],
   statics: {
     storeListeners: {
@@ -63,5 +61,3 @@ var Transactions = React.createClass({
     );
   }
 });
-
-module.exports = Transactions;

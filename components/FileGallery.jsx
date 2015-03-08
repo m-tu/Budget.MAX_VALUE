@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react/addons');
-var ReactBootstrap = require('react-bootstrap');
-var Glyphicon = ReactBootstrap.Glyphicon;
+import React from 'react/addons';
+import ReactBootstrap, {Glyphicon} from 'react-bootstrap';
+
 var cx = React.addons.classSet;
 
-var FileGallery = React.createClass({
+export default React.createClass({
   propTypes: {
     files: React.PropTypes.array
   },
@@ -44,5 +44,3 @@ var FileGallery = React.createClass({
     // TODO implement
   }
 });
-
-module.exports = FileGallery;

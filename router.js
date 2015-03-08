@@ -1,8 +1,8 @@
 'use strict';
 
-var Router = require('react-router');
+import Router from 'react-router';
 
-module.exports = {
+var router = {
   router: null,
 
   makePath: function(to, params, query) {
@@ -40,6 +40,9 @@ module.exports = {
   }
 };
 
+export default router;
+
 // routes might require views that might require actions that might require this file
 // so we first export some stuff and then require routes
-module.exports.routes = require('./routes');
+import routes from './routes.jsx';
+router.routes = routes;

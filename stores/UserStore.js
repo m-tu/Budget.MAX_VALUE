@@ -1,7 +1,8 @@
 'use strict';
-var createStore = require('fluxible/utils/createStore');
 
-module.exports = createStore({
+import createStore from 'fluxible/utils/createStore';
+
+export default createStore({
   storeName: 'UserStore',
   handlers: {
     RECEIVE_USERS_SUCCESS: '_receiveUsers',

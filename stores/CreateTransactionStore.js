@@ -1,8 +1,8 @@
 'use strict';
 
-var createStore = require('fluxible/utils/createStore');
+import createStore from 'fluxible/utils/createStore';
 
-module.exports = createStore({
+export default createStore({
   storeName: 'CreateTransactionStore',
   handlers: {
     'GOOGLE_PICKER_FILES_ADDED': '_googlePickerFilesAdded'

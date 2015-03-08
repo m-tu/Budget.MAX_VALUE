@@ -1,14 +1,12 @@
 'use strict';
 
-var React = require('react/addons');
-var ReactBootstrap = require('react-bootstrap');
-var AuthStore = require('../stores/AuthStore');
-var FluxibleMixin = require('fluxible').Mixin;
-var Input = ReactBootstrap.Input;
-var Alert = ReactBootstrap.Alert;
-var login = require('../actions/login');
+import React from 'react/addons';
+import { Input, Alert } from 'react-bootstrap';
+import AuthStore from '../stores/AuthStore';
+import { FluxibleMixin } from 'fluxible';
+import login from '../actions/login';
 
-var Login = React.createClass({
+export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, FluxibleMixin],
   statics: {
     storeListeners: {
@@ -62,5 +60,3 @@ var Login = React.createClass({
     });
   }
 });
-
-module.exports = Login;

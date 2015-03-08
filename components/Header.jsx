@@ -1,16 +1,14 @@
 'use strict';
 
-var React = require('react');
-var ReactBootstrap = require('react-bootstrap');
-var Navbar = ReactBootstrap.Navbar;
-var Nav = ReactBootstrap.Nav;
-var AuthStore = require('../stores/AuthStore');
-var FluxibleMixin = require('fluxible').Mixin;
-var logout = require('../actions/logout');
-var ReactRouterBootstrap = require('react-router-bootstrap');
-var NavItemLink = ReactRouterBootstrap.NavItemLink;
+import React from 'react';
+import { Navbar, Nav } from 'react-bootstrap';
+import { FluxibleMixin } from 'fluxible';
 
-var Header = React.createClass({
+import AuthStore from '../stores/AuthStore';
+import logout from '../actions/logout';
+import { NavItemLink } from 'react-router-bootstrap';
+
+export default React.createClass({
   mixins: [FluxibleMixin],
   statics: {
     storeListeners: {
@@ -59,5 +57,3 @@ var Header = React.createClass({
     this.props.context.executeAction(logout);
   }
 });
-
-module.exports = Header;

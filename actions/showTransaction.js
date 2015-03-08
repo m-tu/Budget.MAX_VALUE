@@ -1,8 +1,8 @@
 'use strict';
 
-var TransactionStore = require('../stores/TransactionStore');
+import TransactionStore from '../stores/TransactionStore';
 
-module.exports = function (context, transactionId) {
+export default function (context, transactionId) {
 
   var transactionStore = context.getStore(TransactionStore);
 

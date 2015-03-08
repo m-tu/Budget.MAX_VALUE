@@ -1,8 +1,8 @@
 'use strict';
 
-var paymentMethods = require('../config/constants').PAYMENT_METHODS;
+import { PAYMENT_METHODS } from '../config/constants';
 
-module.exports = function(sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   var Transaction = sequelize.define('Transaction', {
     date: {
       type: DataTypes.DATE,
@@ -17,7 +17,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     method: {
-      type: DataTypes.ENUM(paymentMethods),
+      type: DataTypes.ENUM(PAYMENT_METHODS),
       allowNull: false
     },
     location: {

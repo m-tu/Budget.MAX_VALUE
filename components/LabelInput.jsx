@@ -1,10 +1,10 @@
-var React = require('react');
+'use strict';
 
-var ReactBootstrap = require('react-bootstrap');
-var Input = ReactBootstrap.Input;
-var Button = ReactBootstrap.Button;
+import React from 'react';
 
-var LabelInput = React.createClass({
+import { Input, Button } from 'react-bootstrap';
+
+export default React.createClass({
   propTypes: {
     onChange: React.PropTypes.func.isRequired,
     label: React.PropTypes.string,
@@ -67,5 +67,3 @@ var LabelInput = React.createClass({
     }
   }
 });
-
-module.exports = LabelInput;

@@ -1,8 +1,9 @@
 'use strict';
-var createStore = require('fluxible/utils/createStore');
+
+import createStore from 'fluxible/utils/createStore';
 
 // TODO do we need this store?
-module.exports = createStore({
+export default createStore({
   storeName: 'ApiStore',
   handlers: {
     GOOGLE_API_LOADED: '_googleApiLoaded',

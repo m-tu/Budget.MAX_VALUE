@@ -1,7 +1,5 @@
 'use strict';
 
-module.exports = function(sequelize) {
-  var LineItemLabel = sequelize.define('LineItemLabels');
-
-  return LineItemLabel;
+export default function(sequelize) {
+  return sequelize.define('LineItemLabels');
 };

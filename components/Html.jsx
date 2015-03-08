@@ -1,8 +1,8 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
-var Component = React.createClass({
+export default React.createClass({
   render: function() {
     return (
       <html>
@@ -28,6 +28,3 @@ var Component = React.createClass({
     );
   }
 });
-
-
-module.exports = Component;

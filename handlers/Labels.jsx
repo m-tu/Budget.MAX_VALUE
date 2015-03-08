@@ -1,21 +1,19 @@
 'use strict';
 
-var React = require('react/addons');
-var AuthMixin = require('../mixins/Auth');
+import React from 'react/addons';
+import AuthMixin from '../mixins/Auth';
 
-var FluxibleMixin = require('fluxible').Mixin;
-var LabelStore = require('../stores/LabelStore');
+import { FluxibleMixin }from 'fluxible';
+import LabelStore from '../stores/LabelStore';
 
-var updateLabelsAction = require('../actions/updateLabel');
-var deleteLabelAction = require('../actions/deleteLabel');
-var showLabelsAction = require('../actions/showLabels');
+import updateLabelsAction from '../actions/updateLabel';
+import deleteLabelAction from '../actions/deleteLabel';
+import showLabelsAction from '../actions/showLabels';
 
-var LabelInput = require('../components/LabelInput.jsx');
-var Label = require('../components/Label.jsx');
+import LabelInput from '../components/LabelInput.jsx';
+import Label from '../components/Label.jsx';
 
-var ReactBootstrap = require('react-bootstrap');
-var Button = ReactBootstrap.Button;
-var Modal = ReactBootstrap.Modal;
+import { Button, Modal, OverlayMixin } from 'react-bootstrap';
 
 // some hack to use refs in modal
 var MyModal = React.createClass({
@@ -46,9 +44,9 @@ var MyModal = React.createClass({
   }
 });
 
-var Transactions = React.createClass({
+export default React.createClass({
   mixins: [
-    ReactBootstrap.OverlayMixin,
+    OverlayMixin,
     FluxibleMixin
   ],
   statics: {
@@ -88,7 +86,7 @@ var Transactions = React.createClass({
   },
   _renderLabel: function(label) {
     return (
-      <Label label={label} onDelete={this._deleteLabel} onEdit={this._editLabel} />
+      <Label key={label.id} label={label} onDelete={this._deleteLabel} onEdit={this._editLabel} />
     );
   },
   _deleteLabel: function(label) {
@@ -125,5 +123,3 @@ var Transactions = React.createClass({
     });
   }
 });
-
-module.exports = Transactions;
