@@ -10,11 +10,7 @@ import app from './app';
 import router from './router';
 import Html from './components/Html.jsx';
 import models from './models';
-
-import authService from './services/auth';
-import labelService from './services/label';
-import transactionService from './services/transaction';
-import userService from './services/user';
+import * as services from './services';
 
 var HtmlComponent = React.createFactory(Html);
 var RedisStore = connectRedis(session);
@@ -79,11 +75,9 @@ server.get('/files/:id([0-9]+)', function(req, res, next) {
 var fetchrPlugin = app.getPlugin('FetchrPlugin');
 
 // Register our users REST service
-// TODO read dynamically
-fetchrPlugin.registerService(userService);
-fetchrPlugin.registerService(labelService);
-fetchrPlugin.registerService(authService);
-fetchrPlugin.registerService(transactionService);
+for (let service in services) {
+  fetchrPlugin.registerService(services[service]);
+}
 
 // Set up the fetchr middleware
 server.use(fetchrPlugin.getXhrPath(), fetchrPlugin.getMiddleware());
