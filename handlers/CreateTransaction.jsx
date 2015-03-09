@@ -1,19 +1,16 @@
 'use strict';
 
 import React from 'react';
-
 import AuthMixin from '../mixins/Auth';
+
 import { FluxibleMixin } from 'fluxible';
-
-import LabelStore from '../stores/LabelStore';
-
-import showLabelsAction from '../actions/showLabels';
-import createTransactionAction from '../actions/createTransaction';
+import { LabelStore } from '../stores';
+import { showLabelsAction, createTransactionAction } from '../actions';
+import { Alert, Button } from 'react-bootstrap';
 
 import TransactionForm from '../components/TransactionForm.jsx';
 import TransactionItemsForm from '../components/TransactionItemsForm.jsx';
 
-import { Alert, Button } from 'react-bootstrap';
 
 export default React.createClass({
   propTypes: {

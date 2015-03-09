@@ -4,16 +4,12 @@ import React from 'react/addons';
 import AuthMixin from '../mixins/Auth';
 
 import { FluxibleMixin }from 'fluxible';
-import LabelStore from '../stores/LabelStore';
-
-import updateLabelsAction from '../actions/updateLabel';
-import deleteLabelAction from '../actions/deleteLabel';
-import showLabelsAction from '../actions/showLabels';
+import { LabelStore } from '../stores';
+import { updateLabelsAction, deleteLabelAction, showLabelsAction } from '../actions';
+import { Button, Modal, OverlayMixin } from 'react-bootstrap';
 
 import LabelInput from '../components/LabelInput.jsx';
 import Label from '../components/Label.jsx';
-
-import { Button, Modal, OverlayMixin } from 'react-bootstrap';
 
 // some hack to use refs in modal
 var MyModal = React.createClass({

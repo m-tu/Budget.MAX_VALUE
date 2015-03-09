@@ -1,6 +1,6 @@
 'use strict';
 
-import AuthStore from '../stores/AuthStore';
+import { AuthStore } from '../stores';
 import app from '../app';
 
 export default {

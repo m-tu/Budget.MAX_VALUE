@@ -3,16 +3,10 @@
 import React from 'react/addons';
 import { State } from 'react-router';
 import { FluxibleMixin } from 'fluxible';
-
-import TransactionStore from '../stores/TransactionStore';
-import LabelStore from '../stores/LabelStore';
-import CreateTransactionStore from '../stores/CreateTransactionStore';
-
-import createTransaction from '../actions/createTransaction';
-import clearUnsavedTransaction from '../actions/clearUnsavedTransaction';
-import showLabelsAction from '../actions/showLabels';
-import showTransactions from '../actions/showTransactions';
-
+import { CreateTransactionStore, LabelStore, TransactionStore } from '../stores';
+import {
+  clearUnsavedTransactionAction, createTransactionAction, showLabelsAction, showTransactionsAction
+  } from '../actions';
 import { Input, Alert } from 'react-bootstrap';
 
 import AuthMixin from '../mixins/Auth';
@@ -59,7 +53,7 @@ export default React.createClass({
     var transactionId = this._getTransactionId();
 
     if (transactionId !== null) {
-      this.props.context.executeAction(showTransactions, {id: transactionId});
+      this.props.context.executeAction(showTransactionsAction, {id: transactionId});
     }
   },
   componentDidMount: function() {
@@ -115,9 +109,9 @@ export default React.createClass({
       errors: {}
     });
 
-    this.props.context.executeAction(createTransaction, result.data);
+    this.props.context.executeAction(createTransactionAction, result.data);
   },
   _clearUnsavedData: function() {
-    this.props.context.executeAction(clearUnsavedTransaction);
+    this.props.context.executeAction(clearUnsavedTransactionAction);
   }
 });

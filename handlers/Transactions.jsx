@@ -2,9 +2,9 @@
 
 import React from 'react/addons';
 import { Link } from 'react-router';
-import TransactionStore from '../stores/TransactionStore';
+import { TransactionStore } from '../stores';
 import { FluxibleMixin } from 'fluxible';
-import showTransactions from '../actions/showTransactions';
+import { showTransactionsAction } from '../actions';
 
 import AuthMixin from '../mixins/Auth';
 
@@ -21,7 +21,7 @@ export default React.createClass({
     };
   },
   componentDidMount: function() {
-    this.props.context.executeAction(showTransactions);
+    this.props.context.executeAction(showTransactionsAction);
   },
   _onChange: function() {
     this.setState(this.getInitialState());

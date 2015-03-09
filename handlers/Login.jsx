@@ -2,9 +2,9 @@
 
 import React from 'react/addons';
 import { Input, Alert } from 'react-bootstrap';
-import AuthStore from '../stores/AuthStore';
+import { AuthStore } from '../stores';
 import { FluxibleMixin } from 'fluxible';
-import login from '../actions/login';
+import { loginAction } from '../actions';
 
 export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, FluxibleMixin],
@@ -54,7 +54,7 @@ export default React.createClass({
       return;
     }
 
-    this.props.context.executeAction(login, {
+    this.props.context.executeAction(loginAction, {
       username: username,
       password: password
     });

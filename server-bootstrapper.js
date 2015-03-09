@@ -75,8 +75,8 @@ server.get('/files/:id([0-9]+)', function(req, res, next) {
 var fetchrPlugin = app.getPlugin('FetchrPlugin');
 
 // Register our users REST service
-for (let service in services) {
-  fetchrPlugin.registerService(services[service]);
+for (let serviceName in services) {
+  fetchrPlugin.registerService(services[serviceName]);
 }
 
 // Set up the fetchr middleware

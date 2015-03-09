@@ -4,8 +4,8 @@ import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { FluxibleMixin } from 'fluxible';
 
-import AuthStore from '../stores/AuthStore';
-import logout from '../actions/logout';
+import { AuthStore } from '../stores';
+import { logoutAction } from '../actions';
 import { NavItemLink } from 'react-router-bootstrap';
 
 export default React.createClass({
@@ -54,6 +54,6 @@ export default React.createClass({
   _logOut: function(event) {
     event.preventDefault();
 
-    this.props.context.executeAction(logout);
+    this.props.context.executeAction(logoutAction);
   }
 });

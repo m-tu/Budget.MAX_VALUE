@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react/addons';
-import ReactBootstrap, {Glyphicon} from 'react-bootstrap';
+import { Glyphicon } from 'react-bootstrap';
 
 var cx = React.addons.classSet;
 

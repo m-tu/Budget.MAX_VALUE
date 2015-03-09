@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import createUser from '../actions/createUser';
+import { createUserAction } from '../actions';
 
 export default React.createClass({
   getInitialState: function() {
@@ -24,7 +24,7 @@ export default React.createClass({
     event.preventDefault();
     var username = this.state.username.trim();
 
-    this.props.context.executeAction(createUser, {
+    this.props.context.executeAction(createUserAction, {
       username: username,
       id: Date.now()
     });

@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { FluxibleMixin } from 'fluxible';
-import AuthStore from '../stores/AuthStore';
+import { AuthStore } from '../stores';
 
 export default React.createClass({
   mixins: [FluxibleMixin],
