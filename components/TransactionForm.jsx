@@ -4,14 +4,13 @@ import React from 'react';
 
 import { Input } from 'react-bootstrap';
 import validateTransaction from '../validators/transaction';
-import DateTimeField from 'react-bootstrap-datetimepicker';
+import rome from 'rome';
 
 var formElements = [
   {
     name: 'date',
     label: 'Date',
-    type: 'datetime-local',
-    element: DateTimeField
+    type: 'text'
   }, {
     name: 'description',
     label: 'Description',
@@ -40,7 +39,10 @@ var formElements = [
   }
 ];
 
+var dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+
 export default React.createClass({
+  rome: null,
   propTypes: {
     transaction: React.PropTypes.object.isRequired,
     onChange: React.PropTypes.func,
@@ -51,13 +53,22 @@ export default React.createClass({
     transaction = transaction || this.props.transaction || {};
 
     return {
-      date: (transaction.date ? transaction.date : Date.now()) / 1000,
+      date: transaction.date ? rome.moment(transaction.date).format(dateTimeFormat) : '',
       description: transaction.description || '',
       location: transaction.location || '',
       amount: transaction.amount || '',
       method: transaction.method || 'bank',
       errors: {}
     };
+  },
+  componentDidMount: function() {
+    this.rome = rome(this.refs.date.refs.input.getDOMNode(), {
+      inputFormat: 'YYYY-MM-DD HH:mm:ss',
+      weekStart: 1,
+      styles: {
+        dayTable: 'table'
+      }
+    }).on('data', date => this.setState({date: date}));
   },
   componentWillReceiveProps: function(nextProps) {
     this.setState(this.getInitialState(nextProps.transaction));
@@ -75,15 +86,11 @@ export default React.createClass({
     var type = input.type;
     var children = null;
 
-    if (input.name === 'date') {
-      type = null;
-      children = <DateTimeField dateTime={this.state[input.name]} />;
-    }
-
     return (
       <Input key={input.name} type={type} label={input.label} {...props} value={this.state[input.name]}
              onChange={this._onInputChange.bind(null, input)} disabled={this.props.disabled}
              help={error} bsStyle={error ? 'error' : null}
+             ref={input.name}
              labelClassName="col-xs-2" wrapperClassName="col-xs-10" onBlur={this._validateInput.bind(null, input)}>
         {children}
       </Input>
@@ -112,6 +119,10 @@ export default React.createClass({
     state.errors[input.name] = null;
 
     this.setState(state);
+
+    if (input.name === 'date') {
+      this.rome.setValue(e.target.value);
+    }
   },
   _validateInput: function(input) {
     var validation = validateTransaction(this.state);
