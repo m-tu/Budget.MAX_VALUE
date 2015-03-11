@@ -49,7 +49,7 @@ export default React.createClass({
       <div>
         <h1>Create Transaction</h1>
         {errorMessage}
-        <TransactionForm ref="transactionForm" transaction={{date: new Date(),description:'get', amount: 13.37,method:'bank'}}/>
+        <TransactionForm ref="transactionForm" transaction={{}}/>
         <TransactionItemsForm ref="lineItemsForm" lineItems={this.state.lineItems} onChange={this._onLineItemsChange}
                               labels={this.state.labels} />
         <Button type="submit" bsStyle="success" onClick={this._onSubmit} disabled={this.state.working}>

@@ -4,12 +4,14 @@ import React from 'react';
 
 import { Input } from 'react-bootstrap';
 import validateTransaction from '../validators/transaction';
+import DateTimeField from 'react-bootstrap-datetimepicker';
 
 var formElements = [
   {
     name: 'date',
     label: 'Date',
-    type: 'datetime-local'
+    type: 'datetime-local',
+    element: DateTimeField
   }, {
     name: 'description',
     label: 'Description',
@@ -49,7 +51,7 @@ export default React.createClass({
     transaction = transaction || this.props.transaction || {};
 
     return {
-      date: transaction.date ? transaction.date.toISOString().slice(0, -1) : '',
+      date: (transaction.date ? transaction.date : Date.now()) / 1000,
       description: transaction.description || '',
       location: transaction.location || '',
       amount: transaction.amount || '',
@@ -70,12 +72,21 @@ export default React.createClass({
   _renderInput: function(input) {
     var props = input.props || {};
     var error = this.state.errors[input.name];
+    var type = input.type;
+    var children = null;
+
+    if (input.name === 'date') {
+      type = null;
+      children = <DateTimeField dateTime={this.state[input.name]} />;
+    }
 
     return (
-      <Input key={input.name} type={input.type} label={input.label} {...props} value={this.state[input.name]}
+      <Input key={input.name} type={type} label={input.label} {...props} value={this.state[input.name]}
              onChange={this._onInputChange.bind(null, input)} disabled={this.props.disabled}
              help={error} bsStyle={error ? 'error' : null}
-             labelClassName="col-xs-2" wrapperClassName="col-xs-10" onBlur={this._validateInput.bind(null, input)} />
+             labelClassName="col-xs-2" wrapperClassName="col-xs-10" onBlur={this._validateInput.bind(null, input)}>
+        {children}
+      </Input>
     );
   },
   /**
