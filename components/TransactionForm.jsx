@@ -10,7 +10,8 @@ var formElements = [
   {
     name: 'date',
     label: 'Date',
-    type: 'text'
+    type: 'text',
+    noValidate: true
   }, {
     name: 'description',
     label: 'Description',
@@ -91,7 +92,8 @@ export default React.createClass({
              onChange={this._onInputChange.bind(null, input)} disabled={this.props.disabled}
              help={error} bsStyle={error ? 'error' : null}
              ref={input.name}
-             labelClassName="col-xs-2" wrapperClassName="col-xs-10" onBlur={this._validateInput.bind(null, input)}>
+             labelClassName="col-xs-2" wrapperClassName="col-xs-10"
+             onBlur={input.noValidate ? null : this._validateInput.bind(null, input)}>
         {children}
       </Input>
     );
