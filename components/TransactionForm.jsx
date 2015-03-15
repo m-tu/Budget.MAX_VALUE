@@ -85,7 +85,7 @@ export default React.createClass({
     var props = input.props || {};
     var error = this.state.errors[input.name];
     var type = input.type;
-    var children = null;
+    var children = props.children || null;
 
     return (
       <Input key={input.name} type={type} label={input.label} {...props} value={this.state[input.name]}
