@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/m-tu/Budget.MAX_VALUE",
   "dependencies": {
-    "babel": "^4.7.3",
+    "babel": "^4.7.12",
     "babel-runtime": "^4.7.3",
     "body-parser": "^1.12.0",
     "connect-redis": "^2.2.0",
@@ -40,8 +40,8 @@
     "serialize-javascript": "^1.0.0"
   },
   "devDependencies": {
-    "babel-core": "^4.7.3",
-    "babel-loader": "^4.1.0",
+    "babel-core": "^4.7.12",
+    "babel-loader": "^4.2.0",
     "css-loader": "^0.9.1",
     "extract-text-webpack-plugin": "^0.3.8",
     "gulp": "^3.8.11",

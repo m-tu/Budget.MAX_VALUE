@@ -23,7 +23,7 @@ var formElements = [
   }, {
     name: 'amount',
     label: 'Amount',
-    type: 'number'
+    type: 'number',
   }, {
     name: 'method',
     label: 'Method',
@@ -82,13 +82,12 @@ export default React.createClass({
     );
   },
   _renderInput: function(input) {
-    var props = input.props || {};
-    var error = this.state.errors[input.name];
-    var type = input.type;
-    var children = props.children || null;
+    let {type, props = {}} = input;
+    let {children} = props; // should inline with prev line
+    let error = this.state.errors[input.name];
 
     return (
-      <Input key={input.name} type={type} label={input.label} {...props} value={this.state[input.name]}
+      <Input key={input.name} type={type} label={input.label} value={this.state[input.name]}
              onChange={this._onInputChange.bind(null, input)} disabled={this.props.disabled}
              help={error} bsStyle={error ? 'error' : null}
              ref={input.name}
