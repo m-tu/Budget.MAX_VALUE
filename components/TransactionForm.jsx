@@ -82,8 +82,7 @@ export default React.createClass({
     );
   },
   _renderInput: function(input) {
-    let {type, props = {}} = input;
-    let {children} = props; // should inline with prev line
+    let {type, props: {children} = {}} = input;
     let error = this.state.errors[input.name];
 
     return (
