@@ -11,19 +11,19 @@ export default React.createClass({
     value: React.PropTypes.array,
     onChange: React.PropTypes.func.isRequired
   },
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       value: []
     }
   },
-  getInitialState: function() {
+  getInitialState() {
     return {
       labels: [],
       showChoices: false,
       filterText: ''
     };
   },
-  render: function() {
+  render() {
     return (
       <div>
         <div>
@@ -36,7 +36,7 @@ export default React.createClass({
       </div>
     );
   },
-  _renderChoices: function() {
+  _renderChoices() {
     if (!this.state.showChoices) {
       return null;
     }
@@ -47,23 +47,23 @@ export default React.createClass({
       </div>
     );
   },
-  _filterTextChanged: function(e) {
+  _filterTextChanged(e) {
     this.setState({
       filterText: e.target.value
     });
   },
-  _filterChoice: function(label) {
+  _filterChoice(label) {
     var nameMatches = this.state.filterText === '' ||
       label.name.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1;
 
     return nameMatches && this.props.value.indexOf(label) === -1;
   },
-  _renderChoice: function(label) {
+  _renderChoice(label) {
     return (
       <div className="label-choice" key={label.id} onClick={this._onChoiceSelected.bind(null, label)}>{label.name}</div>
     );
   },
-  _onChoiceSelected: function(label) {
+  _onChoiceSelected(label) {
     this.setState({
       filterText: '',
       showChoices: false
@@ -75,27 +75,25 @@ export default React.createClass({
       })
     );
   },
-  _showChoices: function() {
+  _showChoices() {
     this.setState({
       showChoices: true
     });
   },
-  _hideChoices: function() {
-    var self = this;
-    window.setTimeout(function() {
-      self.setState({
+  _hideChoices() {
+    window.setTimeout(() => {
+      this.setState({
         showChoices: false
       });
-    }.bind(this), 100);
-
+    }, 100);
   },
-  _renderLabel: function(label) {
+  _renderLabel(label) {
     return (
       <Label key={label.id} label={label} onDelete={this._onRemove} />
     );
   },
-  _onRemove: function(label) {
-    var index = this.props.value.indexOf(label);
+  _onRemove(label) {
+    let index = this.props.value.indexOf(label);
 
     if (index !== -1) {
       this.props.onChange(

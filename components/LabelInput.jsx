@@ -1,7 +1,6 @@
 'use strict';
 
 import React from 'react';
-
 import { Input, Button } from 'react-bootstrap';
 
 export default React.createClass({
@@ -12,18 +11,18 @@ export default React.createClass({
     inline: React.PropTypes.bool,
     isModal: React.PropTypes.bool
   },
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       label: ''
     }
   },
-  getInitialState: function() {
+  getInitialState() {
     return {
       name: this.props.label,
       error: null
     }
   },
-  render: function() {
+  render() {
     return (
       <form className={this.props.inline ? 'form-inline' : ''} onSubmit={this.validate}>
         <Input
@@ -35,23 +34,23 @@ export default React.createClass({
       </form>
     );
   },
-  isValid: function() {
+  isValid() {
     return this.getLabelName() !== '';
   },
-  getLabelName: function() {
+  getLabelName() {
     return this.state.name.trim();
   },
-  _onChange: function(e) {
+  _onChange(e) {
     this.setState({
       name: e.target.value,
       error: null
     });
   },
-  validate: function(e) {
+  validate(e) {
     e && e.preventDefault();
 
     if (this.isValid()) {
-      var name = this.getLabelName();
+      let name = this.getLabelName();
       this.props.onChange(name);
 
       if (!this.props.isModal) {

@@ -3,7 +3,7 @@
 import { PAYMENT_METHODS } from '../config/constants';
 
 export default function(sequelize, DataTypes) {
-  var Transaction = sequelize.define('Transaction', {
+  let Transaction = sequelize.define('Transaction', {
     date: {
       type: DataTypes.DATE,
       allowNull: false
@@ -25,7 +25,7 @@ export default function(sequelize, DataTypes) {
     }
   }, {
     classMethods: {
-      associate: function(models) {
+      associate(models) {
         Transaction.hasMany(models.File, {
           as: 'files',
           foreignKey: {

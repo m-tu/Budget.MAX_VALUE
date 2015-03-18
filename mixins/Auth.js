@@ -5,7 +5,7 @@ import app from '../app';
 
 export default {
    statics: {
-     willTransitionTo: function(transition) {
+     willTransitionTo(transition) {
        if (!app.context.getComponentContext().getStore(AuthStore).isLoggedIn()) {
          transition.redirect('/login');
        }

@@ -5,22 +5,21 @@ import FluxibleApp from 'fluxible';
 import fetchrPlugin from 'fluxible-plugin-fetchr';
 import * as stores from './stores';
 
-var app = new FluxibleApp();
+let app = new FluxibleApp();
 
 app.plug(fetchrPlugin({
   xhrPath: '/api'
 }));
 
-for (let storeName in stores) {
+for (let storeName of Object.keys(stores)) {
   app.registerStore(stores[storeName]);
 }
 
 // TODO ugly
-var createContext = app.createContext;
+let createContext = app.createContext;
 
-app.createContext = function() {
-
-  app.context = createContext.apply(app, arguments);
+app.createContext = (...args) => {
+  app.context = createContext.apply(app, args);
   return app.context;
 };
 

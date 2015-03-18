@@ -1,3 +1,5 @@
+// Native node.js, cant use ES6 (yet)
+
 'use strict';
 
 var cluster = require('cluster');

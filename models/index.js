@@ -5,32 +5,29 @@ import path from 'path';
 import Sequelize from 'sequelize';
 import baseConfig from '../config/config.json';
 
-var basename = path.basename(module.filename);
-var env = process.env.NODE_ENV || 'development';
-var config = baseConfig[env];
+let basename = path.basename(module.filename);
+let env = process.env.NODE_ENV || 'development';
+let config = Object.assign(baseConfig[env], {
+  timestamp: false
+});
 
-config.define = {
-  timestamps: false
-};
 
-var sequelize = new Sequelize(config.database, config.username, config.password, config);
-var db        = {};
+let sequelize = new Sequelize(config.database, config.username, config.password, config);
+let db = {};
 
 fs
   .readdirSync(__dirname)
-  .filter(function(file) {
-    return (file.indexOf('.') !== 0) && (file !== basename);
-  })
-  .forEach(function(file) {
-    var model = sequelize['import'](path.join(__dirname, file));
+  .filter(file => file.indexOf('.') !== 0 && file !== basename)
+  .forEach(file => {
+    let model = sequelize['import'](path.join(__dirname, file));
     db[model.name] = model;
   });
 
-Object.keys(db).forEach(function(modelName) {
+for (let modelName of Object.keys(db)) {
   if ('associate' in db[modelName]) {
     db[modelName].associate(db);
   }
-});
+}
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

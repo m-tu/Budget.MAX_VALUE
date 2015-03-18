@@ -12,16 +12,16 @@ import Html from './components/Html.jsx';
 import models from './models';
 import * as services from './services';
 
-var HtmlComponent = React.createFactory(Html);
-var RedisStore = connectRedis(session);
+let HtmlComponent = React.createFactory(Html);
+let RedisStore = connectRedis(session);
 
-var server = express();
-var isDevEnv = server.get('env') === 'development';
+let server = express();
+let isDevEnv = server.get('env') === 'development';
 server.set('state namespace', 'App');
 
 if (isDevEnv) {
   // use webpack dev server for serving static files
-  server.use('/public', function (req, res) {
+  server.use('/public', (req, res) => {
     res.redirect('http://localhost:3006/public' + req.path);
   });
 }
@@ -31,8 +31,8 @@ server.use(bodyParser.json({limit: '20mb'}));
 
 // session
 
-var sessionStore = new RedisStore();
-sessionStore.client.on('error', function(err) {
+let sessionStore = new RedisStore();
+sessionStore.client.on('error', (err) => {
   console.warn('REDIS error', err);
   console.log('Switching to memory store');
   sessionStore.client.end();
@@ -43,39 +43,39 @@ sessionStore.client.on('error', function(err) {
     saveUninitialized: true
   });
 });
-var sessionMiddleware = session({
+let sessionMiddleware = session({
   store: sessionStore,
   secret: 'budget max valuez',
   resave: false,
   saveUninitialized: true
 });
 
-server.use(function(req, res, next) {
+server.use((req, res, next) => {
   sessionMiddleware(req, res, next);
 });
 
 
 // get user file
-server.get('/files/:id([0-9]+)', function(req, res, next) {
-  models.File.findOne({
+server.get('/files/:id([0-9]+)', async (req, res, next) => {
+  let file = await models.File.findOne({
     where: {
       id: req.params.id
     }
-  }).then(function(file) {
-    if (file) {
-      res.writeHeader(200, {'Content-Type': file.thumbnailType});
-      res.end(file.thumbnailData, 'binary');
-    } else {
-      return new Error();
-    }
-  }).finally(next);
+  });
+
+  if (file) {
+    res.writeHeader(200, {'Content-Type': file.thumbnailType});
+    res.end(file.thumbnailData, 'binary');
+  } else {
+    next();
+  }
 });
 
 // Get access to the fetchr plugin instance
-var fetchrPlugin = app.getPlugin('FetchrPlugin');
+let fetchrPlugin = app.getPlugin('FetchrPlugin');
 
 // Register our users REST service
-for (let serviceName in services) {
+for (let serviceName of Object.keys(services)) {
   fetchrPlugin.registerService(services[serviceName]);
 }
 
@@ -83,13 +83,13 @@ for (let serviceName in services) {
 server.use(fetchrPlugin.getXhrPath(), fetchrPlugin.getMiddleware());
 
 // Every other request gets the app bootstrap
-server.use(function (req, res) {
-  var context = app.createContext({
+server.use((req, res) => {
+  let context = app.createContext({
     req: req // The fetchr plugin depends on this
   });
 
   // Initialize store states: maybe come up with better solution?
-  var actionContext = context.getActionContext();
+  let actionContext = context.getActionContext();
 
   if (req.session.user) {
     actionContext.dispatch('LOGGED_IN', req.session.user);
@@ -97,10 +97,10 @@ server.use(function (req, res) {
 
   router.run(
     req.url,
-    function(Handler) {
-      var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
+    (Handler) => {
+      let exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
 
-      var html = React.renderToStaticMarkup(HtmlComponent({
+      let html = React.renderToStaticMarkup(HtmlComponent({
         isDevEnv: isDevEnv,
         state: exposed,
         markup: React.renderToString(React.createElement(Handler, {
@@ -111,7 +111,7 @@ server.use(function (req, res) {
       res.write(html);
       res.end();
     },
-    function(abortReason) {
+    (abortReason) => {
       if (abortReason.to) {
         res.redirect(abortReason.to);
       } else {
@@ -121,62 +121,54 @@ server.use(function (req, res) {
   );
 });
 
-var port = process.env.PORT || 3005;
+let port = process.env.PORT || 3005;
 
-models.sequelize.sync({force: true}).then(function() {
-  var transaction1;
-
+models.sequelize.sync({force: true}).then(async () => {
   // TODO move initialization to separate file
   // initialize data
-  models.User.create({
+  let user = await models.User.create({
     username: 'timmu',
     password: 'parool'
-  }).then(function(user) {
-    return models.Transaction.bulkCreate([{
-      date: new Date(),
-      description: 'positive',
-      location: 'Töö',
-      amount: 100,
-      method: 'bank',
-      UserId: user.id
-    }, {
-      date: new Date(),
-      description: 'negative',
-      location: 'selver',
-      amount: -13.55,
-      method: 'debit',
-      UserId: user.id
-    }])
-      .then(function(transactions) {
-        transaction1 = transactions[0];
-
-        return models.Label.bulkCreate([{
-          name: 'Food',
-          UserId: user.id
-        }, {
-          name: 'Drink',
-          UserId: user.id
-        }]);
-      })
-      .then(function() {
-        return models.LineItem.bulkCreate([{
-          name: 'item 1',
-          amount: 100,
-          TransactionId: 1,
-          labels: [1,2]
-        }]).then(function() {
-          return models.Label.findAll().then(function(labels) {
-            return models.LineItem.findAll().then(function(lineItems) {
-              return lineItems[0].addLabels(labels);
-            });
-          });
-        });
-      });
-  }).then(function() {
-    // start server
-    server.listen(port);
-    console.log('Listening on port ' + port);
   });
-}, function(err) {
+
+  await models.Transaction.bulkCreate([{
+    date: new Date(),
+    description: 'positive',
+    location: 'Töö',
+    amount: 100,
+    method: 'bank',
+    UserId: user.id
+  }, {
+    date: new Date(),
+    description: 'negative',
+    location: 'selver',
+    amount: -13.55,
+    method: 'debit',
+    UserId: user.id
+  }]);
+
+  await models.Label.bulkCreate([{
+    name: 'Food',
+    UserId: user.id
+  }, {
+    name: 'Drink',
+    UserId: user.id
+  }]);
+
+  await models.LineItem.bulkCreate([{
+    name: 'item 1',
+    amount: 100,
+    TransactionId: 1,
+    labels: [1,2]
+  }]);
+
+  let labels = await models.Label.findAll();
+  let lineItems = await models.LineItem.findAll();
+  await lineItems[0].addLabels(labels);
+
+  // start server
+  server.listen(port);
+  console.log('Listening on port ' + port);
+}, (err) => {
   console.log('Failed to connect to DB: ' + err.toString());
 });

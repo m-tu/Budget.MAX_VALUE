@@ -26,7 +26,7 @@ export default React.createClass({
       labels: lineItem.labels || []
     };
   },
-  render: function() {
+  render() {
     let isNew = !this.props.lineItem;
 
     return (

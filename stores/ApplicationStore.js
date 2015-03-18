@@ -10,30 +10,30 @@ export default createStore({
     LOG_IN_DONE: '_logInDone',
     LOG_OUT_DONE: '_logInDone'
   },
-  initialize: function () {
+  initialize() {
     this.currentPageName = null;
     this.currentPage = null;
     this.currentRoute = null;
     this.pageTitle = '';
   },
-  handleNavigate: function(route) {
-    var pageName = route.config.page;
+  handleNavigate(route) {
+    let pageName = route.config.page;
 
     this._openPage(pageName, route);
   },
-  updatePageTitle: function (title) {
+  updatePageTitle(title) {
     this.pageTitle = title.pageTitle;
     this.emitChange();
   },
-  _openPage: function(pageName, route) {
-    var page = this.pages[pageName];
+  _openPage(pageName, route) {
+    let page = this.pages[pageName];
 
     this.currentPageName = pageName;
     this.currentPage = page;
     this.currentRoute = route;
     this.emitChange();
   },
-  _logInDone: function() {
+  _logInDone() {
     // TODO fix
     this._openPage('home', {
       url: 'home',
@@ -42,10 +42,10 @@ export default createStore({
       }
     });
   },
-  getCurrentPageName: function () {
+  getCurrentPageName() {
     return this.currentPageName;
   },
-  getState: function () {
+  getState() {
     return {
       currentPageName: this.currentPageName,
       currentPage: this.currentPage,
@@ -54,10 +54,10 @@ export default createStore({
       pageTitle: this.pageTitle
     };
   },
-  dehydrate: function () {
+  dehydrate() {
     return this.getState();
   },
-  rehydrate: function (state) {
+  rehydrate(state) {
     this.currentPageName = state.currentPageName;
     this.currentPage = state.currentPage;
     this.pages = state.pages;

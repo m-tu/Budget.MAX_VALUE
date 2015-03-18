@@ -8,11 +8,11 @@ import { PAYMENT_METHODS } from '../config/constants';
  * @returns {{data: {}, errors: {}, hasErrors: boolean}}
  */
 export default function(rawTransaction) {
-  var errors = {};
-  var transaction = {};
+  let errors = {};
+  let transaction = {};
 
   // date-time
-  var date = new Date(rawTransaction.date);
+  let date = new Date(rawTransaction.date);
   if (isNaN(date.getTime())) {
     errors.date = 'Invalid date';
   } else {
@@ -20,7 +20,7 @@ export default function(rawTransaction) {
   }
 
   // amount
-  var amount = parseFloat(rawTransaction.amount);
+  let amount = parseFloat(rawTransaction.amount);
   if (isNaN(amount)) {
     errors.amount = 'Invalid amount';
   } else {

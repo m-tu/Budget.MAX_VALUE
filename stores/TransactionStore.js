@@ -12,11 +12,11 @@ export default createStore({
     UPDATE_TRANSACTION_FAIL: '_updateTransactionFail',
     CLEAR_UNSAVED_TRANSACTION: '_clearUnsavedData'
   },
-  initialize: function () {
+  initialize() {
     this.transactions = [];
     this.populated = false;
   },
-  _receiveTransactions: function(transactions) {
+  _receiveTransactions(transactions) {
     this.rehydrate({
       transactions: transactions,
       populated: true
@@ -24,9 +24,9 @@ export default createStore({
 
     this.emitChange();
   },
-  _receiveTransaction: function(transaction) {
-    var newTransaction = this._formatRawTransaction(transaction);
-    var oldIndex = this.getTransactionIndex(newTransaction.id);
+  _receiveTransaction(transaction) {
+    let newTransaction = this._formatRawTransaction(transaction);
+    let oldIndex = this.getTransactionIndex(newTransaction.id);
 
     if (oldIndex === -1) {
       this.transactions.push(newTransaction);
@@ -35,8 +35,8 @@ export default createStore({
     }
     this.emitChange();
   },
-  _updateTransactionStart: function(transaction) {
-    var oldTransaction = this.getTransaction(transaction.id);
+  _updateTransactionStart(transaction) {
+    let oldTransaction = this.getTransaction(transaction.id);
 
     if (oldTransaction) {
       oldTransaction.pending = true;
@@ -44,63 +44,53 @@ export default createStore({
       this.emitChange();
     }
   },
-  _updateTransaction: function(transaction) {
+  _updateTransaction(transaction) {
     this._receiveTransaction(transaction);
   },
-  _updateTransactionFail: function(transaction, errors) {
+  _updateTransactionFail(transaction) {
     // TODO check if transaction exists in store
     transaction.pending = false;
     // TODO save errors
   },
-  _clearUnsavedData: function(transaction) {
+  _clearUnsavedData(transaction) {
     // TODO check if transaction exists in store
     if (!transaction.pending) {
       transaction.pendingData = null;
       this.emitChange();
     }
   },
-  hasTransaction: function(id) {
-    return this.transactions.some(function(transaction) {
-      return transaction.id === id;
-    });
+  hasTransaction(id) {
+    return this.transactions.some((transaction) => transaction.id === id);
   },
-  getAll: function () {
+  getAll() {
     return this.transactions;
   },
 
-  getTransactionIndex: function(id) {
-    var i;
-
-    for (i = 0; i < this.transactions.length; i++) {
-      if (this.transactions[i].id === id) {
-        return i;
-      }
-    }
-
-    return -1;
+  getTransactionIndex(id) {
+    return this.transactions.findIndex((transaction) => transaction.id === id);
   },
-  getTransaction: function(id) {
-    var index = this.getTransactionIndex(id);
+  getTransaction(id) {
+    let index = this.getTransactionIndex(id);
 
     return index === -1 ? null : this.transactions[index];
   },
-  isPopulated: function() {
+  isPopulated() {
     return this.populated;
   },
-  _formatRawTransaction: function(transaction) {
-    transaction.date = new Date(transaction.date);
-    transaction.pending = false;
-    transaction.pendingData = null;
-
-    return transaction;
+  _formatRawTransaction(transaction) {
+    return Object.assign(transaction, {
+      date: new Date(transaction.date),
+      pending: false,
+      pendingData: null
+    });
   },
-  dehydrate: function () {
+  dehydrate() {
     return {
       transactions: this.transactions,
       populated: this.populated
     };
   },
-  rehydrate: function (state) {
+  rehydrate(state) {
     this.transactions = state.transactions.map(this._formatRawTransaction);
 
     this.populated = state.populated;

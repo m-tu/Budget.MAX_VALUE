@@ -9,25 +9,25 @@ export default createStore({
     GOOGLE_API_LOADED: '_googleApiLoaded',
     CREATE_USER_SUCCESS: '_createUser'
   },
-  initialize: function () {
+  initialize() {
     this.googleApiLoaded = false;
   },
-  _googleApiLoaded: function() {
+  _googleApiLoaded() {
     this.googleApiLoaded = true;
   },
-  _createUser: function(user) {
+  _createUser(user) {
     this.users.push(user);
     this.emitChange();
   },
-  getAll: function () {
+  getAll() {
     return this.users;
   },
-  dehydrate: function () {
+  dehydrate() {
     return {
       users: this.users
     };
   },
-  rehydrate: function (state) {
+  rehydrate(state) {
     this.users = state.users;
   }
 });

@@ -8,26 +8,26 @@ export default createStore({
     RECEIVE_USERS_SUCCESS: '_receiveUsers',
     CREATE_USER_SUCCESS: '_createUser'
   },
-  initialize: function () {
+  initialize() {
     this.users = [];
   },
-  _receiveUsers: function(users) {
+  _receiveUsers(users) {
     this.users = users;
     this.emitChange();
   },
-  _createUser: function(user) {
+  _createUser(user) {
     this.users.push(user);
     this.emitChange();
   },
-  getAll: function () {
+  getAll() {
     return this.users;
   },
-  dehydrate: function () {
+  dehydrate() {
     return {
       users: this.users
     };
   },
-  rehydrate: function (state) {
+  rehydrate(state) {
     this.users = state.users;
   }
 });

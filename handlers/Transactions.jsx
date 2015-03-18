@@ -15,19 +15,19 @@ export default React.createClass({
       _onChange: [TransactionStore]
     }
   },
-  getInitialState: function() {
+  getInitialState() {
     return {
       transactions: this.getStore(TransactionStore).getAll()
     };
   },
-  componentDidMount: function() {
+  componentDidMount() {
     this.props.context.executeAction(showTransactionsAction);
   },
-  _onChange: function() {
+  _onChange() {
     this.setState(this.getInitialState());
   },
-  render: function() {
-    var transactions = this.state.transactions.map(function(transaction) {
+  render() {
+    let transactions = this.state.transactions.map(transaction => {
       return (
         <tr key={transaction.id}>
           <td>
@@ -42,7 +42,7 @@ export default React.createClass({
           <td>{transaction.method}</td>
         </tr>
       );
-    }.bind(this));
+    });
 
     return (
       <table className="table table-striped table-bordered table-hover">

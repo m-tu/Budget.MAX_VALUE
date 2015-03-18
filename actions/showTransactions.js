@@ -3,18 +3,19 @@
 import TransactionStore from '../stores/TransactionStore';
 import showTransaction from './showTransaction';
 
-export default function (context, params) {
+export default function(context, params) {
+  let { id } = params || {};
 
-  if (typeof params === 'object' && params !== null && typeof params.id !== 'undefined') {
-    return context.executeAction(showTransaction, params.id, function() {});
+  if (id !== undefined) {
+    return context.executeAction(showTransaction, id, function() {});
   }
 
-  var transactionStore = context.getStore(TransactionStore);
+  let transactionStore = context.getStore(TransactionStore);
 
   if (!transactionStore.isPopulated()) {
     context.dispatch('RECEIVE_TRANSACTIONS_START', params);
 
-    context.service.read('transactions', params || {}, {}, function (err, transactions) {
+    context.service.read('transactions', params || {}, {}, (err, transactions) => {
       if (err) {
         context.dispatch('RECEIVE_TRANSACTIONS_FAILURE', params);
         return;

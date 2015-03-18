@@ -2,15 +2,14 @@
 
 import React from 'react/addons';
 import { Glyphicon } from 'react-bootstrap';
-
-var cx = React.addons.classSet;
+import classnames from 'classnames';
 
 export default React.createClass({
   propTypes: {
     files: React.PropTypes.array
   },
-  render: function() {
-    var files = this.props.files || [];
+  render() {
+    let files = this.props.files || [];
 
     return (
       files.length === 0
@@ -20,15 +19,16 @@ export default React.createClass({
         </div>
     );
   },
-  _renderFile: function(file) {
-    var hasThumbnail = true;
-    var viewUrl = file.embedLink || file.alternateLink; // TODO use webcontentLink and img tag
-    var classes = cx({
+  _renderFile(file) {
+    let hasThumbnail = true;
+    let viewUrl = file.embedLink || file.alternateLink; // TODO use webcontentLink and img tag
+    let classes = classnames({
       file: true,
       placeholder: !hasThumbnail
     });
 
-    var fileElement = hasThumbnail ? <img src={file.thumbnailLink || '/files/' + file.id} title={file.title} /> : file.title;
+    let fileElement = hasThumbnail
+      ? <img src={file.thumbnailLink || '/files/' + file.id} title={file.title} /> : file.title;
 
     return (
       <div key={file.id} className={classes}>
@@ -39,7 +39,7 @@ export default React.createClass({
       </div>
     );
   },
-  _onRemoveFile: function(file, event) {
+  _onRemoveFile(file, event) {
     event.preventDefault();
     // TODO implement
   }

@@ -1,11 +1,17 @@
 'use strict';
 
 import googleApiUtil from '../utils/googleApi';
-
-export default function(context) {
-  googleApiUtil.openPicker().then(function(files) {
+// TODO test
+export default async function(context) {
+  try {
+    let files = googleApiUtil.openPicker();
     context.dispatch('GOOGLE_PICKER_FILES_ADDED', files);
-  }).catch(function(err) {
+  } catch (err) {
     console.log('picker failed', err);
-  });
+  }
+  //googleApiUtil.openPicker().then((files) => {
+  //  context.dispatch('GOOGLE_PICKER_FILES_ADDED', files);
+  //}).catch((err) => {
+  //  console.log('picker failed', err);
+  //});
 };

@@ -9,11 +9,11 @@ export default createStore({
     UPDATE_LABEL: '_updateLabel',
     DELETE_LABEL: '_deleteLabel'
   },
-  initialize: function () {
+  initialize() {
     this.labels = [];
   },
-  _updateLabel: function(label) {
-    var existingLabel = label.id ? this.getLabelById(label.id) : null;
+  _updateLabel(label) {
+    let existingLabel = label.id ? this.getLabelById(label.id) : null;
 
     if (existingLabel) {
       existingLabel.name = label.name;
@@ -22,47 +22,39 @@ export default createStore({
     }
     this.emitChange();
   },
-  _deleteLabel: function(label) {
-    var index = this.getLabelIndexById(label.id);
+  _deleteLabel(label) {
+    let index = this.getLabelIndexById(label.id);
 
     if (index !== -1) {
       this.labels.splice(index, 1);
     }
     this.emitChange();
   },
-  _receiveLabels: function(labels) {
+  _receiveLabels(labels) {
     this.labels = labels;
     this.emitChange();
   },
-  _createUser: function(user) {
+  _createUser(user) {
     this.users.push(user);
     this.emitChange();
   },
   getLabels: function () {
     return this.labels;
   },
-  getLabelIndexById: function(id) {
-    var i;
-
-    for (i = 0; i < this.labels.length; i++) {
-      if (this.labels[i].id === id) {
-        return i;
-      }
-    }
-
-    return -1;
+  getLabelIndexById(id) {
+    return this.labels.findIndex((label) => label.id === id);
   },
-  getLabelById: function(id) {
-    var index = this.getLabelIndexById(id);
+  getLabelById(id) {
+    let index = this.getLabelIndexById(id);
 
     return index === -1 ? null : this.labels[index];
   },
-  dehydrate: function () {
+  dehydrate() {
     return {
       labels: this.labels
     };
   },
-  rehydrate: function (state) {
+  rehydrate(state) {
     this.labels = state.labels;
   }
 });

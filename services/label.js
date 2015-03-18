@@ -4,23 +4,8 @@ import models from '../models';
 
 export default {
   name: 'label',
-  read: function (req, resource, params, config, callback) {
-    var user = req.session.user;
-
-    if (!user) {
-      return callback(403);
-    }
-
-    models.Label.findAll({
-      where: {
-        UserId: user.id
-      }
-    }).then(function(label) {
-      callback(null, label);
-    });
-  },
-  update: function(req, resource, params, body, config, callback) {
-    var user = req.session.user;
+  async read(req, resource, params, config, callback) {
+    let user = req.session.user;
 
     if (!user) {
       return callback({
@@ -28,64 +13,82 @@ export default {
       });
     }
 
-    var promise;
+    try {
+      let label = await models.Label.findAll({
+        where: {
+          UserId: user.id
+        }
+      });
+      callback(null, label);
+    } catch (err) {
+      callback(err);
+    }
+  },
+  async update(req, resource, params, body, config, callback) {
+    let user = req.session.user;
 
-    if (params.id) {
-      promise = models.Label.findOne({
+    if (!user) {
+      return callback({
+        statusCode: 403
+      });
+    }
+
+    try {
+      let label;
+      if (params.id) {
+        label = await models.Label.findOne({
+          where: {
+            id: params.id,
+            UserId: user.id
+          }
+        });
+
+        if (!label) {
+          throw {
+            statusCode: 404
+          };
+        } else {
+          label = await label.updateAttributes(body);
+        }
+      } else {
+        body.UserId = user.id;
+
+        label = await models.Label.create(body);
+      }
+
+      callback(null, label);
+    } catch (err) {
+      callback(err);
+    }
+  },
+  async delete(req, resource, params, config, callback) {
+    let user = req.session.user;
+
+    if (!user) {
+      return callback({
+        statusCode: 403
+      });
+    }
+
+    try {
+      let label = await models.Label.findOne({
         where: {
           id: params.id,
           UserId: user.id
         }
-      }).then(function(label) {
-        if (!label) {
-          return Promise.reject({
-            statusCode: 404
-          });
-        } else {
-          return label;
-        }
       });
-    } else {
-      promise = Promise.resolve();
-    }
 
-    promise.then(function(label) {
-      // TODO check unique name
       if (label) {
-        return label.updateAttributes(body);
+        await label.destroy();
       } else {
-        body.UserId = user.id;
-
-        return models.Label.create(body);
+        throw {
+          statusCode: 404
+        };
       }
-    }).then(function(label) {
-      callback(null, label);
-    }).catch(function(error) {
-      callback(error);
-    })
-  },
-  delete: function(req, resource, params, config, callback) {
-    var user = req.session.user;
 
-    if (!user) {
-      return callback(403);
+      callback(null, label.id);
+    } catch (err) {
+      callback(err);
     }
-
-    models.Label.findOne({
-      where: {
-        id: params.id,
-        UserId: user.id
-      }
-    }).then(function(label) {
-      if (!label) {
-        return Promise.reject(404);
-      } else {
-        return label.destroy();
-      }
-    }).then(function() {
-      callback(null, params.id);
-    }, function(error) {
-      callback(error);
-    });
   }
 };

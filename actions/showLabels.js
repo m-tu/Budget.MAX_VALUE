@@ -3,7 +3,7 @@
 export default function (context, payload, done) {
   context.dispatch('RECEIVE_LABELS_START', payload);
 
-  context.service.read('label', {}, {}, function (err, labels) {
+  context.service.read('label', {}, {}, (err, labels) => {
     if (err) {
       context.dispatch('RECEIVE_LABELS_FAIL', payload);
       done();

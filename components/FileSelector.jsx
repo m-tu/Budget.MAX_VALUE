@@ -2,8 +2,7 @@
 
 import React from 'react/addons';
 import { Button, Glyphicon } from 'react-bootstrap';
-
-var cx = React.addons.classSet;
+import classnames from 'classnames';
 
 /**
  *
@@ -13,34 +12,34 @@ export default React.createClass({
   _dragEnterDocumentCount: 0,
   _dragEnterDropZoneCount: 0,
   _nextFileId: 0,
-  getInitialState: function () {
+  getInitialState() {
     return {
       dragActive: false,
       dragInZone: false,
       files: []
     };
   },
-  componentDidMount: function() {
+  componentDidMount() {
     document.addEventListener('dragenter', this._onDragEnterDocument);
     document.addEventListener('dragleave', this._onDragLeaveDocument);
     document.addEventListener('dragover', this._onDragOver);
   },
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     document.removeEventListener('dragenter', this._onDragEnterDocument);
     document.removeEventListener('dragleave', this._onDragLeaveDocument);
     document.removeEventListener('dragover', this._onDragOver);
   },
-  getFiles: function() {
+  getFiles() {
     return this.state.files.slice(0);
   },
   render: function() {
-    var dropZoneClasses = cx({
+    let dropZoneClasses = classnames({
       dropzone: true,
       visible: this.state.dragActive,
       active: this.state.dragInZone
     });
 
-    var dropZoneMessage = this.state.dragActive ? 'Drop here' : 'or drag here';
+    let dropZoneMessage = this.state.dragActive ? 'Drop here' : 'or drag here';
 
     return (
       <div>
@@ -59,7 +58,7 @@ export default React.createClass({
       </div>
     );
   },
-  _renderFilesList: function() {
+  _renderFilesList() {
     return (
       this.state.files.length === 0
         ? null :
@@ -68,13 +67,13 @@ export default React.createClass({
         </div>
     );
   },
-  _renderFile: function(file) {
-    var classes = cx({
+  _renderFile(file) {
+    let classes = classnames({
       file: true,
       placeholder: !file._dataUrl
     });
 
-    var fileElement = file._dataUrl ? <img src={file._dataUrl} title={file.name} /> : file.name;
+    let fileElement = file._dataUrl ? <img src={file._dataUrl} title={file.name} /> : file.name;
 
     return (
       <div key={file._id} className={classes}>
@@ -83,8 +82,8 @@ export default React.createClass({
       </div>
     );
   },
-  _onRemoveFile: function(file) {
-    var index = this.state.files.indexOf(file);
+  _onRemoveFile(file) {
+    let index = this.state.files.indexOf(file);
 
     if (index !== -1) {
       this.setState({
@@ -96,7 +95,7 @@ export default React.createClass({
       });
     }
   },
-  _onDragEnterDocument: function() {
+  _onDragEnterDocument() {
     this._dragEnterDocumentCount++;
 
     if (!this.state.dragActive) {
@@ -105,7 +104,7 @@ export default React.createClass({
       });
     }
   },
-  _onDragLeaveDocument: function() {
+  _onDragLeaveDocument() {
     this._dragEnterDocumentCount--;
 
     if (this._dragEnterDocumentCount === 0) {
@@ -113,13 +112,13 @@ export default React.createClass({
       this._endDrag();
     }
   },
-  _onDragOver: function(e) {
+  _onDragOver(e) {
     e.preventDefault(); // so we can drop file
 
     // only place where we can update dropEffect
     e.dataTransfer.dropEffect = this.state.dragInZone > 0 ? 'copy' : 'none';
   },
-  _onDragEnter: function() {
+  _onDragEnter() {
     this._dragEnterDropZoneCount++;
 
     if (!this.state.dragInZone) {
@@ -128,7 +127,7 @@ export default React.createClass({
       })
     }
   },
-  _onDragLeave: function() {
+  _onDragLeave() {
     this._dragEnterDropZoneCount--;
 
     if (this._dragEnterDropZoneCount === 0) {
@@ -137,20 +136,20 @@ export default React.createClass({
       });
     }
   },
-  _onDrop: function(e) {
+  _onDrop(e) {
     e.preventDefault(); // prevent browser default action
 
     this._endDrag(this.state.files);
     this._addFiles(e.dataTransfer.files);
   },
-  _onSelectFile: function() {
+  _onSelectFile() {
     this.refs.file.getDOMNode().click();
   },
-  _onFilesSelected: function(e) {
+  _onFilesSelected(e) {
     this._addFiles(e.target.files);
     e.target.value = null;
   },
-  _endDrag: function() {
+  _endDrag() {
     this._dragEnterDocumentCount = 0;
     this._dragEnterDropZoneCount = 0;
 
@@ -164,14 +163,14 @@ export default React.createClass({
    * @param {FileList} files
    * @private
    */
-  _addFiles: function(files) {
-    var filesArray = Array.prototype.slice.call(files);
+  _addFiles(files) {
+    let filesArray = Array.prototype.slice.call(files);
 
-    filesArray.forEach(function(file) {
+    filesArray.forEach((file) => {
       file._id = this._nextFileId++;
 
       this._loadImage(file);
-    }.bind(this));
+    });
 
     this.setState({
       files: React.addons.update(this.state.files, {
@@ -179,14 +178,14 @@ export default React.createClass({
       })
     });
   },
-  _loadImage: function(file) {
+  _loadImage(file) {
     if (!/image.*/.test(file.type)) {
       return;
     }
 
-    var reader = new FileReader();
+    let reader = new FileReader();
 
-    reader.onload = function(e) {
+    reader.onload = (e) => {
       file._dataUrl = e.target.result;
 
       console.log(file._dataUrl);
@@ -194,7 +193,7 @@ export default React.createClass({
       this.setState({
         files: this.state.files
       });
-    }.bind(this);
+    };
 
     reader.readAsDataURL(file);
   }

@@ -12,17 +12,17 @@ export default React.createClass({
       _onChange: [AuthStore]
     }
   },
-  getInitialState: function() {
+  getInitialState() {
     return {
       user: this.getStore(AuthStore).getState().user
     };
   },
-  _onChange: function() {
+  _onChange() {
     this.setState(this.getInitialState());
   },
-  render: function() {
-    var loggedIn = this.state.user !== null,
-      content;
+  render() {
+    let loggedIn = this.state.user !== null;
+    let content;
 
     if (loggedIn) {
       content = <h1>Welcome, {this.state.user.username}</h1>;

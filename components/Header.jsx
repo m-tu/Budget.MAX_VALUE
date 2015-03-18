@@ -15,19 +15,19 @@ export default React.createClass({
       _onChange: [AuthStore]
     }
   },
-  getInitialState: function() {
+  getInitialState() {
     return {
       isLoggedIn: this.getStore(AuthStore).isLoggedIn()
     };
   },
-  _onChange: function() {
+  _onChange() {
     this.setState(this.getInitialState());
   },
   render: function() {
-    var menus = this.state.isLoggedIn
+    let menus = this.state.isLoggedIn
       ? ['home', 'transactions', 'createTransaction', 'labels']
       : ['home', 'login', 'register'];
-    var linksHTML = menus.map(function(name) {
+    let linksHTML = menus.map(name => {
       var label = name.slice(0, 1).toUpperCase() + name.slice(1);
 
       return (
@@ -51,7 +51,7 @@ export default React.createClass({
       </Navbar>
     );
   },
-  _logOut: function(event) {
+  _logOut(event) {
     event.preventDefault();
 
     this.props.context.executeAction(logoutAction);

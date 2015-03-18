@@ -4,21 +4,26 @@ import models from '../models';
 
 export default {
   name: 'auth',
-  create: function (req, resource, params, body, config, callback) {
-    models.User.find({
-      where: {
-        username: params.username,
-        password: params.password
-      },
-      attributes: ['id', 'username']
-    }).then(function(user) {
+  async create(req, resource, params, body, config, callback) {
+    try {
+      let user = await models.User.find({
+        where: {
+          username: params.username,
+          password: params.password
+        },
+        attributes: ['id', 'username']
+      });
+
       if (user !== null) {
         req.session.user = user;
       }
+
       callback(null, user);
-    });
+    } catch (err) {
+      callback(err);
+    }
   },
-  delete: function(req, resource, params, config, callback) {
+  delete(req, resource, params, config, callback) {
     req.session.user = null;
     callback(null);
   }

@@ -4,12 +4,12 @@ import React from 'react';
 import { createUserAction } from '../actions';
 
 export default React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       username: ''
     };
   },
-  render: function() {
+  render() {
     return (
       <form onSubmit={this._onSubmit}>
         <input type="text" value={this.state.username} onChange={this._onChange} />
@@ -17,12 +17,13 @@ export default React.createClass({
       </form>
     );
   },
-  _onChange: function(event) {
+  _onChange(event) {
     this.setState({username: event.target.value});
   },
-  _onSubmit: function(event) {
+  _onSubmit(event) {
     event.preventDefault();
-    var username = this.state.username.trim();
+
+    let username = this.state.username.trim();
 
     this.props.context.executeAction(createUserAction, {
       username: username,

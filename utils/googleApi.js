@@ -1,54 +1,57 @@
 'use strict';
 
-var API_KEY = 'AIzaSyBLxnn2Y2IqVWCj0vLtXOZzHlMaxB0Iw8E';
-var CLIENT_ID = '296834620179-tp0br8ov1ghhdfkilnrp0h32eab72dt7.apps.googleusercontent.com';
+let API_KEY = 'AIzaSyBLxnn2Y2IqVWCj0vLtXOZzHlMaxB0Iw8E';
+let CLIENT_ID = '296834620179-tp0br8ov1ghhdfkilnrp0h32eab72dt7.apps.googleusercontent.com';
 
 export default {
   _loaded: false,
   _accessToken: null,
-  openPicker: function() {
-    var promise = Promise.resolve();
-
+  async openPicker() {
     if (!this._loaded) {
-      promise = promise.then(this._load.bind(this));
+      await this._load();
     }
     if (!this._accessToken) {
-      promise = promise.then(this._requestAccessToken.bind(this));
+      await this._requestAccessToken();
     }
 
     // TODO check if token is valid, it might time out
-    return promise.then(this._openDialog.bind(this));
+
+    let files = await this._onFilesPicked();
+
+    // get files metadata
+    return await* files.map(this._getFileMetaData());
   },
-  _load: function() {
-    return new Promise(function(resolve) {
-      window.gapi.client.load('drive', 'v2', resolve);
-      window.gapi.load('picker');
-    }.bind(this))
-      .then(function() {
-        this._loaded = true;
-      }.bind(this));
-  },
-  _onFilesPicked: function(resolve, reject, data) {
-    var action = data[google.picker.Response.ACTION];
+  async _onFilesPicked() {
+    let data = await this._openDialog();
+    let action = data[google.picker.Response.ACTION];
 
 
     if (action === google.picker.Action.PICKED) {
-      resolve(data[google.picker.Response.DOCUMENTS]);
+      return data[google.picker.Response.DOCUMENTS];
     } else if (action === google.picker.Action.CANCEL) {
-      reject(new Error('user cancelled picking'));
+      throw new Error('user cancelled picking');
+    } else {
+      return [];
     }
   },
-  _requestAccessToken: function() {
-    return this._authorize(true)
-      .then(null, function() {
-        return this._authorize(false);
-      }.bind(this))
-      .then(function(accessToken) {
-        this._accessToken = accessToken;
-      }.bind(this))
+  async _requestAccessToken() {
+    let accessToken;
+
+    try {
+      accessToken = await this._authorize(true);
+    } catch (err) {
+      accessToken = await this._authorize(false);
+    }
+
+    this._accessToken = accessToken;
   },
-  _openDialog: function() {
-    return new Promise(function(resolve, reject) {
+  async _getFileMetaData(file) {
+    let data = await window.gapi.client.drive.files.get({fileId: file.id});
+
+    return data.result;
+  },
+  _openDialog() {
+    return new Promise((resolve) => {
       var picker = new google.picker.PickerBuilder()
         .addView(new google.picker.DocsUploadView())
         .addView(new google.picker.DocsView())
@@ -56,24 +59,20 @@ export default {
         .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
         .setDeveloperKey(API_KEY)
         .setAppId(CLIENT_ID.split('-')[0])
-        .setCallback(this._onFilesPicked.bind(this, resolve, reject))
+        .setCallback(resolve)
         .build();
 
       picker.setVisible(true);
-    }.bind(this))
-      .then(function(files) {
-        return Promise.all(files.map(this._getFileMetaData.bind(this)));
-      }.bind(this));
-  },
-  _getFileMetaData: function(file) {
-    return new Promise(function(resolve, reject) {
-      return window.gapi.client.drive.files.get({fileId: file.id}).then(function(data) {
-        resolve(data.result);
-      }, reject);
     });
   },
-  _authorize: function(immediateMode) {
-    return new Promise(function(resolve, reject) {
+  _load() {
+    return new Promise((resolve) => {
+      window.gapi.client.load('drive', 'v2', resolve);
+      window.gapi.load('picker');
+    }).then(() => { this._loaded = true; });
+  },
+  _authorize(immediateMode) {
+    return new Promise((resolve, reject) => {
       window.gapi.auth.authorize({
         client_id: CLIENT_ID,
         scope: ['https://www.googleapis.com/auth/drive.file'],
@@ -87,7 +86,7 @@ export default {
       });
     });
   },
-  getAccessToken: function() {
+  getAccessToken() {
     return this._accessToken;
   }
 };

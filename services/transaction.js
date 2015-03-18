@@ -2,85 +2,109 @@
 
 import models from '../models';
 import validateTransaction from '../validators/transaction';
-import request from 'request';
+import rp from 'request-promise';
 
-function saveFiles(transaction, files) {
-  if (!files || files.length === 0) {
-    return Promise.resolve(transaction);
-  }
+// TODO test
+async function saveFiles(transaction, files) {
+  files = await* files.map((file) => {
+      return rp({
+        uri: file.thumnailLink,
+        encoding: 'binary',
+        auth: {
+          bearer: body.accessToken
+        },
+        transform(body, response) {
+          file.mimeType = response.headers['content-type'];
+          file.data = new Buffer(body, 'binary');
+        }
+      });
+  });
+
+  await models.File.bulkCreate(files.map((file) => {
+    return {
+      googleDriveId: file.id,
+      title: file.title,
+      thumbnailData: file.data,
+      thumbnailType: file.mimeType,
+      embedLink: file.embedLink,
+      imageUrl: file.imageUrl,
+      TransactionId: transaction.id
+    };
+  }));
 
   // download thumbnails
-  return Promise.all(files.map(function(file) {
-    return new Promise(function(resolve, reject) {
-      request.get(file.thumbnailLink, {encoding: 'binary'}, function(err, response, body) {
-        if (err) {
-          return reject(err);
-        }
-
-        file.mimeType = response.headers['content-type'];
-        file.data = new Buffer(body, 'binary');
-
-        resolve(file);
-      }).auth(null, null, true, body.accessToken);
-    });
-  })).then(function(files) {
-    return models.File.bulkCreate(files.map(function(file) {
-      return {
-        googleDriveId: file.id,
-        title: file.title,
-        thumbnailData: file.data,
-        thumbnailType: file.mimeType,
-        embedLink: file.embedLink,
-        imageUrl: file.imageUrl,
-        TransactionId: transaction.id
-      };
-    })).then(function() {
-      return transaction;
-    });
-  });
+  //return Promise.all(files.map(function(file) {
+  //  return new Promise(function(resolve, reject) {
+  //    request.get(file.thumbnailLink, {encoding: 'binary'}, function(err, response, body) {
+  //      if (err) {
+  //        return reject(err);
+  //      }
+  //
+  //      file.mimeType = response.headers['content-type'];
+  //      file.data = new Buffer(body, 'binary');
+  //
+  //      resolve(file);
+  //    }).auth(null, null, true, body.accessToken);
+  //  });
+  //})).then(function(files) {
+  //  return models.File.bulkCreate(files.map(function(file) {
+  //    return {
+  //      googleDriveId: file.id,
+  //      title: file.title,
+  //      thumbnailData: file.data,
+  //      thumbnailType: file.mimeType,
+  //      embedLink: file.embedLink,
+  //      imageUrl: file.imageUrl,
+  //      TransactionId: transaction.id
+  //    };
+  //  })).then(function() {
+  //    return transaction;
+  //  });
+  //});
 }
 
 export default {
   name: 'transactions',
-  read: function (req, resource, params, config, callback) {
-    var user = req.session.user;
+  async read(req, resource, params, config, callback) {
+    let user = req.session.user;
 
     if (!user) {
       return callback(403);
     }
 
-    var promise;
-    var query = {
-      where: {
-        UserId: user.id
-      },
-      include: [{
-        model: models.File,
-        as: 'files'
-      }, {
-        model: models.LineItem,
-        as: 'lineItems',
+    try {
+      let query = {
+        where: {
+          UserId: user.id
+        },
         include: [{
-          model: models.Label,
-          as: 'labels',
-          attributes: ['id', 'name']
+          model: models.File,
+          as: 'files'
+        }, {
+          model: models.LineItem,
+          as: 'lineItems',
+          include: [{
+            model: models.Label,
+            as: 'labels',
+            attributes: ['id', 'name']
+          }]
         }]
-      }]
-    };
+      };
 
-    if (params.id) {
-      query.where.id = params.id;
-      promise = models.Transaction.findOne(query);
-    } else {
-      promise = models.Transaction.findAll(query);
-    }
+      let result;
+      if (params.id) {
+        result = await models.Transaction.findOne(query);
+      } else {
+        result = await models.Transaction.findAll(query);
+      }
 
-    promise.then(function(result) {
       callback(null, result);
-    });
+    } catch (err) {
+      callback(err);
+    }
   },
-  create: function(req, resource, params, body, config, callback) {
-    var user = req.session.user;
+  async create(req, resource, params, body, config, callback) {
+    let user = req.session.user;
 
 
     if (!user) {
@@ -89,7 +113,82 @@ export default {
       });
     }
 
-    var promise;
+    try {
+      let transaction;
+
+      // load old transaction
+      if (params.id) {
+        transaction = await models.Transaction.findOne({
+          where: {
+            id: params.id,
+            UserId: user.id
+          }
+        });
+
+        if (!transaction) {
+          throw {
+            statusCode: 404
+          };
+        }
+      }
+
+      // validate transaction
+      let result = validateTransaction(body);
+
+      if (result.hasErrors) {
+        throw {
+          message: JSON.stringify(result)
+        };
+      }
+
+      // create/update
+      if (transaction) {
+        transaction = await transaction.updateAttributes(result.data);
+      } else {
+        result.data.UserId = user.id;
+
+        transaction = await models.Transaction.create(result.data);
+        if (body.files && body.files.length > 0) {
+          await saveFiles(transaction, body.files);
+        }
+      }
+
+      // save line items
+      if (body.lineItems) {
+        // TODO validate
+        for (let lineItem of body.lineItems) {
+          lineItem.TransactionId = transaction.id;
+        }
+
+        await models.LineItem.bulkCreate(body.lineItems);
+        let lineItems = await models.LineItem.findAll({
+            where: {
+              TransactionId: transaction.id
+            },
+            attributes: ['id']
+          }, {raw: true});
+
+        // yolo - hopefully IDS are in correct order
+        let lineItemLabels = [];
+        for (let [index, lineItem] of lineItems.entries()) {
+          for (let labelId of body.lineItems[index].labels) {
+            lineItemLabels.push({
+              LineItemId: lineItem.id,
+              LabelId: labelId
+            });
+          }
+        }
+
+        await models.LineItemLabels.bulkCreate(lineItemLabels);
+      }
+
+      callback(null, transaction);
+    } catch (err) {
+      console.log(err);
+      callback(err);
+    }
+
+   /* var promise;
 
     if (params.id) {
       promise = models.Transaction.findOne({
@@ -166,6 +265,6 @@ export default {
       // TODO handle update fail
     }).catch(function(error) {
       callback(error);
-    });
+    });*/
   }
 };

@@ -1,7 +1,6 @@
 'use strict';
 
 import React from 'react';
-
 import { Label, Glyphicon } from 'react-bootstrap';
 
 export default React.createClass({
@@ -10,7 +9,7 @@ export default React.createClass({
     onDelete: React.PropTypes.func,
     onEdit: React.PropTypes.func
   },
-  render: function() {
+  render() {
     return (
       <Label>
         <span className="text">{this.props.label.name}</span>

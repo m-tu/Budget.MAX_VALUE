@@ -11,45 +11,45 @@ export default createStore({
     LOG_IN_FAIL: '_logInFail',
     LOG_OUT_DONE: '_logOut'
   },
-  initialize: function () {
+  initialize() {
     this.loading = false;
     this.errorMessage = null;
     this.user = null;
   },
-  _logInStart: function() {
+  _logInStart() {
     this.loading = true;
     this.errorMessage = null;
     this.emitChange();
   },
-  _logInDone: function(user) {
+  _logInDone(user) {
     this.loading = false;
     this.errorMessage = null;
     this.user = user;
     this.emitChange();
   },
-  _logInFail: function() {
+  _logInFail() {
     this.loading = false;
     this.errorMessage = 'Login failed! Check username and password.';
     this.emitChange();
   },
-  _logOut: function() {
+  _logOut() {
     this.user = null;
     this.emitChange();
   },
-  getState: function() {
+  getState() {
     return {
       loading: this.loading,
       errorMessage: this.errorMessage,
       user: this.user
     };
   },
-  isLoggedIn: function() {
+  isLoggedIn() {
     return this.user !== null;
   },
-  dehydrate: function () {
+  dehydrate () {
     return this.getState();
   },
-  rehydrate: function (state) {
+  rehydrate(state) {
     this.loading = state.loading;
     this.errorMessage = state.errorMessage;
     this.user = state.user;

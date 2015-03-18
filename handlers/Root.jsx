@@ -5,7 +5,7 @@ import { Link, RouteHandler } from 'react-router';
 import Header from '../components/Header.jsx';
 
 export default React.createClass({
-  render: function() {
+  render() {
     return (
       <div>
         <Header context={this.props.context} />

@@ -13,7 +13,7 @@ export default React.createClass({
       _onChange: [AuthStore]
     }
   },
-  getInitialState: function() {
+  getInitialState() {
     return this.getState();
   },
   getState: function () {
@@ -26,11 +26,11 @@ export default React.createClass({
       loading: false//storeState.loading
     };
   },
-  _onChange: function() {
+  _onChange() {
     this.setState(this.getStore(AuthStore).getState());
   },
-  render: function() {
-    var loading = this.state.loading;
+  render() {
+    let loading = this.state.loading;
 
     return (
       <form onSubmit={this._onSubmit}>
@@ -41,11 +41,11 @@ export default React.createClass({
       </form>
     );
   },
-  _onSubmit: function(e) {
+  _onSubmit(e) {
     e.preventDefault();
 
-    var username = this.state.username.trim(),
-      password = this.state.password.trim();
+    let username = this.state.username.trim();
+    let password = this.state.password.trim();
 
     if (username === '' || password === '') {
       this.setState({

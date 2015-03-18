@@ -2,31 +2,31 @@
 
 import Router from 'react-router';
 
-var router = {
+let router = {
   router: null,
 
-  makePath: function(to, params, query) {
+  makePath(to, params, query) {
     return this.router.makePath(to, params, query);
   },
 
-  makeHref: function(to, params, query) {
+  makeHref(to, params, query) {
     return this.router.makeHref(to, params, query);
   },
 
-  transitionTo: function(to, params, query) {
+  transitionTo(to, params, query) {
     this.router.transitionTo(to, params, query);
   },
 
-  replaceWith: function(to, params, query) {
+  replaceWith(to, params, query) {
     this.router.replaceWith(to, params, query);
   },
 
-  goBack: function() {
+  goBack() {
     this.router.goBack();
   },
 
-  run: function(location, callback, abortHandler) {
-    var options = {
+  run(location, callback, abortHandler) {
+    let options = {
       routes: this.routes,
       location: location,
       onAbort: abortHandler

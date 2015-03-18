@@ -3,7 +3,7 @@
 import LabelStore from '../stores/LabelStore';
 
 export default function(context, label) {
-  context.service.update('label', {id: label.id}, label, function(err, newLabel) {
+  context.service.update('label', {id: label.id}, label, (err, newLabel) => {
     if (err) {
       return;
     }

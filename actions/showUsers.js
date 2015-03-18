@@ -3,7 +3,7 @@
 export default function (context, payload, done) {
   context.dispatch('RECEIVE_USERS_START', payload);
 
-  context.service.read('user', {}, {}, function (err, users) {
+  context.service.read('user', {}, {}, (err, users) => {
     if (err) {
       context.dispatch('RECEIVE_USERS_FAILURE', payload);
       done();

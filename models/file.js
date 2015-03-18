@@ -1,7 +1,7 @@
 'use strict';
 
 export default function(sequelize, DataTypes) {
-  var File = sequelize.define('File', {
+  return sequelize.define('File', {
     googleDriveId: {
       type: DataTypes.STRING,
       allowNull: false
@@ -12,6 +12,4 @@ export default function(sequelize, DataTypes) {
     embedLink: DataTypes.STRING,
     imageUrl: DataTypes.STRING
   });
-
-  return File;
 };

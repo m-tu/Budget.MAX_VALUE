@@ -1,5 +1,7 @@
 'use strict';
 
+import 'babel/polyfill';
+
 import React from 'react';
 import Router from 'react-router';
 import router from './router';
@@ -12,14 +14,14 @@ window.React = React; // For chrome dev tool support
 
 window.app = app;
 
-var dehydratedState = window.App;
+let dehydratedState = window.App;
 
-app.rehydrate(dehydratedState, function(err, context) {
+app.rehydrate(dehydratedState, (err, context) => {
   if (err) {
     throw new Error(err);
   }
 
-  router.run(Router.HistoryLocation, function(Handler) {
+  router.run(Router.HistoryLocation, (Handler) => {
     React.render(<Handler context={context.getComponentContext()} />, document.getElementById('app'));
   });
 });

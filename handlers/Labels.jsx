@@ -5,7 +5,7 @@ import AuthMixin from '../mixins/Auth';
 
 import { FluxibleMixin }from 'fluxible';
 import { LabelStore } from '../stores';
-import { updateLabelsAction, deleteLabelAction, showLabelsAction } from '../actions';
+import { updateLabelAction, deleteLabelAction, showLabelsAction } from '../actions';
 import { Button, Modal, OverlayMixin } from 'react-bootstrap';
 
 import LabelInput from '../components/LabelInput.jsx';
@@ -19,7 +19,7 @@ var MyModal = React.createClass({
     onSave: React.PropTypes.func.isRequired,
     onClose: React.PropTypes.func.isRequired
   },
-  render: function () {
+  render() {
     return (
       <Modal title="Edit modal" onRequestHide={this.props.onClose}>
         <div className="modal-body">
@@ -31,8 +31,8 @@ var MyModal = React.createClass({
       </Modal>
     );
   },
-  _onSave: function() {
-    var labelInput = this.refs.labelInput;
+  _onSave() {
+    let labelInput = this.refs.labelInput;
 
     if (labelInput.isValid()) {
       this.props.onSave(labelInput.getLabelName());
@@ -50,19 +50,19 @@ export default React.createClass({
       _onChange: [LabelStore]
     }
   },
-  _onChange: function() {
+  _onChange() {
     this.setState(this.getInitialState());
   },
-  componentDidMount: function() {
+  componentDidMount() {
     this.props.context.executeAction(showLabelsAction);
   },
-  getInitialState: function() {
+  getInitialState() {
     return {
       newLabelName: '',
       labels: this.getStore(LabelStore).getLabels()
     };
   },
-  render: function() {
+  render() {
     return (
       <div>
         <h2>Manage labels</h2>
@@ -71,7 +71,7 @@ export default React.createClass({
       </div>
     );
   },
-  renderOverlay: function () {
+  renderOverlay() {
     if (!this.state.editing) {
       return null;
     }
@@ -80,20 +80,20 @@ export default React.createClass({
       <MyModal label={this.state.editing} onSave={this._saveLabel} onClose={this._closeModal} />
     );
   },
-  _renderLabel: function(label) {
+  _renderLabel(label) {
     return (
       <Label key={label.id} label={label} onDelete={this._deleteLabel} onEdit={this._editLabel} />
     );
   },
-  _deleteLabel: function(label) {
+  _deleteLabel(label) {
     this.props.context.executeAction(deleteLabelAction, label);
   },
-  _closeModal: function() {
+  _closeModal() {
     this.setState({
       editing: null
     });
   },
-  _editLabel: function(label) {
+  _editLabel(label) {
     this.setState({
       editing: {
         name: label.name,
@@ -101,16 +101,16 @@ export default React.createClass({
       }
     });
   },
-  _saveLabel: function(name) {
-    var label = this.state.editing;
+  _saveLabel(name) {
+    let label = this.state.editing;
 
     label.name = name;
-    this.props.context.executeAction(updateLabelsAction, label);
+    this.props.context.executeAction(updateLabelAction, label);
 
     this._closeModal();
   },
-  _onAddLabel: function(name) {
-    this.props.context.executeAction(updateLabelsAction, {
+  _onAddLabel(name) {
+    this.props.context.executeAction(updateLabelAction, {
       name: name
     });
 

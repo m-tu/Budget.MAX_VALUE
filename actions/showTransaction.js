@@ -3,13 +3,12 @@
 import TransactionStore from '../stores/TransactionStore';
 
 export default function (context, transactionId) {
-
-  var transactionStore = context.getStore(TransactionStore);
+  let transactionStore = context.getStore(TransactionStore);
 
   if (!transactionStore.hasTransaction(transactionId)) {
     context.dispatch('RECEIVE_TRANSACTION_START', transactionId);
 
-    context.service.read('transactions', {id: transactionId}, function (err, transaction) {
+    context.service.read('transactions', {id: transactionId}, (err, transaction) => {
       if (err || transaction === null) {
         context.dispatch('RECEIVE_TRANSACTION_FAILURE', transactionId);
         return;

@@ -7,7 +7,7 @@ export default function(context, transaction) {
   context.dispatch('UPDATE_TRANSACTION_START', transaction);
   transaction.accessToken = googleApiUtil.getAccessToken();
 
-  context.service.create('transactions', {id: transaction.id}, transaction, function(err, newTransaction) {
+  context.service.create('transactions', {id: transaction.id}, transaction, (err, newTransaction) => {
     if (err) {
       return context.dispatch('UPDATE_TRANSACTION_FAIL', transaction, err);
     }
