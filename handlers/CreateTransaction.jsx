@@ -20,22 +20,22 @@ export default React.createClass({
   statics: {
     storeListeners: [LabelStore]
   },
-  componentDidMount: function() {
+  componentDidMount() {
     this.props.context.executeAction(showLabelsAction);
   },
-  getInitialState: function() {
+  getInitialState() {
     return Object.assign({
       lineItems: [],
       hasErrors: false
     }, this._getStateFromStores());
   },
-  _getStateFromStores: function() {
+  _getStateFromStores() {
     return {
       labels: this.getStore(LabelStore).getLabels()
     }
   },
-  render: function() {
-    var errorMessage = null;
+  render() {
+    let errorMessage = null;
 
     if (this.state.hasErrors) {
       errorMessage = (
@@ -49,7 +49,7 @@ export default React.createClass({
       <div>
         <h1>Create Transaction</h1>
         {errorMessage}
-        <TransactionForm ref="transactionForm" transaction={{}}/>
+        <TransactionForm key="test" ref="transactionForm" />
         <TransactionItemsForm ref="lineItemsForm" lineItems={this.state.lineItems} onChange={this._onLineItemsChange}
                               labels={this.state.labels} />
         <Button type="submit" bsStyle="success" onClick={this._onSubmit} disabled={this.state.working}>
@@ -58,28 +58,27 @@ export default React.createClass({
       </div>
     );
   },
-  _onSubmit: function(e) {
+  _onSubmit(e) {
     e.preventDefault();
 
-    var transactionValidation = this.refs.transactionForm.validate();
-    var itemsValidation = this.refs.lineItemsForm.validate();
+    let transactionValidation = this.refs.transactionForm.validate();
+    let itemsValidation = this.refs.lineItemsForm.validate();
 
     if (transactionValidation.hasErrors || itemsValidation.hasErrors) {
       this.setState({
         hasErrors: true
       });
     } else {
-      var transaction = transactionValidation.data;
+      let transaction = transactionValidation.data;
 
-      transaction.lineItems = this.state.lineItems.map(function(item) {
-        var lineItem = Object.assign({}, item);
-
-        lineItem.id = null;
-        lineItem.labels = lineItem.labels.map(function(label) {
-          return label.id;
-        });
-
-        return lineItem;
+      transaction.lineItems = this.state.lineItems.map(item => {
+        return {
+          name: item.name,
+          amount: item.amount,
+          labels: item.labels.map(label => {
+            return label.id;
+          })
+        };
       });
 
       this.props.context.executeAction(createTransactionAction, transaction);
@@ -90,12 +89,12 @@ export default React.createClass({
       });
     }
   },
-  _onLineItemsChange: function(newLineItems) {
+  _onLineItemsChange(newLineItems) {
     this.setState({
       lineItems: newLineItems
     });
   },
-  onChange: function() {
+  onChange() {
     this.setState(this._getStateFromStores());
   }
 });

@@ -25,43 +25,43 @@ export default React.createClass({
     storeListeners: {
       _onChange: [CreateTransactionStore, LabelStore, TransactionStore]
     },
-    willTransitionFrom: function (transition, component) {
+    willTransitionFrom(transition, component) {
       component._clearUnsavedData();
     }
   },
-  getInitialState: function() {
+  getInitialState() {
     return this._getStateFromStores();
   },
-  _getStateFromStores: function() {
+  _getStateFromStores() {
     return {
       transaction: this.getStore(TransactionStore).getTransaction(this._getTransactionId()) || {},
       labels: this.getStore(LabelStore).getLabels(),
       lineItems: []
     }
   },
-  componentWillReceiveProps: function() {
+  componentWillReceiveProps() {
     this.setState(this.getInitialState());
     this._loadTransaction();
   },
-  _getTransactionId: function() {
+  _getTransactionId() {
     return parseInt(this.getParams().id) || null;
   },
-  _onChange: function() {
+  _onChange() {
     this.setState(this._getStateFromStores());
   },
-  _loadTransaction: function() {
-    var transactionId = this._getTransactionId();
+  _loadTransaction() {
+    let transactionId = this._getTransactionId();
 
     if (transactionId !== null) {
       this.props.context.executeAction(showTransactionsAction, {id: transactionId});
     }
   },
-  componentDidMount: function() {
+  componentDidMount() {
     this.props.context.executeAction(showLabelsAction);
     this._loadTransaction();
   },
-  render: function() {
-    var errorMessage = null;
+  render() {
+    let errorMessage = null;
 
     if (this.state.hasErrors) {
       errorMessage = (
@@ -71,7 +71,7 @@ export default React.createClass({
       );
     }
 
-    var transaction = this.state.transaction;
+    let transaction = this.state.transaction;
 
     return (
       <div>
@@ -88,10 +88,10 @@ export default React.createClass({
       </div>
     );
   },
-  _onSubmit: function(e) {
+  _onSubmit(e) {
     e.preventDefault();
 
-    var result = this.refs.transactionForm.validate();
+    let result = this.refs.transactionForm.validate();
 
     if (result.hasErrors) {
       this.setState({
@@ -111,7 +111,7 @@ export default React.createClass({
 
     this.props.context.executeAction(createTransactionAction, result.data);
   },
-  _clearUnsavedData: function() {
+  _clearUnsavedData() {
     this.props.context.executeAction(clearUnsavedTransactionAction);
   }
 });

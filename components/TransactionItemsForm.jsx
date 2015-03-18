@@ -7,23 +7,21 @@ import { Table, Button, ButtonToolbar } from 'react-bootstrap';
 import Label from './Label.jsx';
 import LineItemForm from './LineItemForm.jsx';
 
-// TODO think better solution
-var id = 0;
-
 export default React.createClass({
+  _id: 0,
   mixins: [React.addons.LinkedStateMixin],
   propTypes: {
     labels: React.PropTypes.array.isRequired,
     lineItems: React.PropTypes.array.isRequired,
     onChange: React.PropTypes.func
   },
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       labels: [],
       lineItems: []
     };
   },
-  getInitialState: function() {
+  getInitialState() {
     return {
       items: [],
       newName: '',
@@ -35,7 +33,7 @@ export default React.createClass({
       editing: null
     }
   },
-  render: function() {
+  render() {
     return (
       <div>
         <Table>
@@ -48,7 +46,7 @@ export default React.createClass({
             </tr>
           </thead>
           <tbody>
-            <LineItemForm labels={this.props.labels} onSave={this._handleSave} />
+            <LineItemForm ref="newForm" labels={this.props.labels} onSave={this._handleSave} />
             {this.props.lineItems.map(this._renderItem)}
             {this._renderTotal()}
           </tbody>
@@ -56,8 +54,11 @@ export default React.createClass({
       </div>
     );
   },
-  _renderItem: function(item) {
-    var row;
+  validate() {
+    return !this.refs.newForm.isDirty();
+  },
+  _renderItem(item) {
+    let row;
 
     if (this.state.editing === item.id) {
       row = (
@@ -81,30 +82,23 @@ export default React.createClass({
     }
     return row;
   },
-  _renderItemLabels: function(label) {
+  _renderItemLabels(label) {
     return (
       <Label key={label.id} label={label} />
     )
   },
-  _handleEdit: function(item) {
+  _handleEdit(item) {
     this.setState({
       editing: item ? item.id : null
     });
   },
-  _handleSave: function(newItem) {
-    var index = -1;
-    var i;
-
-    for (i = 0; i < this.props.lineItems.length; i++) {
-      if (this.props.lineItems[i].id === newItem.id) {
-        index = i;
-        break;
-      }
-    }
-    var diff;
+  _handleSave(newItem) {
+    let index = newItem.id === null ? -1 : this.props.lineItems.findIndex(lineItem => lineItem.id === newItem.id);
+    let diff;
 
     if (index === -1) {
       // new
+      newItem.id = '_' + this._id++;
       diff = {
         $unshift: [newItem]
       };
@@ -119,10 +113,11 @@ export default React.createClass({
     this.setState({
       editing: null
     });
+    this.refs.newForm.clear();
     this._emitChange(diff);
   },
-  _onRemove: function(item) {
-    var index = this.state.items.indexOf(item);
+  _onRemove(item) {
+    let index = this.state.items.indexOf(item);
 
     if (item === -1) {
       return;
@@ -134,7 +129,7 @@ export default React.createClass({
       ]
     });
   },
-  _emitChange: function(diff) {
+  _emitChange(diff) {
     if (!this.props.onChange) {
       return;
     }
@@ -145,8 +140,8 @@ export default React.createClass({
 
     //this._focus();
   },
-  _renderTotal: function() {
-    var sum = this.props.lineItems.reduce(function(sum, item) {
+  _renderTotal() {
+    let sum = this.props.lineItems.reduce(function(sum, item) {
       return sum + item.amount;
     }, 0);
 

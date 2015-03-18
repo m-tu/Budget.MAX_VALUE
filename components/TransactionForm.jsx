@@ -6,7 +6,7 @@ import { Input } from 'react-bootstrap';
 import validateTransaction from '../validators/transaction';
 import rome from 'rome';
 
-var formElements = [
+let formElements = [
   {
     name: 'date',
     label: 'Date',
@@ -23,7 +23,7 @@ var formElements = [
   }, {
     name: 'amount',
     label: 'Amount',
-    type: 'number',
+    type: 'number'
   }, {
     name: 'method',
     label: 'Method',
@@ -40,17 +40,17 @@ var formElements = [
   }
 ];
 
-var dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+let dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
 
 export default React.createClass({
   rome: null,
   propTypes: {
-    transaction: React.PropTypes.object.isRequired,
+    transaction: React.PropTypes.object,
     onChange: React.PropTypes.func,
     disabled: React.PropTypes.bool
   },
-  mixins: [React.addons.LinkedStateMixin],
-  getInitialState: function(transaction) {
+  mixins: [React.addons.LinkedStateMixin, React.addons.PureRenderMixin],
+  getInitialState(transaction) {
     transaction = transaction || this.props.transaction || {};
 
     return {
@@ -62,7 +62,7 @@ export default React.createClass({
       errors: {}
     };
   },
-  componentDidMount: function() {
+  componentDidMount() {
     this.rome = rome(this.refs.date.refs.input.getDOMNode(), {
       inputFormat: 'YYYY-MM-DD HH:mm:ss',
       weekStart: 1,
@@ -71,36 +71,37 @@ export default React.createClass({
       }
     }).on('data', date => this.setState({date: date}));
   },
-  componentWillReceiveProps: function(nextProps) {
-    this.setState(this.getInitialState(nextProps.transaction));
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.transaction) {
+      this.setState(this.getInitialState(nextProps.transaction));
+    }
   },
-  render: function() {
+  render() {
     return (
       <div className="form-horizontal">
         {formElements.map(this._renderInput)}
       </div>
     );
   },
-  _renderInput: function(input) {
-    let {type, props: {children} = {}} = input;
+  _renderInput(input) {
     let error = this.state.errors[input.name];
 
     return (
-      <Input key={input.name} type={type} label={input.label} value={this.state[input.name]}
+      <Input key={input.name} type={input.type} label={input.label} value={this.state[input.name]}
              onChange={this._onInputChange.bind(null, input)} disabled={this.props.disabled}
              help={error} bsStyle={error ? 'error' : null}
              ref={input.name}
              labelClassName="col-xs-2" wrapperClassName="col-xs-10"
              onBlur={input.noValidate ? null : this._validateInput.bind(null, input)}>
-        {children}
+        {input.props ? input.props.children : null}
       </Input>
     );
   },
   /**
    * @returns {{data: {}, errors: {}, hasErrors: boolean}}
    */
-  validate: function() {
-    var result = validateTransaction(this.state);
+  validate() {
+    let result = validateTransaction(this.state);
 
     this.setState({
       errors: result.errors
@@ -108,15 +109,18 @@ export default React.createClass({
 
     return result;
   },
-  getTransaction: function() {
+  getTransaction() {
     return validateTransaction(this.state).data;
   },
-  _onInputChange: function(input, e) {
-    var state = {
-      errors: Object.assign({}, this.state.errors)
+  _onInputChange(input, e) {
+    let state = {
+      errors: React.addons.update(this.state.errors, {
+        [input.name]: {
+          $set: null
+        }
+      }),
+      [input.name]: e.target.value
     };
-    state[input.name] = e.target.value;
-    state.errors[input.name] = null;
 
     this.setState(state);
 
@@ -124,13 +128,13 @@ export default React.createClass({
       this.rome.setValue(e.target.value);
     }
   },
-  _validateInput: function(input) {
-    var validation = validateTransaction(this.state);
-    var errors = this.state.errors;
+  _validateInput(input) {
+    let validation = validateTransaction(this.state);
 
     if (validation.errors[input.name]) {
-      errors = Object.assign({}, errors);
-      errors[input.name] = validation.errors[input.name];
+      let errors = Object.assign({}, this.state.errors, {
+        [input.name]: validation.errors[input.name]
+      });
 
       this.setState({
         errors: errors
