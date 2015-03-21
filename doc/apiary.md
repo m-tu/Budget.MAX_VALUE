@@ -11,20 +11,20 @@ Labels related resources of the **Budget API**
     + Body
             
             [{
-              "id": 1, "name": "Food"
-            }, {
-              "id": 2, "name": "Drink"
+                "id": 1,
+                "name": "Food"
             }]
 
 ### List all Labels [GET]
 + Response 200
-
     [Labels Collection][]
 
 ### Create a Label [POST]
 + Request (application/json)
 
-        { "name": "Clothes" }
+        {
+            "name": "Clothes"
+        }
 
 + Response 201
 
@@ -39,22 +39,23 @@ A single Label object with all its details
 + Model (application/json)
     + Body
     
-            { "id": 2, "title": "Drink" }
+            {
+                "id": 2,
+                "name": "Drink"
+            }
 
 ### Retrieve a Label [GET]
-+ Response 200 (application/json)
-
-    + Body
-
-            { "id": 2, "title": "Drink" }
++ Response 200
+    [Label][]
 
 ### Update a Label [PUT]
 + Request (application/json)
 
-        { "name": "Clothes" }
+        {
+            "name": "Clothes"
+        }
 
 + Response 200
-
     [Label][]
 
 ### Remove a Label [DELETE]
@@ -148,5 +149,3 @@ A single Label object with all its details
 
 + Response 200
 + Response 403
-
-
