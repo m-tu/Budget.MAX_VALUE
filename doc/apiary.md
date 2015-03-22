@@ -11,20 +11,20 @@ Labels related resources of the **Budget API**
     + Body
             
             [{
-                "id": 1,
-                "name": "Food"
+              "id": 1, "name": "Food"
+            }, {
+              "id": 2, "name": "Drink"
             }]
 
 ### List all Labels [GET]
 + Response 200
+
     [Labels Collection][]
 
 ### Create a Label [POST]
 + Request (application/json)
 
-        {
-            "name": "Clothes"
-        }
+        { "name": "Clothes" }
 
 + Response 201
 
@@ -39,23 +39,22 @@ A single Label object with all its details
 + Model (application/json)
     + Body
     
-            {
-                "id": 2,
-                "name": "Drink"
-            }
+            { "id": 2, "title": "Drink" }
 
 ### Retrieve a Label [GET]
-+ Response 200
-    [Label][]
++ Response 200 (application/json)
+
+    + Body
+
+            { "id": 2, "title": "Drink" }
 
 ### Update a Label [PUT]
 + Request (application/json)
 
-        {
-            "name": "Clothes"
-        }
+        { "name": "Clothes" }
 
 + Response 200
+
     [Label][]
 
 ### Remove a Label [DELETE]
@@ -97,6 +96,11 @@ A single Label object with all its details
     [Transaction][]
 
 ## Transaction [/transactions/{id}]
+A single Transaction object with all its details
+
++ Parameters
+    + id (required, number, `1`) ... Numeric `id` of the Transaction to perform action with. Has example value.
+
 + Model (application/json)
     + Body
         
@@ -137,9 +141,75 @@ A single Label object with all its details
 ### Remove a Transaction [DELETE]
 + Response 204
 
-# Group Authentication
+# Group Line Items
+## Transaction LineItem [/transactions/{transactionId}/lineItems]
+A LineItem object in the context of transaction
+
++ Parameters
+    + transactionId (required, number, `1`) ... Numeric `id` of the Transaction to perform lineItem action with. Has example value.
+
+### Add a line item [POST]
++ Request (application/json)
+    
+        {
+            "name": "Coca cola",
+            "amount": 12.10
+        }
+
++ Response 201
+    [LineItem][]
+
+## LineItem Collection [/lineItems{?name,label}]
++ Parameters
+    + name (optional, string, `Coca cola`) ... Name of line items to retrieve.
+    + label (optional, number, `1`) ... Id of Label which transactions to retrieve.
+
++ Model (application/json)
+    + Body
+    
+            [{
+                "id": 1,
+                "name": "Coca cola",
+                "amount": 12.10
+            }]
+
+### Retrieve LineItems [GET]
++ Response 200
+    [LineItem Collection][]
+
+## LineItem [/lineItems/{id}]
+A LineItem object in the context of transaction
+
++ Parameters
+    + id (required, number, `1`) ... Numeric `id` of the LineItem to perform action with. Has example value.
+    
++ Model (application/json)
+    + Body
+    
+            {
+                "id": 1,
+                "name": "Coca cola",
+                "amount": 12.10
+            }
+
+### Update LineItem [PUT]
++ Request (application/json)
+    
+        {
+            "name": "Coca cola",
+            "amount": 12.10
+        }
+
++ Response 200
+    [LineItem][]
+
+### Remove LineItem [DELETE]
++ Response 204
+
+
+# Group auth
 ## Authentication [/auth]
-### Authenticate [POST]
+### Authenticate
 + Request (application/json)
     
         {
@@ -149,3 +219,5 @@ A single Label object with all its details
 
 + Response 200
 + Response 403
+
+
