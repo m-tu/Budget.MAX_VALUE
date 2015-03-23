@@ -79,6 +79,10 @@ for (let serviceName of Object.keys(services)) {
   fetchrPlugin.registerService(services[serviceName]);
 }
 
+import labelApi from './api/labels';
+server.use('/api2', labelApi);
+
+
 // Set up the fetchr middleware
 server.use(fetchrPlugin.getXhrPath(), fetchrPlugin.getMiddleware());
 
