@@ -79,8 +79,8 @@ for (let serviceName of Object.keys(services)) {
   fetchrPlugin.registerService(services[serviceName]);
 }
 
-import labelApi from './api/labels';
-server.use('/api2', labelApi);
+import api from './api';
+server.use('/api2', api);
 
 
 // Set up the fetchr middleware
@@ -123,6 +123,10 @@ server.use((req, res) => {
       }
     }
   );
+});
+
+server.use((err, req, res, next) => {
+  res.sendStatus(404);
 });
 
 let port = process.env.PORT || 3005;
