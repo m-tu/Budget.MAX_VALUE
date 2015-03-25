@@ -80,7 +80,7 @@ for (let serviceName of Object.keys(services)) {
 }
 
 import api from './api';
-server.use('/api2', api);
+server.use('/api2', api.expressRouter);
 
 
 // Set up the fetchr middleware
@@ -125,7 +125,7 @@ server.use((req, res) => {
   );
 });
 
-server.use((err, req, res, next) => {
+server.use((err, req, res) => {
   res.sendStatus(404);
 });
 

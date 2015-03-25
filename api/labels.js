@@ -1,5 +1,5 @@
-import express from 'express';
-let labelsRouter = express.Router();
+import Router from '../server/Router';
+let labelsRouter = new Router();
 let labels = [
   {
     "id": 1,
@@ -24,12 +24,13 @@ labelsRouter.param('id', (req, res, next, id) => {
   }
 });
 
-labelsRouter.route('/')
-  .get((req, res) => {
-    res.send(labels);
-  })
+let route = labelsRouter.route('/');
 
-  .post((req, res) => {
+route.get((req, res) => {
+    res.send(labels);
+  });
+
+route.post((req, res) => {
     let name = req.body.name;
 
     if (!name) {
@@ -45,19 +46,20 @@ labelsRouter.route('/')
     res.status(201).send(label);
   });
 
-labelsRouter.route('/:id')
-  .get((req, res) => {
-    res.send(req.label);
-  })
+route = labelsRouter.route('/:id');
 
-  .put((req, res) => {
+route.get((req, res) => {
+    res.send(req.label);
+  });
+
+route.put((req, res) => {
     if (req.body.name) {
       req.label.name = req.body.name;
     }
     res.send(req.label);
-  })
+  });
 
-  .delete((req, res) => {
+route.delete((req, res) => {
     let index = labels.indexOf(req.label);
 
     labels.splice(index, 1);

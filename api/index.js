@@ -1,13 +1,25 @@
-import express from 'express';
-
+import Router from '../server/Router';
 import labels from './labels';
+import auth from './auth';
 
-let api = express.Router();
+let apiRouter = new Router();
 
-api.use('/labels', labels);
+// public api
+apiRouter.use('/auth', auth);
 
-api.use((req, res) => {
-  res.sendStatus(404);
-})
+apiRouter.use((req, res, next) => {
+  if (!req.session.user) {
+    res.sendStatus(401);
+  } else {
+    next();
+  }
+});
 
-export default api;
+// auth
+apiRouter.use('/labels', labels);
+
+apiRouter.use((req, res) => {
+  res.sendStatus(500);
+});
+
+export default apiRouter;
