@@ -1,20 +1,21 @@
 import Router from '../server/Router';
-let labelsRouter = new Router();
-let labels = [
-  {
-    "id": 1,
-    "name": "Food"
-  },
-  {
-    "id": 2,
-    "name": "Drink"
-  }
-];
+import models from '../models';
 
-labelsRouter.param('id', (req, res, next, id) => {
+function sanitazeName(name) {
+  return name && String(name).trim();
+}
+
+let labelsRouter = new Router();
+
+labelsRouter.param('id', async (req, res, next, id) => {
   id = Number(id);
 
-  let label = labels.find(label => label.id === id);
+  let label = await models.Label.find({
+    where: {
+      UserId: req.session.user.id,
+      id: id
+    }
+  });
 
   if (!label) {
     return res.sendStatus(404);
@@ -26,44 +27,130 @@ labelsRouter.param('id', (req, res, next, id) => {
 
 let route = labelsRouter.route('/');
 
-route.get((req, res) => {
-    res.send(labels);
-  });
-
-route.post((req, res) => {
-    let name = req.body.name;
-
-    if (!name) {
-      return res.sendStatus(400);
+route.get(async (req, res) => {
+  let label = await models.Label.findAll({
+    where: {
+      UserId: req.session.user.id
     }
-
-    let label = {
-      id: labels.length,
-      name: name
-    };
-
-    labels.push(label);
-    res.status(201).send(label);
   });
+
+  res.send(label);
+});
+
+route.post(async (req, res) => {
+  let name = sanitazeName(req.body.name);
+
+  if (!name) {
+    return res.sendStatus(400);
+  }
+
+  let label = await models.Label.create({
+    name: name,
+    UserId: req.session.user.id
+  });
+
+  res.status(201).send(label);
+});
 
 route = labelsRouter.route('/:id');
 
 route.get((req, res) => {
-    res.send(req.label);
+  res.send(req.label);
+});
+
+route.put(async (req, res) => {
+  let name = sanitazeName(req.body.name);
+
+  if (!name) {
+    return res.sendStatus(400);
+  }
+
+  let label = await req.label.updateAttributes({
+    name: name
   });
 
-route.put((req, res) => {
-    if (req.body.name) {
-      req.label.name = req.body.name;
+  res.send(label);
+});
+
+route.delete(async (req, res) => {
+  await req.label.destroy();
+
+  res.sendStatus(204);
+});
+
+function labelValidator(req, res, next) {
+  let name = req.body.name && Strign(req.body.name).trim();
+
+  if (!name) {
+    return res.sendStatus(400);
+  }
+
+  req.data = {
+    name: name
+  };
+  next();
+}
+
+// some dest structure
+/*
+let test = {
+  params: {
+    async id(req, res, next, id){
+      id = Number(id);
+
+      let label = await models.Label.find({
+        where: {
+          UserId: req.session.user.id,
+          id: id
+        }
+      });
+
+      if (!label) {
+        return res.sendStatus(404);
+      } else {
+        req.label = label;
+        next();
+      }
     }
-    res.send(req.label);
-  });
+  },
+  routes: {
+    '/': {
+      async get(req, res){
+        let label = await models.Label.findAll({
+          where: {
+            UserId: req.session.user.id
+          }
+        });
 
-route.delete((req, res) => {
-    let index = labels.indexOf(req.label);
+        res.send(label);
+      },
+      post: [labelValidator, async (req, res) => {
+        let label = await models.Label.create({
+          name: req.data.name,
+          UserId: req.session.user.id
+        });
 
-    labels.splice(index, 1);
-    res.sendStatus(204);
-  });
+        res.status(201).send(label);
+      }]
+    },
+    '/:id': {
+      get(req, res) {
+        res.send(req.label);
+      },
+      put: [labelValidator, async (req, res) => {
+        let label = await req.label.updateAttributes({
+          name: req.data.name
+        });
+
+        res.send(label);
+      }],
+      async delete(req, res) {
+        await req.label.destroy();
+
+        res.sendStatus(204);
+      }
+    }
+  }
+}*/
 
 export default labelsRouter;

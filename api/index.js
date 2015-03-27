@@ -15,7 +15,7 @@ apiRouter.use((req, res, next) => {
   }
 });
 
-// auth
+// private api
 apiRouter.use('/labels', labels);
 
 apiRouter.use((req, res) => {

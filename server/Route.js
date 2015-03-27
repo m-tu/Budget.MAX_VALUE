@@ -23,6 +23,7 @@ class Route {
       try {
         await cb(...args);
       } catch (e) {
+        console.log(e);
         next();
       }
     });
