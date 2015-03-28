@@ -1,5 +1,6 @@
 import Router from '../server/Router';
 import labels from './labels';
+import transactions from './transactions';
 import auth from './auth';
 
 let apiRouter = new Router();
@@ -17,6 +18,7 @@ apiRouter.use((req, res, next) => {
 
 // private api
 apiRouter.use('/labels', labels);
+apiRouter.use('/transactions', transactions);
 
 apiRouter.use((req, res) => {
   res.sendStatus(500);
