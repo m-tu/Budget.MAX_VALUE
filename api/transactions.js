@@ -39,4 +39,10 @@ route.get((req, res) => {
   res.send(req.transaction);
 });
 
+route.delete(async (req, res) => {
+  await req.transaction.destroy();
+
+  res.sendStatus(204);
+});
+
 export default transactionsRouter;
