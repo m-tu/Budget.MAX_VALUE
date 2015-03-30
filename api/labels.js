@@ -1,4 +1,5 @@
 import Router from '../server/Router';
+import Router2 from '../server/Router2';
 import models from '../models';
 
 function sanitazeName(name) {
@@ -92,7 +93,7 @@ function labelValidator(req, res, next) {
 }
 
 // some dest structure
-/*
+
 let test = {
   params: {
     async id(req, res, next, id){
@@ -151,6 +152,8 @@ let test = {
       }
     }
   }
-}*/
+};
+
+labelsRouter = new Router2(test);
 
 export default labelsRouter;

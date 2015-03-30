@@ -1,5 +1,6 @@
 import express from 'express';
 import Route from './Route';
+import Router2 from './Router2';
 
 class Router {
   constructor() {
@@ -21,7 +22,7 @@ class Router {
       name = null;
     }
 
-    if (cb instanceof Router) {
+    if (cb instanceof Router || cb instanceof Router2) {
       cb = cb.expressRouter;
     }
 
