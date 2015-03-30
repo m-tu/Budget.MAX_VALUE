@@ -174,9 +174,11 @@ models.sequelize.sync({force: true}).then(async () => {
   let lineItems = await models.LineItem.findAll();
   await lineItems[0].addLabels(labels);
 
-  // start server
-  server.listen(port);
   console.log('Listening on port ' + port);
 }, (err) => {
   console.log('Failed to connect to DB: ' + err.toString());
 });
+// start server
+server.listen(port);
+
+export default server;

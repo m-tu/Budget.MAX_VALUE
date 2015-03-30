@@ -80,7 +80,7 @@ route.delete(async (req, res) => {
 });
 
 function labelValidator(req, res, next) {
-  let name = req.body.name && Strign(req.body.name).trim();
+  let name = req.body.name && String(req.body.name).trim();
 
   if (!name) {
     return res.sendStatus(400);
@@ -120,7 +120,8 @@ let test = {
         let label = await models.Label.findAll({
           where: {
             UserId: req.session.user.id
-          }
+          },
+          attributes: ['id', 'name']
         });
 
         res.send(label);
@@ -131,7 +132,10 @@ let test = {
           UserId: req.session.user.id
         });
 
-        res.status(201).send(label);
+        res.status(201).send({
+          id: label.id,
+          name: label.name
+        });
       }]
     },
     '/:id': {

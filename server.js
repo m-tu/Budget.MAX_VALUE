@@ -3,4 +3,5 @@
 require('babel/register')({
   experimental: true
 });
-require('./server-bootstrapper');
+var app = require('./server-bootstrapper');
+module.exports = app;

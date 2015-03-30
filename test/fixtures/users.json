@@ -1,0 +1,18 @@
+[
+  {
+    "model": "User",
+    "data": {
+      "id": 1,
+      "username": "timmu",
+      "password": "parool22"
+    }
+  },
+  {
+    "model": "Label",
+    "data": {
+      "id": 1,
+      "name": "timmu",
+      "UserId": 1
+    }
+  }
+]
