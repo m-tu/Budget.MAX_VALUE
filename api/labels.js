@@ -103,7 +103,8 @@ let test = {
         where: {
           UserId: req.session.user.id,
           id: id
-        }
+        },
+        attributes: ['id', 'name']
       });
 
       if (!label) {
@@ -117,14 +118,14 @@ let test = {
   routes: {
     '/': {
       async get(req, res){
-        let label = await models.Label.findAll({
+        let labels = await models.Label.findAll({
           where: {
             UserId: req.session.user.id
           },
           attributes: ['id', 'name']
         });
 
-        res.send(label);
+        res.send(labels);
       },
       post: [labelValidator, async (req, res) => {
         let label = await models.Label.create({
@@ -147,7 +148,10 @@ let test = {
           name: req.data.name
         });
 
-        res.send(label);
+        res.send({
+          id: label.id,
+          name: label.name
+        });
       }],
       async delete(req, res) {
         await req.label.destroy();

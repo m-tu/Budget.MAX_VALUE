@@ -11,8 +11,23 @@ import models from '../models';
 //import { db } from 'sequelize-tools';
 
 
+
 describe('Array', () =>{
   let agent = request.agent(app);
+
+  function testLabelsLength(length, done) {
+    return function() {
+      agent
+        .get('/api2/labels')
+        .set('Accept', 'application/json')
+        //.expect('Content-Type', /json/)
+        .end((err, res) => {
+          console.log(err, res && res.headers, res.status);
+          assert.equal(res.body.length, length);
+          done();
+        });
+    };
+  }
 
   before(done => {
     // wait for db to load sample data so we can clear it later
@@ -24,7 +39,10 @@ describe('Array', () =>{
   beforeEach(async (done) => {
     await models.sequelize.sync({force: true});
     await sequelizeFixtures.loadFile('./test/fixtures/users.json', models);
-    done();
+    agent
+      .post('/api2/auth')
+      .send({username: 'timmu', password: 'parool22'})
+      .end(done)
   });
 
   it('should login with correct credentials', (done) => {
@@ -45,6 +63,15 @@ describe('Array', () =>{
       .expect(200, done);
   });
 
+  it('should get a specific label', done => {
+    agent
+      .get('/api2/labels/1')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(res => assert.deepEqual(res.body, {id: 1, name: 'timmu'}))
+      .expect(200, done);
+  });
+
   it('should add new label', done => {
     let name = 'new label name';
 
@@ -54,7 +81,33 @@ describe('Array', () =>{
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(res => assert.deepEqual(res.body, {id: 2, name: name}))
-      .expect(201, done);
+      .expect(201, testLabelsLength(2, done));
+  });
+
+  it('should update a label', done => {
+    let name = 'new new label name';
+    let expected = {id: 1, name: name};
+
+    agent
+      .put('/api2/labels/1')
+      .send({name: name})
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(res => assert.deepEqual(res.body, expected))
+      .expect(200, () => {
+        agent
+          .get('/api2/labels/1')
+          .end((err, res) => {
+            assert.deepEqual(res.body, expected);
+            done();
+          });
+      });
+  });
+
+  it('should delete a label', done => {
+    agent
+      .delete('/api2/labels/1')
+      .expect(204, testLabelsLength(0, done));
   });
 
   it('should not login with incorrect credentials', (done) => {
