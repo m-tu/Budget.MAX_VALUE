@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Input } from 'react-bootstrap';
 import validateTransaction from '../validators/transaction';
-import rome from 'rome';
+import rome from '../libs/rome';
 
 let formElements = [
   {
