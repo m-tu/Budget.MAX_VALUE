@@ -1,9 +1,5 @@
 
 // make dummy document for rome
-if (typeof global.document === 'undefined') {
-  global.document =  {
-    createEvent() {}
-  };
+if (typeof window !== 'undefined') {
+  module.exports = require('rome');
 }
-
-export * from 'rome';
