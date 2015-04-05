@@ -29,8 +29,7 @@ describe('Array', () =>{
     };
   }
 
-  before(done => {
-    // wait for db to load sample data so we can clear it later
+  before((done) => {
     setTimeout(async () => {
       done();
     }, 1000);

@@ -130,54 +130,59 @@ server.use((err, req, res) => {
 });
 
 let port = process.env.PORT || 3005;
+let env = process.env.NODE_ENV || 'development';
 
-models.sequelize.sync({force: true}).then(async () => {
-  // TODO move initialization to separate file
-  // initialize data
-  let user = await models.User.create({
-    username: 'timmu',
-    password: 'parool'
+if (env === 'development') {
+  models.sequelize.sync({force: true}).then(async () => {
+    // TODO move initialization to separate file
+    // initialize data
+    let user = await models.User.create({
+      username: 'timmu',
+      password: 'parool'
+    });
+
+    await models.Transaction.bulkCreate([{
+      date: new Date(),
+      description: 'positive',
+      location: 'Töö',
+      amount: 100,
+      method: 'bank',
+      UserId: user.id
+    }, {
+      date: new Date(),
+      description: 'negative',
+      location: 'selver',
+      amount: -13.55,
+      method: 'debit',
+      UserId: user.id
+    }]);
+
+    await models.Label.bulkCreate([{
+      name: 'Food',
+      UserId: user.id
+    }, {
+      name: 'Drink',
+      UserId: user.id
+    }]);
+
+    await models.LineItem.bulkCreate([{
+      name: 'item 1',
+      amount: 100,
+      TransactionId: 1,
+      labels: [1, 2]
+    }]);
+
+    let labels = await models.Label.findAll();
+    let lineItems = await models.LineItem.findAll();
+    await lineItems[0].addLabels(labels);
+
+    console.log('Listening on port ' + port);
+  }, (err) => {
+    console.log('Failed to connect to DB: ' + err.toString());
   });
-
-  await models.Transaction.bulkCreate([{
-    date: new Date(),
-    description: 'positive',
-    location: 'Töö',
-    amount: 100,
-    method: 'bank',
-    UserId: user.id
-  }, {
-    date: new Date(),
-    description: 'negative',
-    location: 'selver',
-    amount: -13.55,
-    method: 'debit',
-    UserId: user.id
-  }]);
-
-  await models.Label.bulkCreate([{
-    name: 'Food',
-    UserId: user.id
-  }, {
-    name: 'Drink',
-    UserId: user.id
-  }]);
-
-  await models.LineItem.bulkCreate([{
-    name: 'item 1',
-    amount: 100,
-    TransactionId: 1,
-    labels: [1,2]
-  }]);
-
-  let labels = await models.Label.findAll();
-  let lineItems = await models.LineItem.findAll();
-  await lineItems[0].addLabels(labels);
-
-  console.log('Listening on port ' + port);
-}, (err) => {
-  console.log('Failed to connect to DB: ' + err.toString());
-});
+} else {
+  models.sequelize.sync();
+}
 // start server
 server.listen(port);
 
