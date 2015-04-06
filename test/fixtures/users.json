@@ -8,6 +8,14 @@
     }
   },
   {
+    "model": "User",
+    "data": {
+      "id": 2,
+      "username": "marten",
+      "password": "parool22"
+    }
+  },
+  {
     "model": "Label",
     "data": {
       "id": 1,
