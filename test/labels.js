@@ -1,6 +1,6 @@
 'use strict';
 
-import assert from 'assert';
+import { expect } from 'chai';
 import request from 'supertest-as-promised';
 import sequelizeFixtures from 'sequelize-fixtures';
 
@@ -25,7 +25,7 @@ describe('label api', () => {
         .get('/api2/labels')
         .set('Accept', 'application/json');
 
-      assert.equal(res.body.length, length);
+      expect(res.body.length).to.equal(length);
     }
 
     beforeEach(async () => {
@@ -37,33 +37,36 @@ describe('label api', () => {
     });
 
     it('should get all labels', async () => {
-      await agent
+      let res = await agent
         .get('/api2/labels')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
-        .expect(res => assert.deepEqual(res.body, [{id: 1, name: 'timmu'}]))
         .expect(200);
+
+      expect(res.body).to.eql([{id: 1, name: 'timmu'}]);
     });
 
     it('should get a specific label', async () => {
-      await agent
+      let res = await agent
         .get('/api2/labels/1')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
-        .expect(res => assert.deepEqual(res.body, {id: 1, name: 'timmu'}))
         .expect(200);
+
+      expect(res.body).to.eql({id: 1, name: 'timmu'});
     });
 
     it('should add new label', async () => {
       let name = 'new label name';
 
-      await agent
+      let res = await agent
         .post('/api2/labels')
         .send({name: name})
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
-        .expect(res => assert.deepEqual(res.body, {id: 2, name: name}))
         .expect(201);
+
+      expect(res.body).to.eql({id: 2, name: name});
 
       await testLabelsLength(2);
     });
@@ -72,18 +75,19 @@ describe('label api', () => {
       let name = 'new new label name';
       let expected = {id: 1, name: name};
 
-      await agent
+      let res = await agent
         .put('/api2/labels/1')
         .send({name: name})
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
-        .expect(res => assert.deepEqual(res.body, expected))
         .expect(200);
 
-      let res = await agent
+      expect(res.body).to.eql(expected);
+
+      res = await agent
         .get('/api2/labels/1');
 
-      assert.deepEqual(res.body, expected);
+      expect(res.body).to.eql(expected);
     });
 
     it('should delete a label', async () => {

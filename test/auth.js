@@ -1,6 +1,5 @@
 'use strict';
 
-import assert from 'assert';
 import request from 'supertest-as-promised';
 import sequelizeFixtures from 'sequelize-fixtures';
 
