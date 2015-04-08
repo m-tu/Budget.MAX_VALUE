@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
 
-var babelLoader = 'babel-loader?experimental&optional=runtime';
+var babelLoader = 'babel-loader?stage=0&optional=runtime';
 
 module.exports = {
   // Entry point for static analyzer:
