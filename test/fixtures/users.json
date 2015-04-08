@@ -22,5 +22,16 @@
       "name": "timmu",
       "UserId": 1
     }
+  },
+  {
+    "model": "Transaction",
+    "data": {
+      "id": 1,
+      "date": 1428526034357,
+      "amount": 12.35,
+      "description": "description",
+      "method": "bank",
+      "UserId": 1
+    }
   }
 ]
