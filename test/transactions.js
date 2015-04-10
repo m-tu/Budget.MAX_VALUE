@@ -20,6 +20,15 @@ describe.only('transactions api', () => {
   describe('authenticated requests', () => {
     let agent = request.agent(app);
 
+    let transaction = {
+      amount: 12.35,
+      date: '2015-04-08T20:47:14.000Z',
+      description: 'description',
+      id: 1,
+      location: 'location',
+      method: 'bank'
+    };
+
     //async function testLabelsLength(length) {
     //  let res = await agent
     //    .get('/api2/labels')
@@ -28,33 +37,33 @@ describe.only('transactions api', () => {
     //  expect(res.body.length).to.equal(length);
     //}
     //
-    //beforeEach(async () => {
-    //  await models.sequelize.sync({force: true});
-    //  await sequelizeFixtures.loadFile('./test/fixtures/users.json', models);
-    //  await agent
-    //    .post('/api2/auth')
-    //    .send({username: 'timmu', password: 'parool22'});
-    //});
-    //
-    //it('should get all labels', async () => {
-    //  let res = await agent
-    //    .get('/api2/labels')
-    //    .set('Accept', 'application/json')
-    //    .expect('Content-Type', /json/)
-    //    .expect(200);
-    //
-    //  expect(res.body).to.eql([{id: 1, name: 'timmu'}]);
-    //});
-    //
-    //it('should get a specific label', async () => {
-    //  let res = await agent
-    //    .get('/api2/labels/1')
-    //    .set('Accept', 'application/json')
-    //    .expect('Content-Type', /json/)
-    //    .expect(200);
-    //
-    //  expect(res.body).to.eql({id: 1, name: 'timmu'});
-    //});
+    beforeEach(async () => {
+      await models.sequelize.sync({force: true});
+      await sequelizeFixtures.loadFile('./test/fixtures/users.json', models);
+      await agent
+        .post('/api2/auth')
+        .send({username: 'timmu', password: 'parool22'});
+    });
+
+    it('should get all transactions', async () => {
+      let res = await agent
+        .get('/api2/transactions')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(res.body).to.eql([transaction]);
+    });
+
+    it('should get a specific transaction', async () => {
+      let res = await agent
+        .get('/api2/transactions/1')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(res.body).to.eql(transaction);
+    });
     //
     //it('should add new label', async () => {
     //  let name = 'new label name';

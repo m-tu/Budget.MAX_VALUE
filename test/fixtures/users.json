@@ -30,6 +30,7 @@
       "date": 1428526034357,
       "amount": 12.35,
       "description": "description",
+      "location": "location",
       "method": "bank",
       "UserId": 1
     }

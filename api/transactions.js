@@ -10,7 +10,8 @@ transactionsRouter.param('id', async (req, res, next, id) => {
     where: {
       UserId: req.session.user.id,
       id: id
-    }
+    },
+    attributes: ['id', 'date', 'amount', 'description', 'method', 'location']
   });
 
   if (!transaction) {
@@ -27,7 +28,8 @@ route.get(async (req, res) => {
   let transactions = await models.Transaction.findAll({
     where: {
       UserId: req.session.user.id
-    }
+    },
+    attributes: ['id', 'date', 'amount', 'description', 'method', 'location']
   });
 
   res.send(transactions);
