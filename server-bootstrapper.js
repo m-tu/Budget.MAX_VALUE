@@ -54,9 +54,7 @@ server.use((req, res, next) => {
   sessionMiddleware(req, res, next);
 });
 
-
-// get user file
-server.get('/files/:id([0-9]+)', async (req, res, next) => {
+async function tere(req, res, next) {
   let file = await models.File.findOne({
     where: {
       id: req.params.id
@@ -69,7 +67,10 @@ server.get('/files/:id([0-9]+)', async (req, res, next) => {
   } else {
     next();
   }
-});
+}
+
+// get user file
+server.get('/files/:id([0-9]+)', tere);
 
 // Get access to the fetchr plugin instance
 let fetchrPlugin = app.getPlugin('FetchrPlugin');
@@ -82,6 +83,10 @@ for (let serviceName of Object.keys(services)) {
 import api from './api';
 server.use('/api2', api.expressRouter);
 
+
+
+import test from './api/test';
+//test(server);
 
 // Set up the fetchr middleware
 server.use(fetchrPlugin.getXhrPath(), fetchrPlugin.getMiddleware());
@@ -133,7 +138,7 @@ let port = process.env.PORT || 3005;
 let env = process.env.NODE_ENV || 'development';
 
 if (env === 'development') {
-  models.sequelize.sync({force: true}).then(async () => {
+  models.sequelize.sync({force: true}).then(async function tere() {
     // TODO move initialization to separate file
     // initialize data
     let user = await models.User.create({

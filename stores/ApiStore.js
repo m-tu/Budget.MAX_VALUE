@@ -1,6 +1,6 @@
 'use strict';
 
-import createStore from 'fluxible/utils/createStore';
+import { createStore } from 'fluxible/addons';
 
 // TODO do we need this store?
 export default createStore({
