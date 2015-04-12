@@ -86,7 +86,7 @@ server.use('/api2', api.expressRouter);
 
 
 import test from './api/test';
-//test(server);
+test(server);
 
 // Set up the fetchr middleware
 server.use(fetchrPlugin.getXhrPath(), fetchrPlugin.getMiddleware());
