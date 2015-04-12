@@ -186,7 +186,6 @@ export default function(app) {
     });
   }
 
-
   for (let route of _router.routes) {
     router[route.method](route.path, async (req, res) => {
       let params = req.paramValues || [];
