@@ -163,6 +163,88 @@ class AuthApi {
   }
 }
 
+import models from '../models';
+
+class NotFoundError extends Error {
+  message = 'Not Found'
+}
+
+class LabelApi {
+  @param('id')
+  async id(id){
+    id = Number(id);
+
+    let label = await models.Label.find({
+      where: {
+        UserId: req.session.user.id,
+        id: id
+      },
+      attributes: ['id', 'name']
+    });
+
+    if (!label) {
+      throw new NotFoundError();
+    }
+
+    return label;
+  }
+
+  @request('/')
+  async getAll() {
+    return await models.Label.findAll({
+      where: {
+        UserId: req.session.user.id
+      },
+      attributes: ['id', 'name']
+    });
+  }
+
+  @request('/', 'POST')
+  @args(args.session, args.body)
+  @responseStatus(HTTPStatus.CREATED)
+  async createLabel(session, body) {
+    let label = await models.Label.create({
+      name: body.name,
+      UserId: session.user.id
+    });
+
+    return {
+      id: label.id,
+      name: label.name
+    };
+  }
+
+  @request('/:id')
+  getLabel(label) {
+    return label;
+  }
+
+  @request('/:id', 'PUT')
+  @args(args.body)
+  async updateLabel(label, body) {
+    let label = await label.updateAttributes({
+      name: body.name
+    });
+
+    return {
+      id: label.id,
+      name: label.name
+    };
+  }
+
+  @request('/:id', 'DELETE')
+  @responseStatus(HTTPStatus.NO_CONTENT)
+  async deleteLabel(label) {
+    await label.destroy();
+  }
+
+  @exception(NotFoundError)
+  @responseStatus(HTTPStatus.NOT_FOUND)
+  errorHandler(e) {
+    return e.message;
+  }
+}
+
 export default function(app) {
   let router = express.Router();
 
