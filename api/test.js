@@ -245,6 +245,12 @@ class LabelApi {
   }
 }
 
+let labelApi = {
+  getLabel(id) {
+    fetch('/label/' + id)
+  }
+}
+
 export default function(app) {
   let router = express.Router();
 

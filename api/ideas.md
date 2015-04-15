@@ -1,0 +1,1 @@
+Use webpack loader to overwrite api require files with lightweight descriptions that client side api can use
